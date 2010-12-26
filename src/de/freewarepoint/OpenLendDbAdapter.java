@@ -89,7 +89,7 @@ public class OpenLendDbAdapter {
     }
 
 
-    public long createNote(String type, String description, Date date) {
+    public long createLentObject(String type, String description, Date date) {
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_TYPE, type);
         initialValues.put(KEY_DESCRIPTION, description);
@@ -99,7 +99,7 @@ public class OpenLendDbAdapter {
         return mDb.insert(DATABASE_TABLE, null, initialValues);
     }
 
-    public boolean deleteNote(long rowId) {
+    public boolean deleteLentObject(long rowId) {
 
         return mDb.delete(DATABASE_TABLE, KEY_ROWID + "=" + rowId, null) > 0;
     }

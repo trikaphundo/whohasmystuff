@@ -1,28 +1,23 @@
 package de.freewarepoint;
 
 import android.app.ListActivity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class ListLentObjects extends ListActivity {
 
     private static final int ADD_OBJECT = Menu.FIRST;
-    private static final String PREFS_NAME = "prefs";
 
     private static final int SUBMENU_EDIT = SubMenu.FIRST;
     private static final int SUBMENU_DELETE = SubMenu.FIRST + 1;
@@ -45,28 +40,49 @@ public class ListLentObjects extends ListActivity {
     }
 
     private void fillData() {
-        // Get all of the rows from the database and create the item list
         mLentObjectCursor = mDbHelper.fetchAllLentObjects();
         startManagingCursor(mLentObjectCursor);
 
-        // Create an array to specify the fields we want to display in the list (only TITLE)
         String[] from = new String[]{
                 OpenLendDbAdapter.KEY_TYPE,
                 OpenLendDbAdapter.KEY_DESCRIPTION,
                 OpenLendDbAdapter.KEY_DATE
         };
 
-        // and an array of the fields we want to bind those fields to (in this case just text1)
         int[] to = new int[]{
                 R.id.toptext,
                 R.id.bottomtext,
                 R.id.date
         };
 
-        // Now create a simple cursor adapter and set it to display
-        SimpleCursorAdapter notes =
-                new SimpleCursorAdapter(this, R.layout.row, mLentObjectCursor, from, to);
-        setListAdapter(notes);
+        SimpleCursorAdapter lentObjects = new SimpleCursorAdapter(this, R.layout.row, mLentObjectCursor, from, to);
+
+        final DateFormat adf = android.text.format.DateFormat.getDateFormat(getApplicationContext());
+        final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        lentObjects.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+
+            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                if (columnIndex == 3) {
+                    Date date;
+                    try {
+                        date = df.parse(cursor.getString(columnIndex));
+                    } catch (ParseException e) {
+                        throw new IllegalStateException("Unable to parse date " + cursor.getString(columnIndex));
+                    }
+
+                    TextView dateView = (TextView) view.findViewById(R.id.date);
+                    dateView.setText(adf.format(date));
+
+                    return true;
+                }
+
+                return false;
+            }
+
+        });
+
+        setListAdapter(lentObjects);
     }
 
     @Override
@@ -96,7 +112,7 @@ public class ListLentObjects extends ListActivity {
         int id = (int) getListAdapter().getItemId(info.position);
 
         if (item.getItemId() == SUBMENU_DELETE) {
-            mDbHelper.deleteNote(id);
+            mDbHelper.deleteLentObject(id);
             fillData();
         }
 
@@ -125,11 +141,7 @@ public class ListLentObjects extends ListActivity {
             Bundle bundle = data.getExtras().getBundle("return");
             String name = bundle.getString("name");
             String type = bundle.getString("type");
-            LentObject newObj = new LentObject();
-            newObj.setName(name);
-            newObj.setType(type);
-            newObj.setDate(new Date());
-            mDbHelper.createNote(type, name, new Date());
+            mDbHelper.createLentObject(type, name, new Date());
             fillData();
         }
     }
