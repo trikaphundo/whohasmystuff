@@ -2,7 +2,7 @@ package de.freewarepoint;
 
 import java.util.Date;
 
-public class LendedObject {
+public class LentObject {
 
     private String type;
     private String name;

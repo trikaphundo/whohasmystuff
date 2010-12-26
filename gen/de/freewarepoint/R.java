@@ -15,9 +15,10 @@ public final class R {
     }
     public static final class id {
         public static final int EditText01=0x7f060000;
-        public static final int addButton=0x7f060003;
+        public static final int addButton=0x7f060004;
         public static final int bottomtext=0x7f060002;
-        public static final int manageTypesButton=0x7f060004;
+        public static final int date=0x7f060003;
+        public static final int manageTypesButton=0x7f060005;
         public static final int toptext=0x7f060001;
     }
     public static final class layout {
