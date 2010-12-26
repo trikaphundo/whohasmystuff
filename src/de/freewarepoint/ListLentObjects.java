@@ -138,9 +138,9 @@ public class ListLentObjects extends ListActivity {
             throw new IllegalStateException("Error!");
         }
         else {
-            Bundle bundle = data.getExtras().getBundle("return");
-            String name = bundle.getString("name");
-            String type = bundle.getString("type");
+            Bundle bundle = data.getExtras();
+            String name = bundle.getString(OpenLendDbAdapter.KEY_DESCRIPTION);
+            String type = bundle.getString(OpenLendDbAdapter.KEY_TYPE);
             mDbHelper.createLentObject(type, name, new Date());
             fillData();
         }
