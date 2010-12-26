@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Open Lender Manager</string>
+    <string name="addButton">Add new object</string>
+    <string name="manageTypesButton">Manage object types</string>
+    <string name="submenu_edit">Edit</string>
+    <string name="submenu_delete">Delete</string>
+</resources>
