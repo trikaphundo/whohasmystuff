@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Open Lender Manager</string>
     <string name="addButton">Add new object</string>
+    <string name="date">Date</string>
     <string name="description">Description</string>
     <string name="manageTypesButton">Manage object types</string>
     <string name="add_button">Add</string>

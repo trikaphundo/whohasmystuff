@@ -141,7 +141,9 @@ public class ListLentObjects extends ListActivity {
             Bundle bundle = data.getExtras();
             String name = bundle.getString(OpenLendDbAdapter.KEY_DESCRIPTION);
             String type = bundle.getString(OpenLendDbAdapter.KEY_TYPE);
-            mDbHelper.createLentObject(type, name, new Date());
+            long time = bundle.getLong(OpenLendDbAdapter.KEY_DATE);
+
+            mDbHelper.createLentObject(type, name, new Date(time));
             fillData();
         }
     }
