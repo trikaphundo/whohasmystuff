@@ -144,16 +144,20 @@ public class ListLentObjects extends ListActivity {
         return true;
     }
 
-    // This method is called once the menu is selected
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent i;
         switch (item.getItemId()) {
             // We have only one menu option
             case R.id.addButton:
-                // Launch Preference activity
-                Intent i = new Intent(this, AddObject.class);
+                i = new Intent(this, AddObject.class);
                 i.putExtra(AddObject.ACTION_TYPE, AddObject.ACTION_ADD);
                 startActivityForResult(i, ACTION_ADD);
+                break;
+            case R.id.manageTypesButton:
+                i = new Intent(this, ManageLentTypes.class);
+                i.putExtra(AddObject.ACTION_TYPE, AddObject.ACTION_ADD);
+                startActivity(i);
                 break;
         }
         return true;

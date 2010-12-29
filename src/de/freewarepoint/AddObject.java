@@ -31,7 +31,7 @@ public class AddObject extends Activity {
     static final int ACTION_ADD = 0;
     static final int ACTION_EDIT = 1;
 
-    static final int DATE_DIALOG_ID = 0;
+    private static final int DATE_DIALOG_ID = 0;
 
     private DatePickerDialog.OnDateSetListener mDateSetListener =
             new DatePickerDialog.OnDateSetListener() {
