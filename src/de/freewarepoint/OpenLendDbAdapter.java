@@ -131,10 +131,10 @@ public class OpenLendDbAdapter {
 
     }
 
-    public boolean updateLentObject(long rowId, String type, String descriptioh, Date date) {
+    public boolean updateLentObject(long rowId, String type, String description, Date date) {
         ContentValues args = new ContentValues();
         args.put(KEY_TYPE, type);
-        args.put(KEY_DESCRIPTION, descriptioh);
+        args.put(KEY_DESCRIPTION, description);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         args.put(KEY_DATE, dateFormat.format(date));
 

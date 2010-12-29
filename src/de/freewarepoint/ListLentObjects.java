@@ -22,6 +22,9 @@ public class ListLentObjects extends ListActivity {
     private static final int SUBMENU_EDIT = SubMenu.FIRST;
     private static final int SUBMENU_DELETE = SubMenu.FIRST + 1;
 
+    private static final int ACTION_ADD = 1;
+    private static final int ACTION_EDIT = 2;
+
     private OpenLendDbAdapter mDbHelper;
     private Cursor mLentObjectCursor;
 
@@ -111,7 +114,29 @@ public class ListLentObjects extends ListActivity {
         }
         int id = (int) getListAdapter().getItemId(info.position);
 
-        if (item.getItemId() == SUBMENU_DELETE) {
+        if (item.getItemId() == SUBMENU_EDIT) {
+            Cursor c = mLentObjectCursor;
+            c.moveToPosition(info.position);
+            Bundle extras = new Bundle();
+            extras.putInt(AddObject.ACTION_TYPE, AddObject.ACTION_EDIT);
+            extras.putLong(OpenLendDbAdapter.KEY_ROWID, id);
+            extras.putString(OpenLendDbAdapter.KEY_TYPE, c.getString(
+                    c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_TYPE)));
+            extras.putString(OpenLendDbAdapter.KEY_DESCRIPTION, c.getString(
+                    c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_DESCRIPTION)));
+            try {
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = df.parse(c.getString(c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_DATE)));
+                extras.putLong(OpenLendDbAdapter.KEY_DATE, date.getTime());
+            } catch (ParseException e) {
+                throw new IllegalStateException("Illegal date in database!");
+            }
+
+            Intent intent = new Intent(this, AddObject.class);
+            intent.setAction(Intent.ACTION_EDIT);
+            intent.putExtras(extras);
+            startActivityForResult(intent, ACTION_EDIT);
+        } else if (item.getItemId() == SUBMENU_DELETE) {
             mDbHelper.deleteLentObject(id);
             fillData();
         }
@@ -127,23 +152,26 @@ public class ListLentObjects extends ListActivity {
             case R.id.addButton:
                 // Launch Preference activity
                 Intent i = new Intent(this, AddObject.class);
-                startActivityForResult(i, ADD_OBJECT);
+                i.putExtra(AddObject.ACTION_TYPE, AddObject.ACTION_ADD);
+                startActivityForResult(i, ACTION_ADD);
                 break;
         }
         return true;
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        if (resultCode == RESULT_CANCELED){
-            throw new IllegalStateException("Error!");
-        }
-        else {
+        if (resultCode == RESULT_OK) {
             Bundle bundle = data.getExtras();
             String name = bundle.getString(OpenLendDbAdapter.KEY_DESCRIPTION);
             String type = bundle.getString(OpenLendDbAdapter.KEY_TYPE);
             long time = bundle.getLong(OpenLendDbAdapter.KEY_DATE);
 
-            mDbHelper.createLentObject(type, name, new Date(time));
+            if (requestCode == ACTION_ADD) {
+                mDbHelper.createLentObject(type, name, new Date(time));
+            } else if (requestCode == ACTION_EDIT) {
+                Long rowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);
+                mDbHelper.updateLentObject(rowId, type, name, new Date(time));
+            }
             fillData();
         }
     }

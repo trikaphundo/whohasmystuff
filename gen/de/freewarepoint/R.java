@@ -37,13 +37,15 @@ public final class R {
     public static final class string {
         public static final int addButton=0x7f040001;
         public static final int add_button=0x7f040005;
-        public static final int add_title=0x7f040006;
+        public static final int add_title=0x7f040007;
         public static final int app_name=0x7f040000;
         public static final int date=0x7f040002;
         public static final int description=0x7f040003;
+        public static final int edit_button=0x7f040006;
+        public static final int edit_title=0x7f040008;
         public static final int manageTypesButton=0x7f040004;
-        public static final int submenu_delete=0x7f040008;
-        public static final int submenu_edit=0x7f040007;
-        public static final int type=0x7f040009;
+        public static final int submenu_delete=0x7f04000a;
+        public static final int submenu_edit=0x7f040009;
+        public static final int type=0x7f04000b;
     }
 }
