@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.*;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -19,7 +17,7 @@ public class AddObject extends Activity {
 
     private Long mRowId;
 
-    private EditText mTypeText;
+    private Spinner mTypeSpinner;
     private EditText mDescriptionText;
 
     private TextView mDateDisplay;
@@ -48,25 +46,56 @@ public class AddObject extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.add);
+        setContentView(R.layout.add_object);
         setTitle(R.string.add_title);
 
-        mTypeText = (EditText) findViewById(R.id.add_type);
+        mTypeSpinner = (Spinner) findViewById(R.id.type_spinner);
         mDescriptionText = (EditText) findViewById(R.id.add_description);
         Button addButton = (Button) findViewById(R.id.add_button);
+
+        OpenLendDbAdapter mDbHelper = new OpenLendDbAdapter(this);
+        mDbHelper.open();
+        Cursor mLentObjectCursor = mDbHelper.fetchAllLentTypes();
+        startManagingCursor(mLentObjectCursor);
+
+        String[] from = new String[]{
+                OpenLendDbAdapter.KEY_TYPE,
+        };
+
+        int[] to = new int[]{
+                R.id.typename,
+        };
+
+        SimpleCursorAdapter lentObjects = new SimpleCursorAdapter(this, R.layout.type_row, mLentObjectCursor, from, to);
+
+        mTypeSpinner.setAdapter(lentObjects);
 
         Bundle bundle = getIntent().getExtras();
 
         Date date;
 
-        if (bundle != null) {
+        if (bundle.containsKey(OpenLendDbAdapter.KEY_ROWID)) {
             if (bundle.getInt(ACTION_TYPE) == ACTION_EDIT) {
                 setTitle(R.string.edit_title);
                 addButton.setText(R.string.edit_button);
             }
 
+            int currentlySelected = -1;
+
+            // Find selected type
+            // FIXME Does not work when type was deleted
+            for (int i = 0; i < lentObjects.getCount(); i++) {
+                Cursor c = (Cursor) lentObjects.getItem(i);
+                if (c.getString(c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_TYPE))
+                        .equals(bundle.getString(OpenLendDbAdapter.KEY_TYPE))) {
+                    currentlySelected = i;
+                    break;
+                }
+            }
+
             mRowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);
-            mTypeText.setText(bundle.getString(OpenLendDbAdapter.KEY_TYPE));
+
+            mTypeSpinner.setSelection(currentlySelected);
             mDescriptionText.setText(bundle.getString(OpenLendDbAdapter.KEY_DESCRIPTION));
             date = new Date(bundle.getLong(OpenLendDbAdapter.KEY_DATE));
         } else {
@@ -84,7 +113,9 @@ public class AddObject extends Activity {
                     bundle.putLong(OpenLendDbAdapter.KEY_ROWID, mRowId);
                 }
 
-                bundle.putString(OpenLendDbAdapter.KEY_TYPE, mTypeText.getText().toString());
+                Cursor cursor = (Cursor) mTypeSpinner.getSelectedItem();
+                String type = cursor.getString(cursor.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_TYPE));
+                bundle.putString(OpenLendDbAdapter.KEY_TYPE, type);
                 bundle.putString(OpenLendDbAdapter.KEY_DESCRIPTION, mDescriptionText.getText().toString());
 
                 Calendar c = Calendar.getInstance();

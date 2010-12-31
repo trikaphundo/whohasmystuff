@@ -5,18 +5,12 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <LinearLayout android:orientation="horizontal"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content">
-
-        <TextView android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:text="@string/type" />
-        <EditText android:id="@+id/add_type"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_weight="1"/>
-    </LinearLayout>
+    <Spinner  android:id="@+id/type_spinner"
+              android:layout_width="fill_parent"
+              android:layout_height="45dip"
+              android:drawSelectorOnTop="true"
+              android:prompt="@string/type"
+    />
 
     <LinearLayout android:orientation="horizontal"
                   android:layout_width="match_parent"
