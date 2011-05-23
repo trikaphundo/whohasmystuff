@@ -2,5 +2,6 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/addButton"
-          android:title="@string/addTypeButton" />
+          android:title="@string/addTypeButton"
+          android:icon="@android:drawable/ic_menu_add"/>
 </menu>

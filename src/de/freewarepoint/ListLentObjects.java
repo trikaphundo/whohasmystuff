@@ -6,9 +6,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
-import android.widget.AdapterView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
+import android.widget.*;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -39,7 +37,39 @@ public class ListLentObjects extends ListActivity {
 
         fillData();
 
-        registerForContextMenu(getListView());
+        ListView listView = getListView();
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                launchEditActivity(position, id);
+            }
+        });
+
+        registerForContextMenu(listView);
+    }
+
+    private void launchEditActivity(int position, long id) {
+        Cursor c = mLentObjectCursor;
+        c.moveToPosition(position);
+        Bundle extras = new Bundle();
+        extras.putInt(AddObject.ACTION_TYPE, AddObject.ACTION_EDIT);
+        extras.putLong(OpenLendDbAdapter.KEY_ROWID, id);
+        extras.putString(OpenLendDbAdapter.KEY_TYPE, c.getString(
+                c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_TYPE)));
+        extras.putString(OpenLendDbAdapter.KEY_DESCRIPTION, c.getString(
+                c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_DESCRIPTION)));
+        try {
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = df.parse(c.getString(c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_DATE)));
+            extras.putLong(OpenLendDbAdapter.KEY_DATE, date.getTime());
+        } catch (ParseException e) {
+            throw new IllegalStateException("Illegal date in database!");
+        }
+
+        Intent intent = new Intent(this, AddObject.class);
+        intent.setAction(Intent.ACTION_EDIT);
+        intent.putExtras(extras);
+        startActivityForResult(intent, ACTION_EDIT);
     }
 
     private void fillData() {
@@ -115,27 +145,7 @@ public class ListLentObjects extends ListActivity {
         int id = (int) getListAdapter().getItemId(info.position);
 
         if (item.getItemId() == SUBMENU_EDIT) {
-            Cursor c = mLentObjectCursor;
-            c.moveToPosition(info.position);
-            Bundle extras = new Bundle();
-            extras.putInt(AddObject.ACTION_TYPE, AddObject.ACTION_EDIT);
-            extras.putLong(OpenLendDbAdapter.KEY_ROWID, id);
-            extras.putString(OpenLendDbAdapter.KEY_TYPE, c.getString(
-                    c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_TYPE)));
-            extras.putString(OpenLendDbAdapter.KEY_DESCRIPTION, c.getString(
-                    c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_DESCRIPTION)));
-            try {
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Date date = df.parse(c.getString(c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_DATE)));
-                extras.putLong(OpenLendDbAdapter.KEY_DATE, date.getTime());
-            } catch (ParseException e) {
-                throw new IllegalStateException("Illegal date in database!");
-            }
-
-            Intent intent = new Intent(this, AddObject.class);
-            intent.setAction(Intent.ACTION_EDIT);
-            intent.putExtras(extras);
-            startActivityForResult(intent, ACTION_EDIT);
+            launchEditActivity(info.position, id);
         } else if (item.getItemId() == SUBMENU_DELETE) {
             mDbHelper.deleteLentObject(id);
             fillData();
