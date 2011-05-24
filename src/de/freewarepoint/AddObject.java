@@ -52,6 +52,7 @@ public class AddObject extends Activity {
         mTypeSpinner = (Spinner) findViewById(R.id.type_spinner);
         mDescriptionText = (EditText) findViewById(R.id.add_description);
         Button addButton = (Button) findViewById(R.id.add_button);
+        Button cancelButton = (Button) findViewById(R.id.cancel_button);
 
         OpenLendDbAdapter mDbHelper = new OpenLendDbAdapter(this);
         mDbHelper.open();
@@ -127,6 +128,13 @@ public class AddObject extends Activity {
                 setResult(RESULT_OK, mIntent);
                 finish();
 
+            }
+        });
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                setResult(RESULT_CANCELED);
+                finish();
             }
         });
     }

@@ -45,8 +45,24 @@
 
     </LinearLayout>
 
-    <Button android:id="@+id/add_button"
-            android:text="@string/add_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+    <LinearLayout android:orientation="horizontal"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:background="@android:color/darker_gray">
+
+        <Button android:id="@+id/add_button"
+                android:text="@string/add_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="2px"/>
+
+        <Button android:id="@+id/cancel_button"
+                android:text="@string/cancel_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="2px"/>
+
+    </LinearLayout>
 </LinearLayout>
