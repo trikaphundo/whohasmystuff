@@ -66,6 +66,9 @@ public class ListLentObjects extends ListActivity {
             throw new IllegalStateException("Illegal date in database!");
         }
 
+        extras.putString(OpenLendDbAdapter.KEY_PERSON, c.getString(
+                c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_PERSON)));
+
         Intent intent = new Intent(this, AddObject.class);
         intent.setAction(Intent.ACTION_EDIT);
         intent.putExtras(extras);
@@ -179,12 +182,13 @@ public class ListLentObjects extends ListActivity {
             String name = bundle.getString(OpenLendDbAdapter.KEY_DESCRIPTION);
             String type = bundle.getString(OpenLendDbAdapter.KEY_TYPE);
             long time = bundle.getLong(OpenLendDbAdapter.KEY_DATE);
+            String personName = bundle.getString(OpenLendDbAdapter.KEY_PERSON);
 
             if (requestCode == ACTION_ADD) {
-                mDbHelper.createLentObject(type, name, new Date(time));
+                mDbHelper.createLentObject(type, name, new Date(time), personName);
             } else if (requestCode == ACTION_EDIT) {
                 Long rowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);
-                mDbHelper.updateLentObject(rowId, type, name, new Date(time));
+                mDbHelper.updateLentObject(rowId, type, name, new Date(time), personName);
             }
             fillData();
         }

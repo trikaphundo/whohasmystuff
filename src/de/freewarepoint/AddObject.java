@@ -5,7 +5,9 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.*;
 
@@ -20,6 +22,7 @@ public class AddObject extends Activity {
     private Button mPickDate;
     private Spinner mTypeSpinner;
     private EditText mDescriptionText;
+    private EditText mPersonName;
 
     private int mYear;
     private int mMonth;
@@ -28,6 +31,7 @@ public class AddObject extends Activity {
     static final String ACTION_TYPE = "action_type";
     static final int ACTION_ADD = 0;
     static final int ACTION_EDIT = 1;
+    static final int ACTION_SELECT_PERSON = 2;
 
     private static final int DATE_DIALOG_ID = 0;
 
@@ -51,6 +55,7 @@ public class AddObject extends Activity {
 
         mTypeSpinner = (Spinner) findViewById(R.id.type_spinner);
         mDescriptionText = (EditText) findViewById(R.id.add_description);
+        mPersonName = (EditText) findViewById(R.id.personName);
         Button addButton = (Button) findViewById(R.id.add_button);
         Button cancelButton = (Button) findViewById(R.id.cancel_button);
 
@@ -98,12 +103,23 @@ public class AddObject extends Activity {
 
             mTypeSpinner.setSelection(currentlySelected);
             mDescriptionText.setText(bundle.getString(OpenLendDbAdapter.KEY_DESCRIPTION));
+            mPersonName.setText(bundle.getString(OpenLendDbAdapter.KEY_PERSON));
             date = new Date(bundle.getLong(OpenLendDbAdapter.KEY_DATE));
         } else {
             date = new Date();
         }
 
         initializeDatePicker(date);
+
+        ImageButton selectPerson = (ImageButton) findViewById(R.id.choosePerson);
+
+        selectPerson.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                startActivityForResult(intent, ACTION_SELECT_PERSON);
+            }
+        });
+
 
         addButton.setOnClickListener(new View.OnClickListener() {
 
@@ -122,6 +138,8 @@ public class AddObject extends Activity {
                 Calendar c = Calendar.getInstance();
                 c.set(mYear, mMonth, mDay);
                 bundle.putLong(OpenLendDbAdapter.KEY_DATE, c.getTime().getTime());
+
+                bundle.putString(OpenLendDbAdapter.KEY_PERSON, mPersonName.getText().toString());
 
                 Intent mIntent = new Intent();
                 mIntent.putExtras(bundle);
@@ -183,6 +201,24 @@ public class AddObject extends Activity {
         }
         return null;
     }
+
+    @Override
+	public void onActivityResult(int reqCode, int resultCode, Intent data) {
+		super.onActivityResult(reqCode, resultCode, data);
+
+		switch (reqCode) {
+			case (ACTION_SELECT_PERSON):
+				if (resultCode == Activity.RESULT_OK) {
+					Uri contactData = data.getData();
+					Cursor c = managedQuery(contactData, null, null, null, null);
+					if (c.moveToFirst()) {
+						String name = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
+						mPersonName.setText(name);
+					}
+				}
+				break;
+		}
+	}
 
 
 

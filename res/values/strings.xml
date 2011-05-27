@@ -17,4 +17,5 @@
     <string name="submenu_edit">Edit</string>
     <string name="submenu_delete">Delete</string>
     <string name="type">Type</string>
+    <string name="person">Person</string>
 </resources>

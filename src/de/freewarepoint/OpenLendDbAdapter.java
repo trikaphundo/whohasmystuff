@@ -33,6 +33,7 @@ public class OpenLendDbAdapter {
     public static final String KEY_TYPE = "type";
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_DATE = "date";
+    public static final String KEY_PERSON = "person";
     public static final String KEY_BACK = "back";
     public static final String KEY_ROWID = "_id";
 
@@ -47,7 +48,7 @@ public class OpenLendDbAdapter {
     private static final String LENTOBJECTS_DATABASE_CREATE =
         "create table lentobjects (_id integer primary key autoincrement, "
         + "type text not null, description text not null, date date not null, "
-        + "back integer not null);";
+        + "person text not null, back integer not null);";
 
     private static final String LENTTYPES_DATABASE_CREATE =
             "create table lenttypes (_id integer primary key autoincrement, "
@@ -96,12 +97,13 @@ public class OpenLendDbAdapter {
     }
 
 
-    public long createLentObject(String type, String description, Date date) {
+    public long createLentObject(String type, String description, Date date, String personName) {
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_TYPE, type);
         initialValues.put(KEY_DESCRIPTION, description);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         initialValues.put(KEY_DATE, dateFormat.format(date));
+        initialValues.put(KEY_PERSON, personName);
         initialValues.put(KEY_BACK, false);
 
         return mDb.insert(LENTOBJECTS_DATABASE_TABLE, null, initialValues);
@@ -124,7 +126,7 @@ public class OpenLendDbAdapter {
 
     public Cursor fetchAllLentObjects() {
         return mDb.query(LENTOBJECTS_DATABASE_TABLE, new String[] {KEY_ROWID, KEY_TYPE,
-                KEY_DESCRIPTION, KEY_DATE, KEY_BACK}, null, null, null, null, null);
+                KEY_DESCRIPTION, KEY_DATE, KEY_PERSON, KEY_BACK}, null, null, null, null, null);
     }
 
     public Cursor fetchAllLentTypes() {
@@ -144,7 +146,7 @@ public class OpenLendDbAdapter {
         Cursor mCursor =
 
             mDb.query(true, LENTOBJECTS_DATABASE_TABLE, new String[] {KEY_ROWID,
-                    KEY_TYPE, KEY_DESCRIPTION, KEY_DATE, KEY_BACK}, KEY_ROWID + "=" + rowId, null,
+                    KEY_TYPE, KEY_DESCRIPTION, KEY_DATE, KEY_PERSON, KEY_BACK}, KEY_ROWID + "=" + rowId, null,
                     null, null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
@@ -153,12 +155,13 @@ public class OpenLendDbAdapter {
 
     }
 
-    public boolean updateLentObject(long rowId, String type, String description, Date date) {
+    public boolean updateLentObject(long rowId, String type, String description, Date date, String personName) {
         ContentValues args = new ContentValues();
         args.put(KEY_TYPE, type);
         args.put(KEY_DESCRIPTION, description);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         args.put(KEY_DATE, dateFormat.format(date));
+        args.put(KEY_PERSON, personName);
         //TODO
         args.put(KEY_BACK, false);
 
