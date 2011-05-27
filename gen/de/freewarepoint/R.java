@@ -14,18 +14,17 @@ public final class R {
         public static final int icon=0x7f020000;
     }
     public static final class id {
-        public static final int addButton=0x7f06000a;
-        public static final int add_button=0x7f060004;
-        public static final int add_date=0x7f060002;
+        public static final int addButton=0x7f060009;
+        public static final int add_button=0x7f060003;
         public static final int add_description=0x7f060001;
-        public static final int bottomtext=0x7f060007;
-        public static final int cancel_button=0x7f060005;
-        public static final int date=0x7f060008;
-        public static final int manageTypesButton=0x7f06000b;
-        public static final int pickDate=0x7f060003;
-        public static final int toptext=0x7f060006;
+        public static final int bottomtext=0x7f060006;
+        public static final int cancel_button=0x7f060004;
+        public static final int date=0x7f060007;
+        public static final int manageTypesButton=0x7f06000a;
+        public static final int pickDate=0x7f060002;
+        public static final int toptext=0x7f060005;
         public static final int type_spinner=0x7f060000;
-        public static final int typename=0x7f060009;
+        public static final int typename=0x7f060008;
     }
     public static final class layout {
         public static final int add_object=0x7f030000;

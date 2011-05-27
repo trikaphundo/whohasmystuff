@@ -8,7 +8,7 @@
     <string name="manageTypesButton">Manage object types</string>
     <string name="manageTypesTitle">Manage object types</string>
     <string name="add_button">Add</string>
-    <string name="edit_button">Edit</string>
+    <string name="edit_button">Save changes</string>
     <string name="add_title">Add new lent object</string>
     <string name="add_type">Add new type</string>
     <string name="edit_title">Edit lent object</string>

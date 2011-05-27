@@ -17,10 +17,10 @@ public class AddObject extends Activity {
 
     private Long mRowId;
 
+    private Button mPickDate;
     private Spinner mTypeSpinner;
     private EditText mDescriptionText;
 
-    private TextView mDateDisplay;
     private int mYear;
     private int mMonth;
     private int mDay;
@@ -141,8 +141,7 @@ public class AddObject extends Activity {
 
     private void initializeDatePicker(Date date) {
         // capture our View elements
-        mDateDisplay = (TextView) findViewById(R.id.add_date);
-        Button mPickDate = (Button) findViewById(R.id.pickDate);
+        mPickDate = (Button) findViewById(R.id.pickDate);
 
         // add a click listener to the button
         mPickDate.setOnClickListener(new View.OnClickListener() {
@@ -163,12 +162,15 @@ public class AddObject extends Activity {
     }
 
     private void updateDisplay() {
+
+        mPickDate = (Button) findViewById(R.id.pickDate);
+
         Calendar c = Calendar.getInstance();
         c.set(mYear, mMonth, mDay);
 
-        final DateFormat df = android.text.format.DateFormat.getDateFormat(getApplicationContext());
+        final DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
 
-        mDateDisplay.setText(df.format(c.getTime()));
+        mPickDate.setText(df.format(c.getTime()));
     }
 
     @Override
