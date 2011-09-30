@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
 
     <View
             android:layout_width="match_parent"
@@ -53,11 +58,16 @@
                 android:layout_weight="4"
                 android:src="@android:drawable/ic_input_get"/>
     </LinearLayout>
+    </LinearLayout>
 
-    <LinearLayout android:orientation="horizontal"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:background="@android:color/darker_gray">
+    <LinearLayout
+		android:orientation="horizontal"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:gravity="bottom"
+        android:layout_alignParentBottom="true"
+        style="@android:style/ButtonBar">
+
 
         <Button android:id="@+id/add_button"
                 android:text="@string/add_button"
@@ -74,4 +84,4 @@
                 android:layout_marginTop="2px"/>
 
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>
