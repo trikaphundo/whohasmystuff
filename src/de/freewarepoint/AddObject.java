@@ -20,7 +20,6 @@ public class AddObject extends Activity {
     private Long mRowId;
 
     private Button mPickDate;
-    private Spinner mTypeSpinner;
     private EditText mDescriptionText;
     private EditText mPersonName;
 
@@ -53,7 +52,6 @@ public class AddObject extends Activity {
         setContentView(R.layout.add_object);
         setTitle(R.string.add_title);
 
-        mTypeSpinner = (Spinner) findViewById(R.id.type_spinner);
         mDescriptionText = (EditText) findViewById(R.id.add_description);
         mPersonName = (EditText) findViewById(R.id.personName);
         Button addButton = (Button) findViewById(R.id.add_button);
@@ -61,20 +59,6 @@ public class AddObject extends Activity {
 
         OpenLendDbAdapter mDbHelper = new OpenLendDbAdapter(this);
         mDbHelper.open();
-        Cursor mLentObjectCursor = mDbHelper.fetchAllLentTypes();
-        startManagingCursor(mLentObjectCursor);
-
-        String[] from = new String[]{
-                OpenLendDbAdapter.KEY_TYPE,
-        };
-
-        int[] to = new int[]{
-                R.id.typename,
-        };
-
-        SimpleCursorAdapter lentObjects = new SimpleCursorAdapter(this, R.layout.type_row, mLentObjectCursor, from, to);
-
-        mTypeSpinner.setAdapter(lentObjects);
 
         Bundle bundle = getIntent().getExtras();
 
@@ -86,22 +70,8 @@ public class AddObject extends Activity {
                 addButton.setText(R.string.edit_button);
             }
 
-            int currentlySelected = -1;
-
-            // Find selected type
-            // FIXME Does not work when type was deleted
-            for (int i = 0; i < lentObjects.getCount(); i++) {
-                Cursor c = (Cursor) lentObjects.getItem(i);
-                if (c.getString(c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_TYPE))
-                        .equals(bundle.getString(OpenLendDbAdapter.KEY_TYPE))) {
-                    currentlySelected = i;
-                    break;
-                }
-            }
-
             mRowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);
 
-            mTypeSpinner.setSelection(currentlySelected);
             mDescriptionText.setText(bundle.getString(OpenLendDbAdapter.KEY_DESCRIPTION));
             mPersonName.setText(bundle.getString(OpenLendDbAdapter.KEY_PERSON));
             date = new Date(bundle.getLong(OpenLendDbAdapter.KEY_DATE));
@@ -130,9 +100,6 @@ public class AddObject extends Activity {
                     bundle.putLong(OpenLendDbAdapter.KEY_ROWID, mRowId);
                 }
 
-                Cursor cursor = (Cursor) mTypeSpinner.getSelectedItem();
-                String type = cursor.getString(cursor.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_TYPE));
-                bundle.putString(OpenLendDbAdapter.KEY_TYPE, type);
                 bundle.putString(OpenLendDbAdapter.KEY_DESCRIPTION, mDescriptionText.getText().toString());
 
                 Calendar c = Calendar.getInstance();

@@ -12,6 +12,5 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddObject"/>
-        <activity android:name=".ManageLentTypes"/>
     </application>
 </manifest> 

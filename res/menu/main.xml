@@ -5,7 +5,4 @@
     <item android:id="@+id/addButton"
           android:title="@string/addButton"
           android:icon="@android:drawable/ic_menu_add"/>
-    <item android:id="@+id/manageTypesButton"
-          android:title="@string/manageTypesButton"
-          android:icon="@android:drawable/ic_menu_edit"/>
 </menu>

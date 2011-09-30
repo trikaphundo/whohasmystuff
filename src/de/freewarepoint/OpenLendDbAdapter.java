@@ -30,7 +30,6 @@ import java.util.Date;
 
 public class OpenLendDbAdapter {
 
-    public static final String KEY_TYPE = "type";
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_DATE = "date";
     public static final String KEY_PERSON = "person";
@@ -47,16 +46,11 @@ public class OpenLendDbAdapter {
      */
     private static final String LENTOBJECTS_DATABASE_CREATE =
         "create table lentobjects (_id integer primary key autoincrement, "
-        + "type text not null, description text not null, date date not null, "
+        + "description text not null, date date not null, "
         + "person text not null, back integer not null);";
-
-    private static final String LENTTYPES_DATABASE_CREATE =
-            "create table lenttypes (_id integer primary key autoincrement, "
-                    + "type text not null);";
 
     private static final String DATABASE_NAME = "data";
     private static final String LENTOBJECTS_DATABASE_TABLE = "lentobjects";
-    private static final String LENTTYPES_DATABASE_TABLE = "lenttypes";
     private static final int DATABASE_VERSION = 1;
 
     private final Context mCtx;
@@ -70,7 +64,6 @@ public class OpenLendDbAdapter {
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(LENTOBJECTS_DATABASE_CREATE);
-            db.execSQL(LENTTYPES_DATABASE_CREATE);
         }
 
         @Override
@@ -97,9 +90,8 @@ public class OpenLendDbAdapter {
     }
 
 
-    public long createLentObject(String type, String description, Date date, String personName) {
+    public long createLentObject(String description, Date date, String personName) {
         ContentValues initialValues = new ContentValues();
-        initialValues.put(KEY_TYPE, type);
         initialValues.put(KEY_DESCRIPTION, description);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         initialValues.put(KEY_DATE, dateFormat.format(date));
@@ -109,29 +101,13 @@ public class OpenLendDbAdapter {
         return mDb.insert(LENTOBJECTS_DATABASE_TABLE, null, initialValues);
     }
 
-    public long createLentType(String type) {
-        ContentValues initialValues = new ContentValues();
-        initialValues.put(KEY_TYPE, type);
-
-        return mDb.insert(LENTTYPES_DATABASE_TABLE, null, initialValues);
-    }
-
     public boolean deleteLentObject(long rowId) {
         return mDb.delete(LENTOBJECTS_DATABASE_TABLE, KEY_ROWID + "=" + rowId, null) > 0;
     }
 
-    public boolean deleteLentType(long rowId) {
-        return mDb.delete(LENTTYPES_DATABASE_TABLE, KEY_ROWID + "=" + rowId, null) > 0;
-    }
-
     public Cursor fetchAllLentObjects() {
-        return mDb.query(LENTOBJECTS_DATABASE_TABLE, new String[] {KEY_ROWID, KEY_TYPE,
+        return mDb.query(LENTOBJECTS_DATABASE_TABLE, new String[] {KEY_ROWID,
                 KEY_DESCRIPTION, KEY_DATE, KEY_PERSON, KEY_BACK}, null, null, null, null, null);
-    }
-
-    public Cursor fetchAllLentTypes() {
-        return mDb.query(LENTTYPES_DATABASE_TABLE, new String[] {KEY_ROWID, KEY_TYPE},
-                null, null, null, null, null);
     }
 
     /**
@@ -146,7 +122,7 @@ public class OpenLendDbAdapter {
         Cursor mCursor =
 
             mDb.query(true, LENTOBJECTS_DATABASE_TABLE, new String[] {KEY_ROWID,
-                    KEY_TYPE, KEY_DESCRIPTION, KEY_DATE, KEY_PERSON, KEY_BACK}, KEY_ROWID + "=" + rowId, null,
+                    KEY_DESCRIPTION, KEY_DATE, KEY_PERSON, KEY_BACK}, KEY_ROWID + "=" + rowId, null,
                     null, null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
@@ -155,9 +131,8 @@ public class OpenLendDbAdapter {
 
     }
 
-    public boolean updateLentObject(long rowId, String type, String description, Date date, String personName) {
+    public boolean updateLentObject(long rowId, String description, Date date, String personName) {
         ContentValues args = new ContentValues();
-        args.put(KEY_TYPE, type);
         args.put(KEY_DESCRIPTION, description);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         args.put(KEY_DATE, dateFormat.format(date));

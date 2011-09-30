@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Open Lender Manager</string>
+    <string name="app_name">Who Has My Stuff?</string>
     <string name="addButton">Add new object</string>
     <string name="addTypeButton">Add new type</string>
     <string name="date">Date</string>
@@ -10,12 +10,10 @@
     <string name="add_button">Add</string>
     <string name="edit_button">Save changes</string>
     <string name="add_title">Add new lent object</string>
-    <string name="add_type">Add new type</string>
     <string name="edit_title">Edit lent object</string>
     <string name="ok_button">OK</string>
     <string name="cancel_button">Cancel</string>
     <string name="submenu_edit">Edit</string>
     <string name="submenu_delete">Delete</string>
-    <string name="type">Type</string>
     <string name="person">Person</string>
 </resources>

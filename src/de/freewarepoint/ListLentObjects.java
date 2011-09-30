@@ -54,8 +54,6 @@ public class ListLentObjects extends ListActivity {
         Bundle extras = new Bundle();
         extras.putInt(AddObject.ACTION_TYPE, AddObject.ACTION_EDIT);
         extras.putLong(OpenLendDbAdapter.KEY_ROWID, id);
-        extras.putString(OpenLendDbAdapter.KEY_TYPE, c.getString(
-                c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_TYPE)));
         extras.putString(OpenLendDbAdapter.KEY_DESCRIPTION, c.getString(
                 c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_DESCRIPTION)));
         try {
@@ -80,8 +78,8 @@ public class ListLentObjects extends ListActivity {
         startManagingCursor(mLentObjectCursor);
 
         String[] from = new String[]{
-                OpenLendDbAdapter.KEY_TYPE,
-                OpenLendDbAdapter.KEY_DESCRIPTION,
+				OpenLendDbAdapter.KEY_DESCRIPTION,
+				OpenLendDbAdapter.KEY_PERSON,
                 OpenLendDbAdapter.KEY_DATE
         };
 
@@ -99,7 +97,7 @@ public class ListLentObjects extends ListActivity {
         lentObjects.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
 
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-                if (columnIndex == 3) {
+                if (columnIndex == 2) {
                     Date date;
                     try {
                         date = df.parse(cursor.getString(columnIndex));
@@ -167,11 +165,6 @@ public class ListLentObjects extends ListActivity {
                 i.putExtra(AddObject.ACTION_TYPE, AddObject.ACTION_ADD);
                 startActivityForResult(i, ACTION_ADD);
                 break;
-            case R.id.manageTypesButton:
-                i = new Intent(this, ManageLentTypes.class);
-                i.putExtra(AddObject.ACTION_TYPE, AddObject.ACTION_ADD);
-                startActivity(i);
-                break;
         }
         return true;
     }
@@ -180,15 +173,14 @@ public class ListLentObjects extends ListActivity {
         if (resultCode == RESULT_OK) {
             Bundle bundle = data.getExtras();
             String name = bundle.getString(OpenLendDbAdapter.KEY_DESCRIPTION);
-            String type = bundle.getString(OpenLendDbAdapter.KEY_TYPE);
             long time = bundle.getLong(OpenLendDbAdapter.KEY_DATE);
             String personName = bundle.getString(OpenLendDbAdapter.KEY_PERSON);
 
             if (requestCode == ACTION_ADD) {
-                mDbHelper.createLentObject(type, name, new Date(time), personName);
+                mDbHelper.createLentObject(name, new Date(time), personName);
             } else if (requestCode == ACTION_EDIT) {
                 Long rowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);
-                mDbHelper.updateLentObject(rowId, type, name, new Date(time), personName);
+                mDbHelper.updateLentObject(rowId, name, new Date(time), personName);
             }
             fillData();
         }
