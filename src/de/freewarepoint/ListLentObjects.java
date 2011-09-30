@@ -23,6 +23,8 @@ public class ListLentObjects extends ListActivity {
     private static final int ACTION_ADD = 1;
     private static final int ACTION_EDIT = 2;
 
+	public static final int RESULT_DELETE = 2;
+
     private OpenLendDbAdapter mDbHelper;
     private Cursor mLentObjectCursor;
 
@@ -184,5 +186,11 @@ public class ListLentObjects extends ListActivity {
             }
             fillData();
         }
+		else if (resultCode == RESULT_DELETE) {
+			Bundle bundle = data.getExtras();
+			Long rowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);
+			mDbHelper.deleteLentObject(rowId);
+			fillData();
+		}
     }
 }

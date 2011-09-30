@@ -56,6 +56,7 @@ public class AddObject extends Activity {
         mPersonName = (EditText) findViewById(R.id.personName);
         Button addButton = (Button) findViewById(R.id.add_button);
         Button cancelButton = (Button) findViewById(R.id.cancel_button);
+		Button deleteButton = (Button) findViewById(R.id.delete_button);
 
         OpenLendDbAdapter mDbHelper = new OpenLendDbAdapter(this);
         mDbHelper.open();
@@ -68,6 +69,7 @@ public class AddObject extends Activity {
             if (bundle.getInt(ACTION_TYPE) == ACTION_EDIT) {
                 setTitle(R.string.edit_title);
                 addButton.setText(R.string.edit_button);
+				cancelButton.setVisibility(View.GONE);
             }
 
             mRowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);
@@ -77,6 +79,7 @@ public class AddObject extends Activity {
             date = new Date(bundle.getLong(OpenLendDbAdapter.KEY_DATE));
         } else {
             date = new Date();
+			deleteButton.setVisibility(View.GONE);
         }
 
         initializeDatePicker(date);
@@ -116,9 +119,18 @@ public class AddObject extends Activity {
             }
         });
 
-        cancelButton.setOnClickListener(new View.OnClickListener() {
+		cancelButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				setResult(ListLentObjects.RESULT_CANCELED);
+				finish();
+			}
+		});
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                setResult(RESULT_CANCELED);
+				Intent mIntent = new Intent();
+				mIntent.putExtra(OpenLendDbAdapter.KEY_ROWID, mRowId);
+                setResult(ListLentObjects.RESULT_DELETE, mIntent);
                 finish();
             }
         });

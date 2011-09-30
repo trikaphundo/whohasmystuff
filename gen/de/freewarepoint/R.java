@@ -14,16 +14,17 @@ public final class R {
         public static final int icon=0x7f020000;
     }
     public static final class id {
-        public static final int addButton=0x7f060009;
+        public static final int addButton=0x7f06000a;
         public static final int add_button=0x7f060004;
         public static final int add_description=0x7f060000;
-        public static final int bottomtext=0x7f060007;
+        public static final int bottomtext=0x7f060008;
         public static final int cancel_button=0x7f060005;
         public static final int choosePerson=0x7f060003;
-        public static final int date=0x7f060008;
+        public static final int date=0x7f060009;
+        public static final int delete_button=0x7f060006;
         public static final int personName=0x7f060002;
         public static final int pickDate=0x7f060001;
-        public static final int toptext=0x7f060006;
+        public static final int toptext=0x7f060007;
     }
     public static final class layout {
         public static final int add_object=0x7f030000;
@@ -37,18 +38,19 @@ public final class R {
         public static final int addButton=0x7f040001;
         public static final int addTypeButton=0x7f040002;
         public static final int add_button=0x7f040007;
-        public static final int add_title=0x7f040009;
+        public static final int add_title=0x7f04000a;
         public static final int app_name=0x7f040000;
-        public static final int cancel_button=0x7f04000c;
+        public static final int cancel_button=0x7f04000d;
         public static final int date=0x7f040003;
+        public static final int delete_button=0x7f040009;
         public static final int description=0x7f040004;
         public static final int edit_button=0x7f040008;
-        public static final int edit_title=0x7f04000a;
+        public static final int edit_title=0x7f04000b;
         public static final int manageTypesButton=0x7f040005;
         public static final int manageTypesTitle=0x7f040006;
-        public static final int ok_button=0x7f04000b;
-        public static final int person=0x7f04000f;
-        public static final int submenu_delete=0x7f04000e;
-        public static final int submenu_edit=0x7f04000d;
+        public static final int ok_button=0x7f04000c;
+        public static final int person=0x7f040010;
+        public static final int submenu_delete=0x7f04000f;
+        public static final int submenu_edit=0x7f04000e;
     }
 }
