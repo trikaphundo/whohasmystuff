@@ -105,10 +105,15 @@ public class OpenLendDbAdapter {
         return mDb.delete(LENTOBJECTS_DATABASE_TABLE, KEY_ROWID + "=" + rowId, null) > 0;
     }
 
-    public Cursor fetchAllLentObjects() {
+    public Cursor fetchLentObjects() {
         return mDb.query(LENTOBJECTS_DATABASE_TABLE, new String[] {KEY_ROWID,
-                KEY_DESCRIPTION, KEY_DATE, KEY_PERSON, KEY_BACK}, null, null, null, null, null);
+                KEY_DESCRIPTION, KEY_DATE, KEY_PERSON, KEY_BACK}, KEY_BACK + "=0", null, null, null, null);
     }
+
+	public Cursor fetchReturnedObjects() {
+		return mDb.query(LENTOBJECTS_DATABASE_TABLE, new String[] {KEY_ROWID,
+				KEY_DESCRIPTION, KEY_DATE, KEY_PERSON, KEY_BACK}, KEY_BACK + "=1", null, null, null, null);
+	}
 
     /**
      * Return a Cursor positioned at the note that matches the given rowId
@@ -137,9 +142,16 @@ public class OpenLendDbAdapter {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         args.put(KEY_DATE, dateFormat.format(date));
         args.put(KEY_PERSON, personName);
-        //TODO
-        args.put(KEY_BACK, false);
-
-        return mDb.update(LENTOBJECTS_DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
+		return updateLentObject(rowId, args);
     }
+
+	public boolean markLentObjectAsReturned(long rowId) {
+		ContentValues values = new ContentValues();
+		values.put(KEY_BACK, true);
+		return updateLentObject(rowId, values);
+	}
+
+	private boolean updateLentObject(long rowId, ContentValues values) {
+		return mDb.update(LENTOBJECTS_DATABASE_TABLE, values, KEY_ROWID + "=" + rowId, null) > 0;
+	}
 }

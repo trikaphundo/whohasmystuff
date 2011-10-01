@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Who Has My Stuff?</string>
-    <string name="addButton">Add new object</string>
-    <string name="addTypeButton">Add new type</string>
+    <string name="addButton">Add New Object</string>
     <string name="date">Date</string>
     <string name="description">Description</string>
+    <string name="history_button">History</string>
+    <string name="history_title">History: Returned Objects</string>
     <string name="manageTypesButton">Manage object types</string>
     <string name="manageTypesTitle">Manage object types</string>
     <string name="add_button">Add</string>
     <string name="edit_button">Save changes</string>
     <string name="delete_button">Delete</string>
-    <string name="add_title">Add new lent object</string>
-    <string name="edit_title">Edit lent object</string>
+    <string name="add_title">Add New Lent Object</string>
+    <string name="edit_title">Edit Lent Object</string>
     <string name="ok_button">OK</string>
+    <string name="returned_button">Mark as Returned</string>
     <string name="cancel_button">Cancel</string>
     <string name="submenu_edit">Edit</string>
     <string name="submenu_delete">Delete</string>

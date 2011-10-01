@@ -29,8 +29,9 @@ public class AddObject extends Activity {
 
     static final String ACTION_TYPE = "action_type";
     static final int ACTION_ADD = 0;
-    static final int ACTION_EDIT = 1;
-    static final int ACTION_SELECT_PERSON = 2;
+    static final int ACTION_EDIT_LENT = 1;
+	static final int ACTION_EDIT_RETURNED = 2;
+    static final int ACTION_SELECT_PERSON = 3;
 
     private static final int DATE_DIALOG_ID = 0;
 
@@ -57,6 +58,7 @@ public class AddObject extends Activity {
         Button addButton = (Button) findViewById(R.id.add_button);
         Button cancelButton = (Button) findViewById(R.id.cancel_button);
 		Button deleteButton = (Button) findViewById(R.id.delete_button);
+		Button returnedButton = (Button) findViewById(R.id.returned_button);
 
         OpenLendDbAdapter mDbHelper = new OpenLendDbAdapter(this);
         mDbHelper.open();
@@ -65,12 +67,24 @@ public class AddObject extends Activity {
 
         Date date;
 
+		if (bundle.getInt(ACTION_TYPE) == ACTION_ADD) {
+			returnedButton.setVisibility(View.GONE);
+		}
+
         if (bundle.containsKey(OpenLendDbAdapter.KEY_ROWID)) {
-            if (bundle.getInt(ACTION_TYPE) == ACTION_EDIT) {
+			int actionType = bundle.getInt(ACTION_TYPE);
+            if (actionType == ACTION_EDIT_LENT || actionType == ACTION_EDIT_RETURNED) {
                 setTitle(R.string.edit_title);
                 addButton.setText(R.string.edit_button);
 				cancelButton.setVisibility(View.GONE);
             }
+
+			if (actionType == ACTION_EDIT_LENT) {
+				deleteButton.setVisibility(View.GONE);
+			}
+			else if (actionType == ACTION_EDIT_RETURNED) {
+				returnedButton.setVisibility(View.GONE);
+			}
 
             mRowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);
 
@@ -134,6 +148,15 @@ public class AddObject extends Activity {
                 finish();
             }
         });
+
+		returnedButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				Intent mIntent = new Intent();
+				mIntent.putExtra(OpenLendDbAdapter.KEY_ROWID, mRowId);
+				setResult(ListLentObjects.RESULT_RETURNED, mIntent);
+				finish();
+			}
+		});
     }
 
     private void initializeDatePicker(Date date) {
