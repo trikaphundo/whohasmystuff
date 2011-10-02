@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Who Has My Stuff?</string>
+    <string name="addButton">Neue Sache hinzufügen</string>
+    <string name="date">Datum</string>
+    <string name="description">Beschreibung</string>
+    <string name="history_button">Chronik</string>
+    <string name="history_title">Chronik: Zurückerhaltene Sachen</string>
+    <string name="add_button">Hinzufügen</string>
+    <string name="edit_button">Änderungen speichern</string>
+    <string name="delete_button">Löschen</string>
+    <string name="add_title">Verliehene Sache hinzufügen</string>
+    <string name="edit_title">Verliehene Sache bearbeiten</string>
+    <string name="ok_button">OK</string>
+    <string name="returned_button">Als zurückerhalten markieren</string>
+    <string name="cancel_button">Abbrechen</string>
+    <string name="submenu_edit">Bearbeiten</string>
+    <string name="submenu_delete">Löschen</string>
+    <string name="person">Person</string>
+</resources>

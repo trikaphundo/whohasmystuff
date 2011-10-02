@@ -6,8 +6,6 @@
     <string name="description">Description</string>
     <string name="history_button">History</string>
     <string name="history_title">History: Returned Objects</string>
-    <string name="manageTypesButton">Manage object types</string>
-    <string name="manageTypesTitle">Manage object types</string>
     <string name="add_button">Add</string>
     <string name="edit_button">Save changes</string>
     <string name="delete_button">Delete</string>
