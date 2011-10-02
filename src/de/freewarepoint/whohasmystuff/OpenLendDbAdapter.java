@@ -33,6 +33,7 @@ public class OpenLendDbAdapter {
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_DATE = "date";
     public static final String KEY_PERSON = "person";
+	public static final String KEY_PERSON_KEY = "person_key";
     public static final String KEY_BACK = "back";
     public static final String KEY_ROWID = "_id";
 
@@ -45,9 +46,10 @@ public class OpenLendDbAdapter {
      * Database creation sql statement
      */
     private static final String LENTOBJECTS_DATABASE_CREATE =
-        "create table lentobjects (_id integer primary key autoincrement, "
-        + "description text not null, date date not null, "
-        + "person text not null, back integer not null);";
+        "create table lentobjects (" + KEY_ROWID + " integer primary key autoincrement, "
+        + KEY_DESCRIPTION + " text not null, " + KEY_DATE + " date not null, "
+        + KEY_PERSON + " text not null, " + KEY_PERSON_KEY + " text, "
+		+ KEY_BACK + " integer not null);";
 
     private static final String DATABASE_NAME = "data";
     private static final String LENTOBJECTS_DATABASE_TABLE = "lentobjects";
@@ -89,14 +91,16 @@ public class OpenLendDbAdapter {
         mDbHelper.close();
     }
 
-
-    public long createLentObject(String description, Date date, String personName) {
+    public long createLentObject(String description, Date date, String personName, String personKey) {
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_DESCRIPTION, description);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         initialValues.put(KEY_DATE, dateFormat.format(date));
         initialValues.put(KEY_PERSON, personName);
+		initialValues.put(KEY_PERSON_KEY, personKey);
         initialValues.put(KEY_BACK, false);
+
+		Log.e("Tag", "Adding with " + personKey);
 
         return mDb.insert(LENTOBJECTS_DATABASE_TABLE, null, initialValues);
     }
@@ -107,41 +111,24 @@ public class OpenLendDbAdapter {
 
     public Cursor fetchLentObjects() {
         return mDb.query(LENTOBJECTS_DATABASE_TABLE, new String[] {KEY_ROWID,
-                KEY_DESCRIPTION, KEY_DATE, KEY_PERSON, KEY_BACK}, KEY_BACK + "=0", null, null, null, null);
+                KEY_DESCRIPTION, KEY_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK}, KEY_BACK + "=0", null, null, null, null);
     }
 
 	public Cursor fetchReturnedObjects() {
 		return mDb.query(LENTOBJECTS_DATABASE_TABLE, new String[] {KEY_ROWID,
-				KEY_DESCRIPTION, KEY_DATE, KEY_PERSON, KEY_BACK}, KEY_BACK + "=1", null, null, null, null);
+				KEY_DESCRIPTION, KEY_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK}, KEY_BACK + "=1", null, null, null, null);
 	}
 
-    /**
-     * Return a Cursor positioned at the note that matches the given rowId
-     *
-     * @param rowId id of note to retrieve
-     * @return Cursor positioned to matching note, if found
-     * @throws android.database.SQLException if note could not be found/retrieved
-     */
-    public Cursor fetchLentObject(long rowId) throws SQLException {
-
-        Cursor mCursor =
-
-            mDb.query(true, LENTOBJECTS_DATABASE_TABLE, new String[] {KEY_ROWID,
-                    KEY_DESCRIPTION, KEY_DATE, KEY_PERSON, KEY_BACK}, KEY_ROWID + "=" + rowId, null,
-                    null, null, null, null);
-        if (mCursor != null) {
-            mCursor.moveToFirst();
-        }
-        return mCursor;
-
-    }
-
-    public boolean updateLentObject(long rowId, String description, Date date, String personName) {
+    public boolean updateLentObject(long rowId, String description, Date date, String personName, String personKey) {
         ContentValues args = new ContentValues();
         args.put(KEY_DESCRIPTION, description);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         args.put(KEY_DATE, dateFormat.format(date));
         args.put(KEY_PERSON, personName);
+		args.put(KEY_PERSON_KEY, personKey);
+
+		Log.e("Tag", "Adding with " + personKey);
+
 		return updateLentObject(rowId, args);
     }
 

@@ -23,6 +23,10 @@ public class AddObject extends Activity {
     private EditText mDescriptionText;
     private EditText mPersonName;
 
+	private String originalName;
+	private String originalPersonKey;
+	private String selectedPersonKey;
+
     private int mYear;
     private int mMonth;
     private int mDay;
@@ -34,6 +38,8 @@ public class AddObject extends Activity {
     static final int ACTION_SELECT_PERSON = 3;
 
     private static final int DATE_DIALOG_ID = 0;
+
+	private OpenLendDbAdapter mDbHelper;
 
     private DatePickerDialog.OnDateSetListener mDateSetListener =
             new DatePickerDialog.OnDateSetListener() {
@@ -60,7 +66,7 @@ public class AddObject extends Activity {
 		Button deleteButton = (Button) findViewById(R.id.delete_button);
 		Button returnedButton = (Button) findViewById(R.id.returned_button);
 
-        OpenLendDbAdapter mDbHelper = new OpenLendDbAdapter(this);
+        mDbHelper = new OpenLendDbAdapter(this);
         mDbHelper.open();
 
         Bundle bundle = getIntent().getExtras();
@@ -90,6 +96,8 @@ public class AddObject extends Activity {
 
             mDescriptionText.setText(bundle.getString(OpenLendDbAdapter.KEY_DESCRIPTION));
             mPersonName.setText(bundle.getString(OpenLendDbAdapter.KEY_PERSON));
+			originalName = bundle.getString(OpenLendDbAdapter.KEY_PERSON);
+			originalPersonKey = bundle.getString(OpenLendDbAdapter.KEY_PERSON_KEY);
             date = new Date(bundle.getLong(OpenLendDbAdapter.KEY_DATE));
         } else {
             date = new Date();
@@ -125,6 +133,13 @@ public class AddObject extends Activity {
 
                 bundle.putString(OpenLendDbAdapter.KEY_PERSON, mPersonName.getText().toString());
 
+				if (mPersonName.getText().toString().equals(originalName) && selectedPersonKey == null) {
+					bundle.putString(OpenLendDbAdapter.KEY_PERSON_KEY, originalPersonKey);
+				}
+				else {
+					bundle.putString(OpenLendDbAdapter.KEY_PERSON_KEY, selectedPersonKey);
+				}
+
                 Intent mIntent = new Intent();
                 mIntent.putExtras(bundle);
                 setResult(RESULT_OK, mIntent);
@@ -158,6 +173,12 @@ public class AddObject extends Activity {
 			}
 		});
     }
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		mDbHelper.close();
+	}
 
     private void initializeDatePicker(Date date) {
         // capture our View elements
@@ -216,6 +237,7 @@ public class AddObject extends Activity {
 					if (c.moveToFirst()) {
 						String name = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
 						mPersonName.setText(name);
+						selectedPersonKey = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts.LOOKUP_KEY));
 					}
 				}
 				break;

@@ -55,6 +55,12 @@ public abstract class AbstractListIntent extends ListActivity {
         registerForContextMenu(listView);
     }
 
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		mDbHelper.close();
+	}
+
 	protected abstract int getIntentTitle();
 
     private void launchEditActivity(int position, long id) {
@@ -75,36 +81,22 @@ public abstract class AbstractListIntent extends ListActivity {
 
         extras.putString(OpenLendDbAdapter.KEY_PERSON, c.getString(
                 c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_PERSON)));
+		extras.putString(OpenLendDbAdapter.KEY_PERSON_KEY, c.getString(
+				c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_PERSON_KEY)));
 
         Intent intent = new Intent(this, AddObject.class);
         intent.setAction(Intent.ACTION_EDIT);
         intent.putExtras(extras);
-		Log.e("Tag", "Starting activity for " + getEditAction());
         startActivityForResult(intent, ACTION_EDIT);
     }
 
 	protected abstract int getEditAction();
 
     private void fillData() {
-        mLentObjectCursor = getDisplayedObjects();
-        startManagingCursor(mLentObjectCursor);
-
-        String[] from = new String[]{
-				OpenLendDbAdapter.KEY_DESCRIPTION,
-				OpenLendDbAdapter.KEY_PERSON,
-                OpenLendDbAdapter.KEY_DATE
-        };
-
-        int[] to = new int[]{
-                R.id.toptext,
-                R.id.bottomtext,
-                R.id.date
-        };
-
-        SimpleCursorAdapter lentObjects = new SimpleCursorAdapter(this, R.layout.row, mLentObjectCursor, from, to);
-
         final DateFormat adf = android.text.format.DateFormat.getDateFormat(getApplicationContext());
         final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		SimpleCursorAdapter lentObjects = getLentObjects();
 
         lentObjects.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
 
@@ -131,6 +123,25 @@ public abstract class AbstractListIntent extends ListActivity {
         setListAdapter(lentObjects);
     }
 
+	private SimpleCursorAdapter getLentObjects() {
+		mLentObjectCursor = getDisplayedObjects();
+		startManagingCursor(mLentObjectCursor);
+
+		String[] from = new String[]{
+				OpenLendDbAdapter.KEY_DESCRIPTION,
+				OpenLendDbAdapter.KEY_PERSON,
+				OpenLendDbAdapter.KEY_DATE
+		};
+
+		int[] to = new int[]{
+				R.id.toptext,
+				R.id.bottomtext,
+				R.id.date
+		};
+
+		return new SimpleCursorAdapter(this, R.layout.row, mLentObjectCursor, from, to);
+	}
+
 	protected abstract Cursor getDisplayedObjects();
 
     @Override
@@ -147,7 +158,7 @@ public abstract class AbstractListIntent extends ListActivity {
         try {
             info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         } catch (ClassCastException e) {
-            Log.e("Bla", "bad menuInfo", e);
+            Log.e("WhoHasMyStuff", "bad menuInfo", e);
             return false;
         }
         int id = (int) getListAdapter().getItemId(info.position);
@@ -181,19 +192,18 @@ public abstract class AbstractListIntent extends ListActivity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
-		Log.e("Tag", "RequestCode: " + requestCode);
-		Log.e("Tag", "ResultCode: " + resultCode);
         if (resultCode == RESULT_OK) {
             Bundle bundle = data.getExtras();
             String name = bundle.getString(OpenLendDbAdapter.KEY_DESCRIPTION);
             long time = bundle.getLong(OpenLendDbAdapter.KEY_DATE);
             String personName = bundle.getString(OpenLendDbAdapter.KEY_PERSON);
+			String personKey = bundle.getString(OpenLendDbAdapter.KEY_PERSON_KEY);
 
             if (requestCode == ACTION_ADD) {
-                mDbHelper.createLentObject(name, new Date(time), personName);
+                mDbHelper.createLentObject(name, new Date(time), personName, personKey);
             } else if (requestCode == ACTION_EDIT) {
                 Long rowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);
-                mDbHelper.updateLentObject(rowId, name, new Date(time), personName);
+                mDbHelper.updateLentObject(rowId, name, new Date(time), personName, personKey);
             }
             fillData();
         }
