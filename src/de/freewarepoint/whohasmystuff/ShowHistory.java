@@ -1,4 +1,4 @@
-package de.freewarepoint;
+package de.freewarepoint.whohasmystuff;
 
 import android.app.ListActivity;
 import android.content.Intent;

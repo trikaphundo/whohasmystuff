@@ -1,4 +1,4 @@
-package de.freewarepoint;
+package de.freewarepoint.whohasmystuff;
 
 import android.database.Cursor;
 import android.view.Menu;

@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package de.freewarepoint;
+package de.freewarepoint.whohasmystuff;
 
 public final class R {
     public static final class attr {

@@ -14,7 +14,7 @@
  * the License.
  */
 
-package de.freewarepoint;
+package de.freewarepoint.whohasmystuff;
 
 import android.content.ContentValues;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package de.freewarepoint;
+package de.freewarepoint.whohasmystuff;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -135,7 +135,7 @@ public class AddObject extends Activity {
 
 		cancelButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
-				setResult(ListLentObjects.RESULT_CANCELED);
+				setResult(RESULT_CANCELED);
 				finish();
 			}
 		});
