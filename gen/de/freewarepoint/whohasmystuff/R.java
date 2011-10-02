@@ -22,7 +22,9 @@ public final class R {
         public static final int choosePerson=0x7f060003;
         public static final int date=0x7f06000a;
         public static final int delete_button=0x7f060007;
+        public static final int exportButton=0x7f06000d;
         public static final int historyButton=0x7f06000c;
+        public static final int importButton=0x7f06000e;
         public static final int personName=0x7f060002;
         public static final int pickDate=0x7f060001;
         public static final int returned_button=0x7f060006;
@@ -39,21 +41,25 @@ public final class R {
     }
     public static final class string {
         public static final int addButton=0x7f040001;
-        public static final int add_button=0x7f040006;
-        public static final int add_title=0x7f040009;
+        public static final int add_button=0x7f040008;
+        public static final int add_title=0x7f04000b;
         public static final int app_name=0x7f040000;
-        public static final int cancel_button=0x7f04000d;
-        public static final int date=0x7f040002;
-        public static final int delete_button=0x7f040008;
-        public static final int description=0x7f040003;
-        public static final int edit_button=0x7f040007;
-        public static final int edit_title=0x7f04000a;
-        public static final int history_button=0x7f040004;
-        public static final int history_title=0x7f040005;
-        public static final int ok_button=0x7f04000b;
-        public static final int person=0x7f040010;
-        public static final int returned_button=0x7f04000c;
-        public static final int submenu_delete=0x7f04000f;
-        public static final int submenu_edit=0x7f04000e;
+        public static final int cancel_button=0x7f04000f;
+        public static final int date=0x7f040004;
+        public static final int delete_button=0x7f04000a;
+        public static final int description=0x7f040005;
+        public static final int edit_button=0x7f040009;
+        public static final int edit_title=0x7f04000c;
+        public static final int export_button=0x7f040002;
+        public static final int history_button=0x7f040006;
+        public static final int history_title=0x7f040007;
+        public static final int import_button=0x7f040003;
+        public static final int ok_button=0x7f04000d;
+        public static final int person=0x7f040012;
+        public static final int returned_button=0x7f04000e;
+        public static final int sd_card_error_not_writeable=0x7f040014;
+        public static final int sd_card_error_title=0x7f040013;
+        public static final int submenu_delete=0x7f040011;
+        public static final int submenu_edit=0x7f040010;
     }
 }

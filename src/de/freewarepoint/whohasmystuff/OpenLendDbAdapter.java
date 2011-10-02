@@ -109,6 +109,11 @@ public class OpenLendDbAdapter {
         return mDb.delete(LENTOBJECTS_DATABASE_TABLE, KEY_ROWID + "=" + rowId, null) > 0;
     }
 
+	public Cursor fetchAllObjects() {
+		return mDb.query(LENTOBJECTS_DATABASE_TABLE, new String[] {KEY_ROWID,
+				KEY_DESCRIPTION, KEY_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK}, null, null, null, null, null);
+	}
+
     public Cursor fetchLentObjects() {
         return mDb.query(LENTOBJECTS_DATABASE_TABLE, new String[] {KEY_ROWID,
                 KEY_DESCRIPTION, KEY_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK}, KEY_BACK + "=0", null, null, null, null);

@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">Who Has My Stuff?</string>
     <string name="addButton">Neue Sache hinzufügen</string>
+    <string name="export_button">Daten sichern</string>
+    <string name="import_button">Sicherung wiederherstellen</string>
     <string name="date">Datum</string>
     <string name="description">Beschreibung</string>
     <string name="history_button">Chronik</string>
@@ -17,4 +19,6 @@
     <string name="submenu_edit">Bearbeiten</string>
     <string name="submenu_delete">Löschen</string>
     <string name="person">Person</string>
+    <string name="sd_card_error_title">Zugriff auf Speicherkarte nicht möglich</string>
+    <string name="sd_card_error_not_writeable">Speicherkarte ist nicht beschreibbar!</string>
 </resources>

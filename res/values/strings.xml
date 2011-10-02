@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">Who Has My Stuff?</string>
     <string name="addButton">Add New Object</string>
+    <string name="export_button">Backup Data</string>
+    <string name="import_button">Restore Backup</string>
     <string name="date">Date</string>
     <string name="description">Description</string>
     <string name="history_button">History</string>
@@ -17,4 +19,6 @@
     <string name="submenu_edit">Edit</string>
     <string name="submenu_delete">Delete</string>
     <string name="person">Person</string>
+    <string name="sd_card_error_title">Unable to Access SD Card</string>
+    <string name="sd_card_error_not_writeable">SD Card is Not Writable!</string>
 </resources>

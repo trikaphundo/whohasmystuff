@@ -1,9 +1,11 @@
 package de.freewarepoint.whohasmystuff;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.*;
 import android.widget.AdapterView;
@@ -187,9 +189,30 @@ public abstract class AbstractListIntent extends ListActivity {
 				i = new Intent(this, ShowHistory.class);
 				startActivity(i);
 				break;
+			case R.id.exportButton:
+				Log.e("Who", "Exporting");
+				if (isExternalStorageWritable()) {
+					DatabaseHelper.exportDatabaseToXML(mDbHelper);
+				}
+				break;
         }
         return true;
     }
+
+	private boolean isExternalStorageWritable() {
+		String state = Environment.getExternalStorageState();
+
+		if (!Environment.MEDIA_MOUNTED.equals(state)) {
+			AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+			alertDialog.setTitle(getString(R.string.sd_card_error_title));
+			alertDialog.setMessage(getString(R.string.sd_card_error_not_writeable));
+			alertDialog.show();
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if (resultCode == RESULT_OK) {

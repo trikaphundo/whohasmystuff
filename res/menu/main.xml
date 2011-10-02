@@ -10,4 +10,11 @@
           android:title="@string/history_button"
           android:icon="@android:drawable/ic_menu_recent_history"/>
 
+    <item android:id="@+id/exportButton"
+          android:title="@string/export_button"
+          android:icon="@android:drawable/ic_menu_recent_history"/>
+
+    <item android:id="@+id/importButton"
+          android:title="@string/import_button"
+          android:icon="@android:drawable/ic_menu_recent_history"/>
 </menu>
