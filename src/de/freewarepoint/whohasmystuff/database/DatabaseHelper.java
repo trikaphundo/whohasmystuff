@@ -1,8 +1,11 @@
-package de.freewarepoint.whohasmystuff;
+package de.freewarepoint.whohasmystuff.database;
 
 import android.database.Cursor;
 import android.os.Environment;
 import android.util.Log;
+import de.freewarepoint.whohasmystuff.LentObject;
+import de.freewarepoint.whohasmystuff.database.OpenLendDbAdapter;
+import de.freewarepoint.whohasmystuff.database.XMLContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;

@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
+import de.freewarepoint.whohasmystuff.database.DatabaseHelper;
 
 public class ListLentObjects extends AbstractListIntent {
 

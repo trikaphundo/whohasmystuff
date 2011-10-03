@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.*;
+import de.freewarepoint.whohasmystuff.database.OpenLendDbAdapter;
 
 import java.text.DateFormat;
 import java.util.Calendar;

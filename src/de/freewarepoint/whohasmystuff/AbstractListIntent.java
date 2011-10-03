@@ -1,18 +1,16 @@
 package de.freewarepoint.whohasmystuff;
 
-import android.app.AlertDialog;
 import android.app.ListActivity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.*;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import de.freewarepoint.whohasmystuff.database.OpenLendDbAdapter;
 
 import java.text.DateFormat;
 import java.text.ParseException;

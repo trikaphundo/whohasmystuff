@@ -1,5 +1,6 @@
-package de.freewarepoint.whohasmystuff;
+package de.freewarepoint.whohasmystuff.database;
 
+import de.freewarepoint.whohasmystuff.LentObject;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
