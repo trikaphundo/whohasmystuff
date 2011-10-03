@@ -95,7 +95,7 @@ public abstract class AbstractListIntent extends ListActivity {
 
 	protected abstract int getEditAction();
 
-    private void fillData() {
+    protected void fillData() {
         final DateFormat adf = android.text.format.DateFormat.getDateFormat(getApplicationContext());
         final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -174,80 +174,6 @@ public abstract class AbstractListIntent extends ListActivity {
         }
 
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent i;
-        switch (item.getItemId()) {
-            // We have only one menu option
-            case R.id.addButton:
-                i = new Intent(this, AddObject.class);
-                i.putExtra(AddObject.ACTION_TYPE, AddObject.ACTION_ADD);
-                startActivityForResult(i, ACTION_ADD);
-                break;
-			case R.id.historyButton:
-				i = new Intent(this, ShowHistory.class);
-				startActivity(i);
-				break;
-			case R.id.exportButton:
-				if (isExternalStorageWritable()) {
-					DatabaseHelper.exportDatabaseToXML(mDbHelper);
-				}
-				break;
-            case R.id.importButton:
-                if (isExternalStorageReadable()) {
-                    askForImportConfirmation();
-                }
-                break;
-        }
-        return true;
-    }
-
-    private boolean isExternalStorageReadable() {
-        String state = Environment.getExternalStorageState();
-
-        if (!Environment.MEDIA_MOUNTED.equals(state) && !Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-            alertDialog.setTitle(getString(R.string.sd_card_error_title));
-            alertDialog.setMessage(getString(R.string.sd_card_error_not_readable));
-            alertDialog.show();
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-
-	private boolean isExternalStorageWritable() {
-		String state = Environment.getExternalStorageState();
-
-		if (!Environment.MEDIA_MOUNTED.equals(state)) {
-			AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-			alertDialog.setTitle(getString(R.string.sd_card_error_title));
-			alertDialog.setMessage(getString(R.string.sd_card_error_not_writeable));
-			alertDialog.show();
-			return false;
-		}
-		else {
-			return true;
-		}
-	}
-
-    private void askForImportConfirmation() {
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setIcon(android.R.drawable.ic_dialog_alert);
-        dialog.setTitle(getString(R.string.database_import_title));
-        dialog.setMessage(getString(R.string.database_import_message));
-        dialog.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                DatabaseHelper.importDatabaseFromXML(mDbHelper);
-                fillData();
-            }
-        }
-        );
-        dialog.setNegativeButton(android.R.string.no, null);
-        dialog.show();
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data){

@@ -22,6 +22,10 @@
     <string name="sd_card_error_title">Unable to Access SD Card</string>
     <string name="sd_card_error_not_readable">SD Card is not readable!</string>
     <string name="sd_card_error_not_writeable">SD Card is not writable!</string>
+    <string name="database_export_title">Database Backup</string>
     <string name="database_import_title">Database Restore</string>
     <string name="database_import_message">Restoring the database will overwrite changes since the last backup. Are you sure?</string>
+    <string name="database_export_success">Database saved to WhoHasMyStuff.xml</string>
+    <string name="database_export_error">An error occured while writing the backup file!</string>
+    <string name="database_import_error">An error occured while reading the backup file!</string>
 </resources>

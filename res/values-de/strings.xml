@@ -22,6 +22,10 @@
     <string name="sd_card_error_title">Zugriff auf Speicherkarte nicht möglich</string>
     <string name="sd_card_error_not_readable">Speicherkarte ist nicht lesbar!</string>
     <string name="sd_card_error_not_writeable">Speicherkarte ist nicht beschreibbar!</string>
+    <string name="database_export_title">Sicherung der Datenbank</string>
     <string name="database_import_title">Wiederherstellen der Datenbank</string>
+    <string name="database_export_success">Datenbank in WhoHasMyStuff.xml gesichert</string>
     <string name="database_import_message">Das Wiederherstellen wird alle Änderungen seit der letzten Sicherung überschreiben. Sind Sie sicher?</string>
+    <string name="database_export_error">Ein Fehler ist während der Sicherung aufgetreten!</string>
+    <string name="database_import_error">Ein Fehler ist während der Wiederherstellung aufgetreten!</string>
 </resources>

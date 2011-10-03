@@ -104,6 +104,7 @@ public class DatabaseHelper {
             XMLReader myReader = XMLReaderFactory.createXMLReader();
             myReader.setContentHandler(contentHandler);
             myReader.parse(source);
+            in.close();
         } catch (FileNotFoundException e) {
             Log.e(LOG_TAG, e.getMessage());
             return false;

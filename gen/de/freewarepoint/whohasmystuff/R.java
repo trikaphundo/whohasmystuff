@@ -45,8 +45,12 @@ public final class R {
         public static final int add_title=0x7f04000b;
         public static final int app_name=0x7f040000;
         public static final int cancel_button=0x7f04000f;
-        public static final int database_import_message=0x7f040017;
-        public static final int database_import_title=0x7f040016;
+        public static final int database_export_error=0x7f04001a;
+        public static final int database_export_success=0x7f040019;
+        public static final int database_export_title=0x7f040016;
+        public static final int database_import_error=0x7f04001b;
+        public static final int database_import_message=0x7f040018;
+        public static final int database_import_title=0x7f040017;
         public static final int date=0x7f040004;
         public static final int delete_button=0x7f04000a;
         public static final int description=0x7f040005;
