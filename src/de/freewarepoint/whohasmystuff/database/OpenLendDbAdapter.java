@@ -28,6 +28,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static de.freewarepoint.whohasmystuff.AbstractListIntent.LOG_TAG;
+
 public class OpenLendDbAdapter {
 
     public static final String KEY_DESCRIPTION = "description";
@@ -36,8 +38,6 @@ public class OpenLendDbAdapter {
 	public static final String KEY_PERSON_KEY = "person_key";
     public static final String KEY_BACK = "back";
     public static final String KEY_ROWID = "_id";
-
-    private static final String TAG = "OpenLendDbAdapter";
 
     private DatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
@@ -70,7 +70,7 @@ public class OpenLendDbAdapter {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
+            Log.w(LOG_TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
             db.execSQL("DROP TABLE IF EXISTS lentobjects");
             onCreate(db);
@@ -134,8 +134,6 @@ public class OpenLendDbAdapter {
         args.put(KEY_DATE, dateFormat.format(date));
         args.put(KEY_PERSON, personName);
 		args.put(KEY_PERSON_KEY, personKey);
-
-		Log.e("Tag", "Adding with " + personKey);
 
 		return updateLentObject(rowId, args);
     }
