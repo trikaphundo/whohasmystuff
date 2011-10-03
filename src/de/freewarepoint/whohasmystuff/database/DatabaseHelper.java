@@ -55,7 +55,7 @@ public class DatabaseHelper {
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		sb.append("<DatabaseBackup version=\"" + OpenLendDbAdapter.DATABASE_VERSION + "\">\n");
 
 		if (c.getCount() > 0) {
