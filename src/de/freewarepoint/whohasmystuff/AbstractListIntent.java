@@ -31,6 +31,8 @@ public abstract class AbstractListIntent extends ListActivity {
 	public static final int RESULT_DELETE = 2;
 	public static final int RESULT_RETURNED = 3;
 
+    public static final String LOG_TAG = "WhoHasMyStuff";
+
     protected OpenLendDbAdapter mDbHelper;
     private Cursor mLentObjectCursor;
 
@@ -190,11 +192,16 @@ public abstract class AbstractListIntent extends ListActivity {
 				startActivity(i);
 				break;
 			case R.id.exportButton:
-				Log.e("Who", "Exporting");
 				if (isExternalStorageWritable()) {
 					DatabaseHelper.exportDatabaseToXML(mDbHelper);
 				}
 				break;
+            case R.id.importButton:
+                if (isExternalStorageWritable()) {
+                    DatabaseHelper.importDatabaseFromXML(mDbHelper);
+                    fillData();
+                }
+                break;
         }
         return true;
     }
@@ -223,7 +230,7 @@ public abstract class AbstractListIntent extends ListActivity {
 			String personKey = bundle.getString(OpenLendDbAdapter.KEY_PERSON_KEY);
 
             if (requestCode == ACTION_ADD) {
-                mDbHelper.createLentObject(name, new Date(time), personName, personKey);
+                mDbHelper.createLentObject(name, new Date(time), personName, personKey, false);
             } else if (requestCode == ACTION_EDIT) {
                 Long rowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);
                 mDbHelper.updateLentObject(rowId, name, new Date(time), personName, personKey);

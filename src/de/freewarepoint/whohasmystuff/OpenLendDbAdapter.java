@@ -53,7 +53,7 @@ public class OpenLendDbAdapter {
 
     private static final String DATABASE_NAME = "data";
     private static final String LENTOBJECTS_DATABASE_TABLE = "lentobjects";
-    private static final int DATABASE_VERSION = 1;
+    static final int DATABASE_VERSION = 1;
 
     private final Context mCtx;
 
@@ -91,16 +91,19 @@ public class OpenLendDbAdapter {
         mDbHelper.close();
     }
 
-    public long createLentObject(String description, Date date, String personName, String personKey) {
+    public void clearDatabase() {
+        mDb.execSQL("DROP TABLE IF EXISTS lentobjects");
+        mDbHelper.onCreate(mDb);
+    }
+
+    public long createLentObject(String description, Date date, String personName, String personKey, boolean returned) {
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_DESCRIPTION, description);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         initialValues.put(KEY_DATE, dateFormat.format(date));
         initialValues.put(KEY_PERSON, personName);
 		initialValues.put(KEY_PERSON_KEY, personKey);
-        initialValues.put(KEY_BACK, false);
-
-		Log.e("Tag", "Adding with " + personKey);
+        initialValues.put(KEY_BACK, returned);
 
         return mDb.insert(LENTOBJECTS_DATABASE_TABLE, null, initialValues);
     }

@@ -2,12 +2,19 @@ package de.freewarepoint.whohasmystuff;
 
 import android.database.Cursor;
 import android.os.Environment;
+import android.util.Log;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 import java.io.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static de.freewarepoint.whohasmystuff.AbstractListIntent.LOG_TAG;
 
 public class DatabaseHelper {
 
@@ -20,12 +27,20 @@ public class DatabaseHelper {
 		File backupFile = new File(backupPath);
 
 		try {
-			PrintStream out = new PrintStream(backupFile);
-			out.print(convertDatabaseToXml(database));
+			Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(backupFile), "UTF8"));
+			out.write(convertDatabaseToXml(database));
 			out.close();
 		} catch (FileNotFoundException e) {
+            Log.e(LOG_TAG, e.getMessage());
 			return false;
 		} catch (ParseException e) {
+            Log.e(LOG_TAG, e.getMessage());
+			return false;
+		} catch (UnsupportedEncodingException e) {
+            Log.e(LOG_TAG, e.getMessage());
+			return false;
+		} catch (IOException e) {
+            Log.e(LOG_TAG, e.getMessage());
 			return false;
 		}
 
@@ -37,7 +52,8 @@ public class DatabaseHelper {
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("<DatabaseBackup>\n");
+		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		sb.append("<DatabaseBackup version=\"" + OpenLendDbAdapter.DATABASE_VERSION + "\">\n");
 
 		if (c.getCount() > 0) {
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -60,7 +76,7 @@ public class DatabaseHelper {
 				sb.append(" personKey=\"").append(personKey).append("\"");
 
 				int back = c.getInt(c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_BACK));
-				sb.append(" back=\"").append(back).append("\"");
+				sb.append(" returned=\"").append(back).append("\"");
 
 				sb.append("/>\n");
 
@@ -72,6 +88,42 @@ public class DatabaseHelper {
 
 		return sb.toString();
 	}
+
+    public static boolean importDatabaseFromXML(OpenLendDbAdapter database) {
+        File storage = Environment.getExternalStorageDirectory();
+        String backupPath = storage.getAbsolutePath() + File.separator +  backUpFileName;
+        File backupFile = new File(backupPath);
+
+        XMLContentHandler contentHandler = new XMLContentHandler();
+
+        System.setProperty ("org.xml.sax.driver","org.xmlpull.v1.sax2.Driver");
+
+        try {
+            Reader in = new BufferedReader(new InputStreamReader(new FileInputStream(backupFile)));
+            InputSource source = new InputSource(in);
+            XMLReader myReader = XMLReaderFactory.createXMLReader();
+            myReader.setContentHandler(contentHandler);
+            myReader.parse(source);
+        } catch (FileNotFoundException e) {
+            Log.e(LOG_TAG, e.getMessage());
+            return false;
+        } catch (SAXException e) {
+            Log.e(LOG_TAG, e.getMessage());
+            return false;
+        } catch (IOException e) {
+            Log.e(LOG_TAG, e.getMessage());
+            return false;
+        }
+
+        database.clearDatabase();
+
+        for (LentObject lentObject : contentHandler.lentObjects) {
+            database.createLentObject(lentObject.description, lentObject.date, lentObject.personName,
+                    lentObject.personKey, lentObject.returned);
+        }
+
+        return true;
+    }
 
 
 }
