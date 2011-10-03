@@ -20,5 +20,8 @@
     <string name="submenu_delete">Löschen</string>
     <string name="person">Person</string>
     <string name="sd_card_error_title">Zugriff auf Speicherkarte nicht möglich</string>
+    <string name="sd_card_error_not_readable">Speicherkarte ist nicht lesbar!</string>
     <string name="sd_card_error_not_writeable">Speicherkarte ist nicht beschreibbar!</string>
+    <string name="database_import_title">Wiederherstellen der Datenbank</string>
+    <string name="database_import_message">Das Wiederherstellen wird alle Änderungen seit der letzten Sicherung überschreiben. Sind Sie sicher?</string>
 </resources>

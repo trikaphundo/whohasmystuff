@@ -2,6 +2,7 @@ package de.freewarepoint.whohasmystuff;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -19,8 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public abstract class AbstractListIntent extends ListActivity {
-
-    private static final int ADD_OBJECT = Menu.FIRST;
 
     private static final int SUBMENU_EDIT = SubMenu.FIRST;
     private static final int SUBMENU_DELETE = SubMenu.FIRST + 1;
@@ -162,7 +161,7 @@ public abstract class AbstractListIntent extends ListActivity {
         try {
             info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         } catch (ClassCastException e) {
-            Log.e("WhoHasMyStuff", "bad menuInfo", e);
+            Log.e(LOG_TAG, "Bad MenuInfo", e);
             return false;
         }
         int id = (int) getListAdapter().getItemId(info.position);
@@ -197,13 +196,27 @@ public abstract class AbstractListIntent extends ListActivity {
 				}
 				break;
             case R.id.importButton:
-                if (isExternalStorageWritable()) {
-                    DatabaseHelper.importDatabaseFromXML(mDbHelper);
-                    fillData();
+                if (isExternalStorageReadable()) {
+                    askForImportConfirmation();
                 }
                 break;
         }
         return true;
+    }
+
+    private boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+
+        if (!Environment.MEDIA_MOUNTED.equals(state) && !Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+            alertDialog.setTitle(getString(R.string.sd_card_error_title));
+            alertDialog.setMessage(getString(R.string.sd_card_error_not_readable));
+            alertDialog.show();
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 
 	private boolean isExternalStorageWritable() {
@@ -220,6 +233,22 @@ public abstract class AbstractListIntent extends ListActivity {
 			return true;
 		}
 	}
+
+    private void askForImportConfirmation() {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setIcon(android.R.drawable.ic_dialog_alert);
+        dialog.setTitle(getString(R.string.database_import_title));
+        dialog.setMessage(getString(R.string.database_import_message));
+        dialog.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                DatabaseHelper.importDatabaseFromXML(mDbHelper);
+                fillData();
+            }
+        }
+        );
+        dialog.setNegativeButton(android.R.string.no, null);
+        dialog.show();
+    }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if (resultCode == RESULT_OK) {
