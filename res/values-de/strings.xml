@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Who Has My Stuff?</string>
-    <string name="addButton">Neue Sache hinzufügen</string>
-    <string name="export_button">Daten sichern</string>
-    <string name="import_button">Sicherung wiederherstellen</string>
+    <string name="addButton">Verleih erfassen</string>
+    <string name="export_button">Sicherung</string>
+    <string name="import_button">Wiederherstellen</string>
+    <string name="history_button">Chronik</string>
     <string name="date">Datum</string>
     <string name="description">Beschreibung</string>
-    <string name="history_button">Chronik</string>
     <string name="history_title">Chronik: Zurückerhaltene Sachen</string>
     <string name="add_button">Hinzufügen</string>
     <string name="edit_button">Änderungen speichern</string>
