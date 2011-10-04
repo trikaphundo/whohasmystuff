@@ -1,0 +1,14 @@
+WhoHasMyStuff (1.01)
+
+  * Create example data on first start
+  * Added "Mark as returned" submenu entry
+  * Ask before overwriting backup file
+  * Fixed backup data for certain characters
+
+-- Stephan Windmüller <stovocor@gmail.com>
+
+WhoHasMyStuff (1.0)
+
+  * First release
+
+-- Stephan Windmüller <stovocor@gmail.com>
