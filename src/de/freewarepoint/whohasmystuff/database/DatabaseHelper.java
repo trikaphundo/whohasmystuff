@@ -23,11 +23,13 @@ public class DatabaseHelper {
 
 	private final static String backUpFileName = "WhoHasMyStuff.xml";
 
+    public static boolean existsBackupFile() {
+        return getBackupFile().exists();
+    }
+
 	public static boolean exportDatabaseToXML(OpenLendDbAdapter database) {
 
-		File storage = Environment.getExternalStorageDirectory();
-		String backupPath = storage.getAbsolutePath() + File.separator +  backUpFileName;
-		File backupFile = new File(backupPath);
+		File backupFile = getBackupFile();
 
 		try {
 			Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(backupFile), "UTF8"));
@@ -67,13 +69,13 @@ public class DatabaseHelper {
 				sb.append("<LentObject");
 
 				String description = c.getString(c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_DESCRIPTION));
-				sb.append(" description=\"").append(description).append("\"");
+				sb.append(" description=\"").append(replace(description)).append("\"");
 
 				Date date = df.parse(c.getString(c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_DATE)));
 				sb.append(" date=\"").append(date.getTime()).append("\"");
 
 				String personName = c.getString(c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_PERSON));
-				sb.append(" personName=\"").append(personName).append("\"");
+				sb.append(" personName=\"").append(replace(personName)).append("\"");
 
 				String personKey = c.getString(c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_PERSON_KEY));
 				sb.append(" personKey=\"").append(personKey).append("\"");
@@ -92,10 +94,13 @@ public class DatabaseHelper {
 		return sb.toString();
 	}
 
+    private static String replace(String value) {
+        return value.replace("\"", "&quot;");
+    }
+
     public static boolean importDatabaseFromXML(OpenLendDbAdapter database) {
-        File storage = Environment.getExternalStorageDirectory();
-        String backupPath = storage.getAbsolutePath() + File.separator +  backUpFileName;
-        File backupFile = new File(backupPath);
+
+        File backupFile = getBackupFile();
 
         XMLContentHandler contentHandler = new XMLContentHandler();
 
@@ -127,6 +132,12 @@ public class DatabaseHelper {
         }
 
         return true;
+    }
+
+    private static File getBackupFile() {
+        File storage = Environment.getExternalStorageDirectory();
+        String backupPath = storage.getAbsolutePath() + File.separator +  backUpFileName;
+        return new File(backupPath);
     }
 
 

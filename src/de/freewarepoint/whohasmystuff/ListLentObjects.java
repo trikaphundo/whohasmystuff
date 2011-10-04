@@ -56,11 +56,11 @@ public class ListLentObjects extends AbstractListIntent {
                 break;
             case R.id.exportButton:
                 if (isExternalStorageWritable()) {
-                    if (DatabaseHelper.exportDatabaseToXML(mDbHelper)) {
-                        Toast.makeText(this, R.string.database_export_success, Toast.LENGTH_LONG).show();
+                    if (DatabaseHelper.existsBackupFile()) {
+                        askForExportConfirmation();
                     }
                     else {
-                        showExportErrorDialog();
+                        exportData();
                     }
                 }
                 break;
@@ -107,6 +107,30 @@ public class ListLentObjects extends AbstractListIntent {
         super.fillData();
     }
 
+    private void askForExportConfirmation() {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setIcon(android.R.drawable.ic_dialog_alert);
+        dialog.setTitle(getString(R.string.database_export_title));
+        dialog.setMessage(getString(R.string.database_export_message));
+        dialog.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                exportData();
+            }
+        }
+        );
+        dialog.setNegativeButton(android.R.string.no, null);
+        dialog.show();
+    }
+
+    private void exportData() {
+        if (DatabaseHelper.exportDatabaseToXML(mDbHelper)) {
+            Toast.makeText(this, R.string.database_export_success, Toast.LENGTH_LONG).show();
+        }
+        else {
+            showExportErrorDialog();
+        }
+    }
+
     private void askForImportConfirmation() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setIcon(android.R.drawable.ic_dialog_alert);
@@ -128,11 +152,11 @@ public class ListLentObjects extends AbstractListIntent {
     }
 
     private void showImportErrorDialog() {
-        showErrorDialog(getString(R.string.database_export_error));
+        showErrorDialog(getString(R.string.database_import_error));
     }
 
     private void showExportErrorDialog() {
-        showErrorDialog(getString(R.string.database_import_error));
+        showErrorDialog(getString(R.string.database_export_error));
     }
 
     private void showErrorDialog(String message) {

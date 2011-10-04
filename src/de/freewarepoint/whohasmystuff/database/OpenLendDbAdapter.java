@@ -68,10 +68,14 @@ public class OpenLendDbAdapter {
             db.execSQL(LENTOBJECTS_DATABASE_CREATE);
 
             Date now = new Date();
-            String personName = "\"Who Has My Stuff\" Test User";
+            String personName = "\"Who Has My Stuff?\" Test User";
 
             createLentObject(db, "Example entry", now, personName, null, false);
             createLentObject(db, "Press menu button to add entries", now, personName, null, false);
+        }
+
+        public void createWithoutExampleData(SQLiteDatabase db) {
+            db.execSQL(LENTOBJECTS_DATABASE_CREATE);
         }
 
         @Override
@@ -109,7 +113,7 @@ public class OpenLendDbAdapter {
 
     public void clearDatabase() {
         mDb.execSQL("DROP TABLE IF EXISTS lentobjects");
-        mDbHelper.onCreate(mDb);
+        mDbHelper.createWithoutExampleData(mDb);
     }
 
     public long createLentObject(String description, Date date, String personName, String personKey, boolean returned) {
