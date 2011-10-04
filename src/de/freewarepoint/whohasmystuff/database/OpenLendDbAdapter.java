@@ -66,14 +66,30 @@ public class OpenLendDbAdapter {
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(LENTOBJECTS_DATABASE_CREATE);
+
+            Date now = new Date();
+            String personName = "\"Who Has My Stuff\" Test User";
+
+            createLentObject(db, "Example entry", now, personName, null, false);
+            createLentObject(db, "Press menu button to add entries", now, personName, null, false);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.w(LOG_TAG, "Upgrading database from version " + oldVersion + " to "
-                    + newVersion + ", which will destroy all old data");
-            db.execSQL("DROP TABLE IF EXISTS lentobjects");
-            onCreate(db);
+            Log.w(LOG_TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
+        }
+
+        public long createLentObject(SQLiteDatabase db, String description, Date date,
+                                     String personName, String personKey, boolean returned) {
+            ContentValues initialValues = new ContentValues();
+            initialValues.put(KEY_DESCRIPTION, description);
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            initialValues.put(KEY_DATE, dateFormat.format(date));
+            initialValues.put(KEY_PERSON, personName);
+            initialValues.put(KEY_PERSON_KEY, personKey);
+            initialValues.put(KEY_BACK, returned);
+
+            return db.insert(LENTOBJECTS_DATABASE_TABLE, null, initialValues);
         }
     }
 
