@@ -95,7 +95,11 @@ public class DatabaseHelper {
 	}
 
     private static String replace(String value) {
-        return value.replace("\"", "&quot;");
+        value = value.replace("\"", "&quot;");
+        value = value.replace("<", "&lt;");
+        value = value.replace(">", "&gt;");
+        value = value.replace("'", "&apos;");
+        return value;
     }
 
     public static boolean importDatabaseFromXML(OpenLendDbAdapter database) {
