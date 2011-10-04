@@ -20,7 +20,8 @@ import java.util.Date;
 public abstract class AbstractListIntent extends ListActivity {
 
     private static final int SUBMENU_EDIT = SubMenu.FIRST;
-    private static final int SUBMENU_DELETE = SubMenu.FIRST + 1;
+    private static final int SUBMENU_MARK_AS_RETURNED = SubMenu.FIRST + 1;
+    private static final int SUBMENU_DELETE = SubMenu.FIRST + 2;
 
     public static final int ACTION_ADD = 1;
     public static final int ACTION_EDIT = 2;
@@ -145,10 +146,15 @@ public abstract class AbstractListIntent extends ListActivity {
 
 	protected abstract Cursor getDisplayedObjects();
 
+    protected abstract boolean isMarkAsReturnedAvailable();
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
-        menu.add(0, SUBMENU_EDIT, 0, R.string.submenu_edit);
-        menu.add(0, SUBMENU_DELETE, 0, R.string.submenu_delete);
+        menu.add(Menu.NONE, SUBMENU_EDIT, Menu.NONE, R.string.submenu_edit);
+        if (isMarkAsReturnedAvailable()) {
+            menu.add(Menu.NONE, SUBMENU_MARK_AS_RETURNED, Menu.NONE, R.string.submenu_mark_as_returned);
+        }
+        menu.add(Menu.NONE, SUBMENU_DELETE, Menu.NONE, R.string.submenu_delete);
     }
 
     @Override
@@ -166,6 +172,9 @@ public abstract class AbstractListIntent extends ListActivity {
 
         if (item.getItemId() == SUBMENU_EDIT) {
             launchEditActivity(info.position, id);
+        } else if (item.getItemId() == SUBMENU_MARK_AS_RETURNED) {
+            mDbHelper.markLentObjectAsReturned(id);
+            fillData();
         } else if (item.getItemId() == SUBMENU_DELETE) {
             mDbHelper.deleteLentObject(id);
             fillData();

@@ -17,6 +17,7 @@
     <string name="returned_button">Als zurückerhalten markieren</string>
     <string name="cancel_button">Abbrechen</string>
     <string name="submenu_edit">Bearbeiten</string>
+    <string name="submenu_mark_as_returned">Zurück erhalten</string>
     <string name="submenu_delete">Löschen</string>
     <string name="person">Person</string>
     <string name="sd_card_error_title">Zugriff auf Speicherkarte nicht möglich</string>

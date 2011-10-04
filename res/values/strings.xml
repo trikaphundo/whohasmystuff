@@ -17,6 +17,7 @@
     <string name="returned_button">Mark as Returned</string>
     <string name="cancel_button">Cancel</string>
     <string name="submenu_edit">Edit</string>
+    <string name="submenu_mark_as_returned">Mark as Returned</string>
     <string name="submenu_delete">Delete</string>
     <string name="person">Person</string>
     <string name="sd_card_error_title">Unable to Access SD Card</string>
