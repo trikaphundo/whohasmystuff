@@ -4,7 +4,7 @@ WhoHasMyStuff (1.0.2)
 
 -- Stephan Windmüller <stovocor@gmail.com>
 
-WhoHasMyStuff (1.01)
+WhoHasMyStuff (1.0.1)
 
   * Create example data on first start
   * Added "Mark as returned" submenu entry
