@@ -95,6 +95,7 @@ public class DatabaseHelper {
 	}
 
     private static String replace(String value) {
+        value = value.replace("&", "&amp;");
         value = value.replace("\"", "&quot;");
         value = value.replace("<", "&lt;");
         value = value.replace(">", "&gt;");
