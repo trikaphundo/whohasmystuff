@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import de.freewarepoint.whohasmystuff.database.OpenLendDbAdapter;
@@ -24,6 +26,7 @@ public class AddObject extends Activity {
     private Button mPickDate;
     private EditText mDescriptionText;
     private EditText mPersonName;
+    private Spinner mCalendarSpinner;
 
 	private String originalName;
 	private String originalPersonKey;
@@ -41,6 +44,8 @@ public class AddObject extends Activity {
     static final int ACTION_EDIT_LENT = 1;
 	static final int ACTION_EDIT_RETURNED = 2;
     static final int ACTION_SELECT_PERSON = 3;
+
+    private final String LAST_USED_CALENDAR = "LastUsedCalendar";
 
     private static final int DATE_DIALOG_ID = 0;
 
@@ -127,22 +132,7 @@ public class AddObject extends Activity {
             }
         });
 
-        String[] projection = new String[] { "_id", "name" };
-
-        Uri calendarsLocation;
-
-        if (Integer.parseInt(Build.VERSION.SDK) >= 8 ) {
-            calendarsLocation = Uri.parse("content://com.android.calendar/calendars");
-        }
-        else {
-            calendarsLocation = Uri.parse("content://calendar/calendars");
-        }
-
-        Cursor calendars = managedQuery(calendarsLocation, projection, "selected=1 AND name is not null", null, null);
-        final Spinner spinner = (Spinner) findViewById(R.id.calendar_select);
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, calendars, new String[] {"name"},new int[]{android.R.id.text1});
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        initializeCalendarSpinner();
 
         addButton.setOnClickListener(new View.OnClickListener() {
 
@@ -169,8 +159,15 @@ public class AddObject extends Activity {
 				}
 
                 if (addCalendarEntry) {
-                    Cursor selectedItem = (Cursor) spinner.getSelectedItem();
-                    bundle.putString(CALENDAR_ID, selectedItem.getString(selectedItem.getColumnIndex("_id")));
+                    Cursor selectedItem = (Cursor) mCalendarSpinner.getSelectedItem();
+                    String selectedCalendarId = selectedItem.getString(selectedItem.getColumnIndex("_id"));
+
+                    SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString(LAST_USED_CALENDAR, selectedCalendarId);
+                    editor.commit();
+
+                    bundle.putString(CALENDAR_ID, selectedCalendarId);
                 }
 
                 Intent mIntent = new Intent();
@@ -206,7 +203,7 @@ public class AddObject extends Activity {
 		});
     }
 
-	@Override
+    @Override
 	public void onDestroy() {
 		super.onDestroy();
 		mDbHelper.close();
@@ -232,6 +229,47 @@ public class AddObject extends Activity {
 
         // display the current date (this method is below)
         updateDisplay();
+    }
+
+    private void initializeCalendarSpinner() {
+        Uri calendarsLocation;
+
+        if (Integer.parseInt(Build.VERSION.SDK) >= 8 ) {
+            calendarsLocation = Uri.parse("content://com.android.calendar/calendars");
+        }
+        else {
+            calendarsLocation = Uri.parse("content://calendar/calendars");
+        }
+
+        String[] columns = new String[] { "_id", "name" };
+        Cursor calendars = managedQuery(calendarsLocation, columns, "selected=1 AND name is not null", null, null);
+
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        String lastUsedCalendarId = preferences.getString(LAST_USED_CALENDAR, null);
+
+        Integer initialSpinnerPosition = null;
+
+        if (lastUsedCalendarId != null) {
+            calendars.moveToFirst();
+            int currentPosition = 0;
+            do {
+                Log.e("Tag", "Iterating: " + calendars.getString(calendars.getColumnIndex("_id")));
+                if (lastUsedCalendarId.equals(calendars.getString(calendars.getColumnIndex("_id")))) {
+                    initialSpinnerPosition = currentPosition;
+                    Log.e("Tag", "Initial: " + initialSpinnerPosition);
+                }
+                ++currentPosition;
+            } while (calendars.moveToNext());
+        }
+
+        mCalendarSpinner = (Spinner) findViewById(R.id.calendar_select);
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, calendars, new String[] {"name"},new int[]{android.R.id.text1});
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mCalendarSpinner.setAdapter(adapter);
+
+        if (initialSpinnerPosition != null) {
+            mCalendarSpinner.setSelection(initialSpinnerPosition);
+        }
     }
 
     private void updateDisplay() {
