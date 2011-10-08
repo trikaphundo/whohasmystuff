@@ -24,6 +24,10 @@ public class AddObject extends Activity {
     private Long mRowId;
 
     private Button mPickDate;
+    private Button mAddButton;
+    private Button mCancelButton;
+    private Button mDeleteButton;
+    private Button mReturnedButton;
     private EditText mDescriptionText;
     private EditText mPersonName;
     private Spinner mCalendarSpinner;
@@ -35,6 +39,8 @@ public class AddObject extends Activity {
     private int mYear;
     private int mMonth;
     private int mDay;
+
+    private Date selectedDate;
 
     private boolean addCalendarEntry;
 
@@ -71,52 +77,29 @@ public class AddObject extends Activity {
 
         mDescriptionText = (EditText) findViewById(R.id.add_description);
         mPersonName = (EditText) findViewById(R.id.personName);
-        Button addButton = (Button) findViewById(R.id.add_button);
-        Button cancelButton = (Button) findViewById(R.id.cancel_button);
-		Button deleteButton = (Button) findViewById(R.id.delete_button);
-		Button returnedButton = (Button) findViewById(R.id.returned_button);
+        mAddButton = (Button) findViewById(R.id.add_button);
+        mCancelButton = (Button) findViewById(R.id.cancel_button);
+		mDeleteButton = (Button) findViewById(R.id.delete_button);
+		mReturnedButton = (Button) findViewById(R.id.returned_button);
+        ImageButton selectPerson = (ImageButton) findViewById(R.id.choosePerson);
 
         mDbHelper = new OpenLendDbAdapter(this);
         mDbHelper.open();
 
         Bundle bundle = getIntent().getExtras();
 
-        Date date;
-
 		if (bundle.getInt(ACTION_TYPE) == ACTION_ADD) {
-			returnedButton.setVisibility(View.GONE);
+			mReturnedButton.setVisibility(View.GONE);
 		}
 
         if (bundle.containsKey(OpenLendDbAdapter.KEY_ROWID)) {
-			int actionType = bundle.getInt(ACTION_TYPE);
-            if (actionType == ACTION_EDIT_LENT || actionType == ACTION_EDIT_RETURNED) {
-                setTitle(R.string.edit_title);
-                addButton.setText(R.string.edit_button);
-				cancelButton.setVisibility(View.GONE);
-            }
-
-			if (actionType == ACTION_EDIT_LENT) {
-				deleteButton.setVisibility(View.GONE);
-			}
-			else if (actionType == ACTION_EDIT_RETURNED) {
-				returnedButton.setVisibility(View.GONE);
-			}
-
-            mRowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);
-
-            mDescriptionText.setText(bundle.getString(OpenLendDbAdapter.KEY_DESCRIPTION));
-            mPersonName.setText(bundle.getString(OpenLendDbAdapter.KEY_PERSON));
-			originalName = bundle.getString(OpenLendDbAdapter.KEY_PERSON);
-			originalPersonKey = bundle.getString(OpenLendDbAdapter.KEY_PERSON_KEY);
-            date = new Date(bundle.getLong(OpenLendDbAdapter.KEY_DATE));
+            initalizeValuesFromBundle(bundle);
         } else {
-            date = new Date();
-			deleteButton.setVisibility(View.GONE);
+            selectedDate = new Date();
+			mDeleteButton.setVisibility(View.GONE);
         }
 
-        initializeDatePicker(date);
-
-        ImageButton selectPerson = (ImageButton) findViewById(R.id.choosePerson);
+        initializeDatePicker(selectedDate);
 
         selectPerson.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -134,7 +117,7 @@ public class AddObject extends Activity {
 
         initializeCalendarSpinner();
 
-        addButton.setOnClickListener(new View.OnClickListener() {
+        mAddButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
@@ -177,23 +160,23 @@ public class AddObject extends Activity {
             }
         });
 
-		cancelButton.setOnClickListener(new View.OnClickListener() {
+		mCancelButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
 				setResult(RESULT_CANCELED);
 				finish();
 			}
 		});
 
-        deleteButton.setOnClickListener(new View.OnClickListener() {
+        mDeleteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-				Intent mIntent = new Intent();
-				mIntent.putExtra(OpenLendDbAdapter.KEY_ROWID, mRowId);
+                Intent mIntent = new Intent();
+                mIntent.putExtra(OpenLendDbAdapter.KEY_ROWID, mRowId);
                 setResult(ListLentObjects.RESULT_DELETE, mIntent);
                 finish();
             }
         });
 
-		returnedButton.setOnClickListener(new View.OnClickListener() {
+		mReturnedButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
 				Intent mIntent = new Intent();
 				mIntent.putExtra(OpenLendDbAdapter.KEY_ROWID, mRowId);
@@ -203,6 +186,30 @@ public class AddObject extends Activity {
 		});
     }
 
+    private void initalizeValuesFromBundle(Bundle bundle) {
+        int actionType = bundle.getInt(ACTION_TYPE);
+        if (actionType == ACTION_EDIT_LENT || actionType == ACTION_EDIT_RETURNED) {
+            setTitle(R.string.edit_title);
+            mAddButton.setText(R.string.edit_button);
+            mCancelButton.setVisibility(View.GONE);
+        }
+
+        if (actionType == ACTION_EDIT_LENT) {
+            mDeleteButton.setVisibility(View.GONE);
+        }
+        else if (actionType == ACTION_EDIT_RETURNED) {
+            mReturnedButton.setVisibility(View.GONE);
+        }
+
+        mRowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);
+
+        mDescriptionText.setText(bundle.getString(OpenLendDbAdapter.KEY_DESCRIPTION));
+        mPersonName.setText(bundle.getString(OpenLendDbAdapter.KEY_PERSON));
+        originalName = bundle.getString(OpenLendDbAdapter.KEY_PERSON);
+        originalPersonKey = bundle.getString(OpenLendDbAdapter.KEY_PERSON_KEY);
+        selectedDate = new Date(bundle.getLong(OpenLendDbAdapter.KEY_DATE));
+    }
+
     @Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -210,24 +217,20 @@ public class AddObject extends Activity {
 	}
 
     private void initializeDatePicker(Date date) {
-        // capture our View elements
         mPickDate = (Button) findViewById(R.id.pickDate);
 
-        // add a click listener to the button
         mPickDate.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 showDialog(DATE_DIALOG_ID);
             }
         });
 
-        // get the current date
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         mYear = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
         mDay = c.get(Calendar.DAY_OF_MONTH);
 
-        // display the current date (this method is below)
         updateDisplay();
     }
 
