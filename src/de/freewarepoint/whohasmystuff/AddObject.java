@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.View;
@@ -32,6 +33,9 @@ public class AddObject extends Activity {
     private int mMonth;
     private int mDay;
 
+    private boolean addCalendarEntry;
+
+    static final String CALENDAR_ID = "calendar_id";
     static final String ACTION_TYPE = "action_type";
     static final int ACTION_ADD = 0;
     static final int ACTION_EDIT_LENT = 1;
@@ -116,6 +120,29 @@ public class AddObject extends Activity {
             }
         });
 
+        final CheckBox checkbox = (CheckBox) findViewById(R.id.add_calendar_checkbox);
+        checkbox.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                addCalendarEntry = ((CheckBox) v).isChecked();
+            }
+        });
+
+        String[] projection = new String[] { "_id", "name" };
+
+        Uri calendarsLocation;
+
+        if (Integer.parseInt(Build.VERSION.SDK) >= 8 ) {
+            calendarsLocation = Uri.parse("content://com.android.calendar/calendars");
+        }
+        else {
+            calendarsLocation = Uri.parse("content://calendar/calendars");
+        }
+
+        Cursor calendars = managedQuery(calendarsLocation, projection, "selected=1 AND name is not null", null, null);
+        final Spinner spinner = (Spinner) findViewById(R.id.calendar_select);
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, calendars, new String[] {"name"},new int[]{android.R.id.text1});
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
 
         addButton.setOnClickListener(new View.OnClickListener() {
 
@@ -141,11 +168,15 @@ public class AddObject extends Activity {
 					bundle.putString(OpenLendDbAdapter.KEY_PERSON_KEY, selectedPersonKey);
 				}
 
+                if (addCalendarEntry) {
+                    Cursor selectedItem = (Cursor) spinner.getSelectedItem();
+                    bundle.putString(CALENDAR_ID, selectedItem.getString(selectedItem.getColumnIndex("_id")));
+                }
+
                 Intent mIntent = new Intent();
                 mIntent.putExtras(bundle);
                 setResult(RESULT_OK, mIntent);
                 finish();
-
             }
         });
 

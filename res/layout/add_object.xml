@@ -58,6 +58,25 @@
                 android:layout_weight="4"
                 android:src="@android:drawable/ic_input_get"/>
     </LinearLayout>
+
+    <CheckBox android:id="@+id/add_calendar_checkbox"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/add_calendar_entry" />
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:text="@string/calendar"
+            />
+    <Spinner
+            android:id="@+id/calendar_select"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:prompt="@string/calendar_prompt"
+            />
+
     </LinearLayout>
 
     <LinearLayout

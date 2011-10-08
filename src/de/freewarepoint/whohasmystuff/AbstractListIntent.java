@@ -1,9 +1,13 @@
 package de.freewarepoint.whohasmystuff;
 
 import android.app.ListActivity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.*;
 import android.widget.AdapterView;
@@ -183,7 +187,7 @@ public abstract class AbstractListIntent extends ListActivity {
         return true;
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             Bundle bundle = data.getExtras();
             String name = bundle.getString(OpenLendDbAdapter.KEY_DESCRIPTION);
@@ -197,6 +201,36 @@ public abstract class AbstractListIntent extends ListActivity {
                 Long rowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);
                 mDbHelper.updateLentObject(rowId, name, new Date(time), personName, personKey);
             }
+
+            if (bundle.getString(AddObject.CALENDAR_ID) != null) {
+                ContentValues event = new ContentValues();
+
+                event.put("title", "Expected return of " + name);
+                event.put("description", "Expecting the return of " + name + " from " + personName);
+
+                long now = new Date().getTime();
+
+                long startTime = now + 14 * DateUtils.DAY_IN_MILLIS;
+                long endTime = startTime + 1;
+
+                event.put("dtstart", startTime);
+                event.put("dtend", endTime);
+                event.put("allDay", 1);
+
+                event.put("calendar_id", bundle.getString(AddObject.CALENDAR_ID));
+
+                Uri eventsLocation;
+
+                if (Integer.parseInt(Build.VERSION.SDK) >= 8 ) {
+                    eventsLocation = Uri.parse("content://com.android.calendar/events");
+                }
+                else {
+                    eventsLocation = Uri.parse("content://calendar/events");
+                }
+
+                getContentResolver().insert(eventsLocation, event);
+            }
+
             fillData();
         }
 		else if (resultCode == RESULT_DELETE) {
