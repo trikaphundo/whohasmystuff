@@ -190,23 +190,14 @@ public abstract class AbstractListIntent extends ListActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             Bundle bundle = data.getExtras();
-            String name = bundle.getString(OpenLendDbAdapter.KEY_DESCRIPTION);
-            long time = bundle.getLong(OpenLendDbAdapter.KEY_DATE);
-            String personName = bundle.getString(OpenLendDbAdapter.KEY_PERSON);
-			String personKey = bundle.getString(OpenLendDbAdapter.KEY_PERSON_KEY);
-
-            if (requestCode == ACTION_ADD) {
-                mDbHelper.createLentObject(name, new Date(time), personName, personKey, false);
-            } else if (requestCode == ACTION_EDIT) {
-                Long rowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);
-                mDbHelper.updateLentObject(rowId, name, new Date(time), personName, personKey);
-            }
+            LentObject lentObject = createLentObjectFromBundle(bundle);
 
             if (bundle.getString(AddObject.CALENDAR_ID) != null) {
                 ContentValues event = new ContentValues();
 
-                event.put("title", "Expected return of " + name);
-                event.put("description", "Expecting the return of " + name + " from " + personName);
+                event.put("title", "Expected return of " + lentObject.description);
+                event.put("description", "Expecting the return of " + lentObject.description +
+                        " from " + lentObject.personName);
 
                 long now = new Date().getTime();
 
@@ -228,7 +219,15 @@ public abstract class AbstractListIntent extends ListActivity {
                     eventsLocation = Uri.parse("content://calendar/events");
                 }
 
-                getContentResolver().insert(eventsLocation, event);
+                lentObject.calendarEventURI = getContentResolver().insert(eventsLocation, event);
+            }
+
+            if (requestCode == ACTION_ADD) {
+                lentObject.returned = false;
+                mDbHelper.createLentObject(lentObject);
+            } else if (requestCode == ACTION_EDIT) {
+                Long rowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);
+                mDbHelper.updateLentObject(rowId, lentObject);
             }
 
             fillData();
@@ -245,5 +244,16 @@ public abstract class AbstractListIntent extends ListActivity {
 			mDbHelper.markLentObjectAsReturned(rowId);
 			fillData();
 		}
+    }
+
+    private LentObject createLentObjectFromBundle(Bundle bundle) {
+        LentObject lentObject = new LentObject();
+
+        lentObject.description = bundle.getString(OpenLendDbAdapter.KEY_DESCRIPTION);
+        lentObject.date = new Date(bundle.getLong(OpenLendDbAdapter.KEY_DATE));
+        lentObject.personName = bundle.getString(OpenLendDbAdapter.KEY_PERSON);
+        lentObject.personKey = bundle.getString(OpenLendDbAdapter.KEY_PERSON_KEY);
+
+        return lentObject;
     }
 }

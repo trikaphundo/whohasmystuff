@@ -1,5 +1,6 @@
 package de.freewarepoint.whohasmystuff.database;
 
+import android.net.Uri;
 import de.freewarepoint.whohasmystuff.LentObject;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -56,6 +57,9 @@ public class XMLContentHandler extends DefaultHandler {
             }
             else if ("returned".equals(name)) {
                 lentObject.returned = (Integer.parseInt(attributes.getValue(i)) == 1);
+            }
+            else if ("calendarEvent".equals(name)) {
+                lentObject.calendarEventURI = Uri.parse(attributes.getValue(i));
             }
         }
 

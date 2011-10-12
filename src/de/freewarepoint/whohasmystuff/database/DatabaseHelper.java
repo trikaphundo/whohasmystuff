@@ -4,8 +4,6 @@ import android.database.Cursor;
 import android.os.Environment;
 import android.util.Log;
 import de.freewarepoint.whohasmystuff.LentObject;
-import de.freewarepoint.whohasmystuff.database.OpenLendDbAdapter;
-import de.freewarepoint.whohasmystuff.database.XMLContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -83,6 +81,9 @@ public class DatabaseHelper {
 				int back = c.getInt(c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_BACK));
 				sb.append(" returned=\"").append(back).append("\"");
 
+                String calendarUri = c.getString(c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_CALENDAR_ENTRY));
+                sb.append(" calendarEvent=\"").append(calendarUri).append("\"");
+
 				sb.append("/>\n");
 
 				c.moveToNext();
@@ -132,8 +133,7 @@ public class DatabaseHelper {
         database.clearDatabase();
 
         for (LentObject lentObject : contentHandler.lentObjects) {
-            database.createLentObject(lentObject.description, lentObject.date, lentObject.personName,
-                    lentObject.personKey, lentObject.returned);
+            database.createLentObject(lentObject);
         }
 
         return true;
