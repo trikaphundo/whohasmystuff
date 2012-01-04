@@ -23,6 +23,16 @@
     <string name="submenu_mark_as_returned">Zurück erhalten</string>
     <string name="submenu_delete">Löschen</string>
     <string name="person">Person</string>
+    <string name="years">Jahre</string>
+    <string name="year">Jahr</string>
+    <string name="months">Monate</string>
+    <string name="month">Monat</string>
+    <string name="weeks">Wochen</string>
+    <string name="week">Woche</string>
+    <string name="days">Tage</string>
+    <string name="day">Tag</string>
+    <string name="today">Heute</string>
+    <string name="unknown">Unbekannt</string>
     <string name="sd_card_error_title">Zugriff auf Speicherkarte nicht möglich</string>
     <string name="sd_card_error_not_readable">Speicherkarte ist nicht lesbar!</string>
     <string name="sd_card_error_not_writeable">Speicherkarte ist nicht beschreibbar!</string>

@@ -99,8 +99,8 @@ public abstract class AbstractListIntent extends ListActivity {
 	protected abstract int getEditAction();
 
     protected void fillData() {
-        final DateFormat adf = android.text.format.DateFormat.getDateFormat(getApplicationContext());
         final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final Date now = new Date();
 
 		SimpleCursorAdapter lentObjects = getLentObjects();
 
@@ -108,15 +108,15 @@ public abstract class AbstractListIntent extends ListActivity {
 
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
                 if (columnIndex == 2) {
-                    Date date;
+                    Date lentDate;
                     try {
-                        date = df.parse(cursor.getString(columnIndex));
+                        lentDate = df.parse(cursor.getString(columnIndex));
                     } catch (ParseException e) {
                         throw new IllegalStateException("Unable to parse date " + cursor.getString(columnIndex));
                     }
 
                     TextView dateView = (TextView) view.findViewById(R.id.date);
-                    dateView.setText(adf.format(date));
+                    dateView.setText(getTimeDifference(lentDate, now));
 
                     return true;
                 }
@@ -127,6 +127,70 @@ public abstract class AbstractListIntent extends ListActivity {
         });
 
         setListAdapter(lentObjects);
+    }
+    
+    private String getTimeDifference(Date lentTime, Date now) {
+        if (now.before(lentTime)) {
+            return "0 days";
+        }
+
+        // Check if one or more years have passed
+
+        int differenceInYears = now.getYear() - lentTime.getYear();
+        Date lentTimeInSameYear = new Date(lentTime.getTime());
+        lentTimeInSameYear.setYear(now.getYear());
+        if (now.before(lentTimeInSameYear)) {
+            differenceInYears--;
+        }
+
+        if (differenceInYears > 1) {
+            return differenceInYears + " " + getString(R.string.years);
+        }
+        else if (differenceInYears > 0) {
+            return differenceInYears + " " + getString(R.string.year);
+        }
+
+        // Check if one or more months have passed
+
+        int monthsOfLentDate = lentTime.getYear() * 12 + lentTime.getMonth();
+        int monthsNow = now.getYear() * 12 + now.getMonth();
+        int differenceInMonths = monthsNow - monthsOfLentDate;
+        Date lentTimeInSameMonth = new Date(lentTime.getTime());
+        lentTimeInSameMonth.setYear(now.getYear());
+        lentTimeInSameMonth.setMonth(now.getMonth());
+        if (now.before(lentTimeInSameMonth)) {
+            differenceInMonths--;
+        }
+
+        if (differenceInMonths > 1) {
+            return differenceInMonths + " " + getString(R.string.months);
+        }
+        else if (differenceInMonths > 0) {
+            return differenceInMonths + " " + getString(R.string.month);
+        }
+
+        long difference = now.getTime() - lentTime.getTime();
+        int differenceInDays = (int) (difference / (1000 * 60 * 60 * 24));
+        int differenceInWeeks = differenceInDays / 7;
+
+        if (differenceInWeeks > 1) {
+            return differenceInWeeks + " " + getString(R.string.weeks);
+        }
+        else if (differenceInWeeks > 0) {
+            return differenceInWeeks + " " + getString(R.string.week);
+        }
+        else if (differenceInDays > 1) {
+            return differenceInDays + " " + getString(R.string.days);
+        }
+        else if (differenceInDays > 0) {
+            return differenceInDays + " " + getString(R.string.day);
+        }
+        else if (differenceInDays == 0) {
+            return getString(R.string.today);
+        }
+        else {
+            return getString(R.string.unknown);
+        }
     }
 
 	private SimpleCursorAdapter getLentObjects() {
