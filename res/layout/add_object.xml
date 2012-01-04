@@ -11,7 +11,7 @@
                     android:layout_height="fill_parent">
 
     <View
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="1px"
             android:background="?android:attr/listDivider" />
 
@@ -24,7 +24,7 @@
               android:inputType="text"/>
 
     <View
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="1px"
             android:background="?android:attr/listDivider" />
 
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"/>
 
     <View
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="1px"
             android:background="?android:attr/listDivider" />
 
@@ -45,7 +45,7 @@
               android:text="@string/person"/>
 
     <LinearLayout android:orientation="horizontal"
-                  android:layout_width="match_parent"
+                  android:layout_width="fill_parent"
                   android:layout_height="wrap_content">
         <EditText android:id="@+id/personName"
                   android:layout_width="fill_parent"
