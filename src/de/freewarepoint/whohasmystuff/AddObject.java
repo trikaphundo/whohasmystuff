@@ -1,6 +1,7 @@
 package de.freewarepoint.whohasmystuff;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
@@ -24,6 +26,7 @@ public class AddObject extends Activity {
     private Long mRowId;
 
     private Button mPickDate;
+    private Button mPickReturnDate;
     private Button mAddButton;
     private Button mCancelButton;
     private Button mDeleteButton;
@@ -39,13 +42,19 @@ public class AddObject extends Activity {
     private int mYear;
     private int mMonth;
     private int mDay;
+    
+    private int mReturnYear;
+    private int mReturnMonth;
+    private int mReturnDay;
 
     private Date selectedDate;
+    private Date selectedExpectedReturnDate;
 
     private boolean addCalendarEntry;
 
     static final String CALENDAR_ID = "calendar_id";
     static final String ACTION_TYPE = "action_type";
+    static final String RETURN_DATE = "return_date";
     static final int ACTION_ADD = 0;
     static final int ACTION_EDIT_LENT = 1;
 	static final int ACTION_EDIT_RETURNED = 2;
@@ -54,6 +63,7 @@ public class AddObject extends Activity {
     private final String LAST_USED_CALENDAR = "LastUsedCalendar";
 
     private static final int DATE_DIALOG_ID = 0;
+    private static final int RETURN_DATE_DIALOG_ID = 1;
 
 	private OpenLendDbAdapter mDbHelper;
 
@@ -65,6 +75,18 @@ public class AddObject extends Activity {
                     mYear = year;
                     mMonth = monthOfYear;
                     mDay = dayOfMonth;
+                    updateDisplay();
+                }
+            };
+
+    private DatePickerDialog.OnDateSetListener mReturnDateSetListener =
+            new DatePickerDialog.OnDateSetListener() {
+
+                public void onDateSet(DatePicker view, int year,
+                                      int monthOfYear, int dayOfMonth) {
+                    mReturnYear = year;
+                    mReturnMonth = monthOfYear;
+                    mReturnDay = dayOfMonth;
                     updateDisplay();
                 }
             };
@@ -101,6 +123,8 @@ public class AddObject extends Activity {
         }
 
         initializeDatePicker(selectedDate);
+        Date returnDate = new Date(selectedDate.getTime() + 14 * DateUtils.DAY_IN_MILLIS);
+        initializeReturnDatePicker(returnDate);
 
         selectPerson.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -144,6 +168,10 @@ public class AddObject extends Activity {
 
                 if (addCalendarEntry) {
                     Cursor selectedItem = (Cursor) mCalendarSpinner.getSelectedItem();
+                    if (selectedItem == null) {
+                        showNoSelectedCalendarError();
+                        return;
+                    }
                     String selectedCalendarId = selectedItem.getString(selectedItem.getColumnIndex("_id"));
 
                     SharedPreferences preferences = getPreferences(MODE_PRIVATE);
@@ -152,6 +180,7 @@ public class AddObject extends Activity {
                     editor.commit();
 
                     bundle.putString(CALENDAR_ID, selectedCalendarId);
+                    bundle.putLong(RETURN_DATE, selectedExpectedReturnDate.getTime());
                 }
 
                 Intent mIntent = new Intent();
@@ -187,6 +216,15 @@ public class AddObject extends Activity {
 		});
     }
 
+    private void showNoSelectedCalendarError() {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setIcon(android.R.drawable.ic_dialog_alert);
+        dialog.setTitle(getString(R.string.no_calendar_selected_title));
+        dialog.setMessage(getString(R.string.no_calendar_selected_message));
+        dialog.setPositiveButton("OK", null);
+        dialog.show();
+    }
+
     private void initalizeValuesFromBundle(Bundle bundle) {
         int actionType = bundle.getInt(ACTION_TYPE);
         if (actionType == ACTION_EDIT_LENT || actionType == ACTION_EDIT_RETURNED) {
@@ -209,6 +247,7 @@ public class AddObject extends Activity {
         originalName = bundle.getString(OpenLendDbAdapter.KEY_PERSON);
         originalPersonKey = bundle.getString(OpenLendDbAdapter.KEY_PERSON_KEY);
         selectedDate = new Date(bundle.getLong(OpenLendDbAdapter.KEY_DATE));
+        selectedExpectedReturnDate = new Date();
     }
 
     @Override
@@ -235,6 +274,24 @@ public class AddObject extends Activity {
         updateDisplay();
     }
 
+    private void initializeReturnDatePicker(Date date) {
+        mPickReturnDate = (Button) findViewById(R.id.returnDate);
+
+        mPickReturnDate.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                showDialog(RETURN_DATE_DIALOG_ID);
+            }
+        });
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        mReturnYear = c.get(Calendar.YEAR);
+        mReturnMonth = c.get(Calendar.MONTH);
+        mReturnDay = c.get(Calendar.DAY_OF_MONTH);
+
+        updateDisplay();
+    }
+    
     private void initializeCalendarSpinner() {
         Uri calendarsLocation;
 
@@ -257,17 +314,18 @@ public class AddObject extends Activity {
             calendars.moveToFirst();
             int currentPosition = 0;
             do {
-                Log.e("Tag", "Iterating: " + calendars.getString(calendars.getColumnIndex("_id")));
+                Log.e(AbstractListIntent.LOG_TAG, "Iterating: " + calendars.getString(calendars.getColumnIndex("_id")));
                 if (lastUsedCalendarId.equals(calendars.getString(calendars.getColumnIndex("_id")))) {
                     initialSpinnerPosition = currentPosition;
-                    Log.e("Tag", "Initial: " + initialSpinnerPosition);
+                    Log.e(AbstractListIntent.LOG_TAG, "Initial: " + initialSpinnerPosition);
                 }
                 ++currentPosition;
             } while (calendars.moveToNext());
         }
 
         mCalendarSpinner = (Spinner) findViewById(R.id.calendar_select);
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, calendars, new String[] {"name"},new int[]{android.R.id.text1});
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item,
+                calendars, new String[] {"name"},new int[]{android.R.id.text1});
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mCalendarSpinner.setAdapter(adapter);
 
@@ -292,9 +350,9 @@ public class AddObject extends Activity {
     protected Dialog onCreateDialog(int id) {
         switch (id) {
             case DATE_DIALOG_ID:
-                return new DatePickerDialog(this,
-                        mDateSetListener,
-                        mYear, mMonth, mDay);
+                return new DatePickerDialog(this, mDateSetListener, mYear, mMonth, mDay);
+            case RETURN_DATE_DIALOG_ID:
+                return new DatePickerDialog(this, mReturnDateSetListener, mReturnYear, mReturnMonth, mReturnDay);
         }
         return null;
     }

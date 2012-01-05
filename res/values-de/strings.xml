@@ -6,6 +6,7 @@
     <string name="import_button">Wiederherstellen</string>
     <string name="history_button">Chronik</string>
     <string name="date">Datum</string>
+    <string name="returnDate">Erwartetes Rückgabedatum</string>
     <string name="description">Beschreibung</string>
     <string name="history_title">Chronik: Zurückerhaltene Sachen</string>
     <string name="add_button">Hinzufügen</string>
@@ -33,6 +34,8 @@
     <string name="day">Tag</string>
     <string name="today">Heute</string>
     <string name="unknown">Unbekannt</string>
+    <string name="no_calendar_selected_title">Kein Kalender ausgewählt</string>
+    <string name="no_calendar_selected_message">Bitte wählen Sie einen Kalender.</string>
     <string name="sd_card_error_title">Zugriff auf Speicherkarte nicht möglich</string>
     <string name="sd_card_error_not_readable">Speicherkarte ist nicht lesbar!</string>
     <string name="sd_card_error_not_writeable">Speicherkarte ist nicht beschreibbar!</string>

@@ -6,6 +6,7 @@
     <string name="import_button">Restore</string>
     <string name="history_button">History</string>
     <string name="date">Date</string>
+    <string name="returnDate">Expected return date</string>
     <string name="description">Description</string>
     <string name="history_title">History: Returned Objects</string>
     <string name="add_button">Add</string>
@@ -33,6 +34,8 @@
     <string name="day">day</string>
     <string name="today">Today</string>
     <string name="unknown">Unknown</string>
+    <string name="no_calendar_selected_title">No calendar selected</string>
+    <string name="no_calendar_selected_message">Please select a calendar.</string>
     <string name="sd_card_error_title">Unable to Access SD Card</string>
     <string name="sd_card_error_not_readable">SD Card is not readable!</string>
     <string name="sd_card_error_not_writeable">SD Card is not writable!</string>

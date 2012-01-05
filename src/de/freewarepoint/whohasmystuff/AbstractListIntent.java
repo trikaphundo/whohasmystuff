@@ -170,7 +170,7 @@ public abstract class AbstractListIntent extends ListActivity {
         }
 
         long difference = now.getTime() - lentTime.getTime();
-        int differenceInDays = (int) (difference / (1000 * 60 * 60 * 24));
+        int differenceInDays = (int) (difference / DateUtils.DAY_IN_MILLIS);
         int differenceInWeeks = differenceInDays / 7;
 
         if (differenceInWeeks > 1) {
@@ -263,9 +263,7 @@ public abstract class AbstractListIntent extends ListActivity {
                 event.put("description", "Expecting the return of " + lentObject.description +
                         " from " + lentObject.personName);
 
-                long now = new Date().getTime();
-
-                long startTime = now + 14 * DateUtils.DAY_IN_MILLIS;
+                long startTime = bundle.getLong(AddObject.RETURN_DATE);
                 long endTime = startTime + 1;
 
                 event.put("dtstart", startTime);
