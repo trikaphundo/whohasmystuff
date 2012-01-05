@@ -259,7 +259,7 @@ public abstract class AbstractListIntent extends ListActivity {
             if (bundle.getString(AddObject.CALENDAR_ID) != null) {
                 ContentValues event = new ContentValues();
 
-                event.put("title", "Expected return of " + lentObject.description);
+                event.put("title", getString(R.string.expected_return) + " " + lentObject.description);
                 event.put("description", "Expecting the return of " + lentObject.description +
                         " from " + lentObject.personName);
 

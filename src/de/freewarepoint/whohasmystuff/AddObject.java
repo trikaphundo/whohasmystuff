@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import de.freewarepoint.whohasmystuff.database.OpenLendDbAdapter;
@@ -48,7 +47,6 @@ public class AddObject extends Activity {
     private int mReturnDay;
 
     private Date selectedDate;
-    private Date selectedExpectedReturnDate;
 
     private boolean addCalendarEntry;
 
@@ -104,6 +102,7 @@ public class AddObject extends Activity {
         mCancelButton = (Button) findViewById(R.id.cancel_button);
 		mDeleteButton = (Button) findViewById(R.id.delete_button);
 		mReturnedButton = (Button) findViewById(R.id.returned_button);
+        mPickDate = (Button) findViewById(R.id.pickDate);
         mPickReturnDate = (Button) findViewById(R.id.returnDate);
         mCalendarSpinner = (Spinner) findViewById(R.id.calendar_select);
 
@@ -199,7 +198,8 @@ public class AddObject extends Activity {
                     editor.commit();
 
                     bundle.putString(CALENDAR_ID, selectedCalendarId);
-                    bundle.putLong(RETURN_DATE, selectedExpectedReturnDate.getTime());
+                    c.set(mReturnYear, mReturnMonth, mReturnDay);
+                    bundle.putLong(RETURN_DATE, c.getTime().getTime());
                 }
 
                 Intent mIntent = new Intent();
@@ -266,7 +266,6 @@ public class AddObject extends Activity {
         originalName = bundle.getString(OpenLendDbAdapter.KEY_PERSON);
         originalPersonKey = bundle.getString(OpenLendDbAdapter.KEY_PERSON_KEY);
         selectedDate = new Date(bundle.getLong(OpenLendDbAdapter.KEY_DATE));
-        selectedExpectedReturnDate = new Date();
     }
 
     @Override
@@ -276,8 +275,6 @@ public class AddObject extends Activity {
 	}
 
     private void initializeDatePicker(Date date) {
-        mPickDate = (Button) findViewById(R.id.pickDate);
-
         mPickDate.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 showDialog(DATE_DIALOG_ID);
@@ -331,10 +328,8 @@ public class AddObject extends Activity {
             calendars.moveToFirst();
             int currentPosition = 0;
             do {
-                Log.e(AbstractListIntent.LOG_TAG, "Iterating: " + calendars.getString(calendars.getColumnIndex("_id")));
                 if (lastUsedCalendarId.equals(calendars.getString(calendars.getColumnIndex("_id")))) {
                     initialSpinnerPosition = currentPosition;
-                    Log.e(AbstractListIntent.LOG_TAG, "Initial: " + initialSpinnerPosition);
                 }
                 ++currentPosition;
             } while (calendars.moveToNext());
@@ -351,15 +346,14 @@ public class AddObject extends Activity {
     }
 
     private void updateDisplay() {
-
-        mPickDate = (Button) findViewById(R.id.pickDate);
-
-        Calendar c = Calendar.getInstance();
-        c.set(mYear, mMonth, mDay);
-
         final DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
-
+        Calendar c = Calendar.getInstance();
+        
+        c.set(mYear, mMonth, mDay);
         mPickDate.setText(df.format(c.getTime()));
+        
+        c.set(mReturnYear, mReturnMonth, mReturnDay);
+        mPickReturnDate.setText(df.format(c.getTime()));
     }
 
     @Override

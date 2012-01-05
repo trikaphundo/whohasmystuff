@@ -34,6 +34,7 @@
     <string name="day">day</string>
     <string name="today">Today</string>
     <string name="unknown">Unknown</string>
+    <string name="expected_return">Expected return of</string>
     <string name="no_calendar_selected_title">No calendar selected</string>
     <string name="no_calendar_selected_message">Please select a calendar.</string>
     <string name="sd_card_error_title">Unable to Access SD Card</string>
