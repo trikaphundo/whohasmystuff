@@ -104,6 +104,10 @@ public class AddObject extends Activity {
         mCancelButton = (Button) findViewById(R.id.cancel_button);
 		mDeleteButton = (Button) findViewById(R.id.delete_button);
 		mReturnedButton = (Button) findViewById(R.id.returned_button);
+        mPickReturnDate = (Button) findViewById(R.id.returnDate);
+        mCalendarSpinner = (Spinner) findViewById(R.id.calendar_select);
+
+        CheckBox mAddCalendarEntryCheckbox = (CheckBox) findViewById(R.id.add_calendar_checkbox);
         ImageButton selectPerson = (ImageButton) findViewById(R.id.choosePerson);
 
         mDbHelper = new OpenLendDbAdapter(this);
@@ -117,6 +121,7 @@ public class AddObject extends Activity {
 
         if (bundle.containsKey(OpenLendDbAdapter.KEY_ROWID)) {
             initalizeValuesFromBundle(bundle);
+            mAddCalendarEntryCheckbox.setVisibility(View.GONE);
         } else {
             selectedDate = new Date();
 			mDeleteButton.setVisibility(View.GONE);
@@ -133,10 +138,24 @@ public class AddObject extends Activity {
             }
         });
 
-        final CheckBox checkbox = (CheckBox) findViewById(R.id.add_calendar_checkbox);
-        checkbox.setOnClickListener(new View.OnClickListener() {
+        mAddCalendarEntryCheckbox.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 addCalendarEntry = ((CheckBox) v).isChecked();
+                if (addCalendarEntry) {
+                    mCalendarSpinner.setVisibility(View.VISIBLE);
+                    mPickReturnDate.setVisibility(View.VISIBLE);
+                    findViewById(R.id.select_calendar_separator).setVisibility(View.VISIBLE);
+                    findViewById(R.id.select_calendar_text).setVisibility(View.VISIBLE);
+                    findViewById(R.id.return_date_separator).setVisibility(View.VISIBLE);
+                    findViewById(R.id.return_date_text).setVisibility(View.VISIBLE);
+                } else {
+                    mCalendarSpinner.setVisibility(View.GONE);
+                    mPickReturnDate.setVisibility(View.GONE);
+                    findViewById(R.id.select_calendar_separator).setVisibility(View.GONE);
+                    findViewById(R.id.select_calendar_text).setVisibility(View.GONE);
+                    findViewById(R.id.return_date_separator).setVisibility(View.GONE);
+                    findViewById(R.id.return_date_text).setVisibility(View.GONE);
+                }
             }
         });
 
@@ -275,8 +294,6 @@ public class AddObject extends Activity {
     }
 
     private void initializeReturnDatePicker(Date date) {
-        mPickReturnDate = (Button) findViewById(R.id.returnDate);
-
         mPickReturnDate.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 showDialog(RETURN_DATE_DIALOG_ID);
@@ -323,7 +340,6 @@ public class AddObject extends Activity {
             } while (calendars.moveToNext());
         }
 
-        mCalendarSpinner = (Spinner) findViewById(R.id.calendar_select);
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item,
                 calendars, new String[] {"name"},new int[]{android.R.id.text1});
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
