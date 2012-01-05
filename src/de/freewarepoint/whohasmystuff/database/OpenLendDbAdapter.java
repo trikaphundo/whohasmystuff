@@ -85,7 +85,7 @@ public class OpenLendDbAdapter {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.w(LOG_TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
+            Log.i(LOG_TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
 
             if (oldVersion < 2) {
                 db.execSQL(CREATE_CALENDAR_ENTRY_COLUMN);
@@ -135,7 +135,6 @@ public class OpenLendDbAdapter {
 		initialValues.put(KEY_PERSON_KEY, lentObject.personKey);
         initialValues.put(KEY_BACK, lentObject.returned);
         if (lentObject.calendarEventURI != null) {
-            Log.e(LOG_TAG, "Storing " + lentObject.calendarEventURI.toString());
             initialValues.put(KEY_CALENDAR_ENTRY, lentObject.calendarEventURI.toString());
         }
 

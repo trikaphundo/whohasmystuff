@@ -1,3 +1,9 @@
+WhoHasMyStuff (1.0.3)
+
+  * Allow creation of calendar event for expected return of items
+
+-- Stephan Windmüller <stovocor@gmail.com>
+
 WhoHasMyStuff (1.0.2)
 
   * Fixed backup data for certain characters
