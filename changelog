@@ -1,3 +1,11 @@
+WhoHasMyStuff (1.0.4)
+
+  * Provide type selector (book, movie, money, ...) for each item
+  * Improved english translation
+  * Hide soft input when opening edit view
+
+-- Stephan Windmüller <stovocor@gmail.com>
+
 WhoHasMyStuff (1.0.3)
 
   * Allow creation of calendar event for expected return of items
