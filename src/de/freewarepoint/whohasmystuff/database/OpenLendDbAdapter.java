@@ -34,6 +34,7 @@ import static de.freewarepoint.whohasmystuff.AbstractListIntent.LOG_TAG;
 public class OpenLendDbAdapter {
 
     public static final String KEY_DESCRIPTION = "description";
+    public static final String KEY_TYPE = "type";
     public static final String KEY_DATE = "date";
     public static final String KEY_PERSON = "person";
 	public static final String KEY_PERSON_KEY = "person_key";
@@ -49,16 +50,19 @@ public class OpenLendDbAdapter {
      */
     private static final String LENTOBJECTS_DATABASE_CREATE =
         "create table lentobjects (" + KEY_ROWID + " integer primary key autoincrement, "
-        + KEY_DESCRIPTION + " text not null, " + KEY_DATE + " date not null, "
+        + KEY_DESCRIPTION + " text not null, " + KEY_TYPE + " integer, " + KEY_DATE + " date not null, "
         + KEY_PERSON + " text not null, " + KEY_PERSON_KEY + " text, "
 		+ KEY_BACK + " integer not null, " + KEY_CALENDAR_ENTRY + " text);";
 
     private static final String DATABASE_NAME = "data";
     private static final String LENTOBJECTS_DATABASE_TABLE = "lentobjects";
-    static final int DATABASE_VERSION = 2;
+    static final int DATABASE_VERSION = 3;
 
     private static final String CREATE_CALENDAR_ENTRY_COLUMN =
             "ALTER TABLE " + LENTOBJECTS_DATABASE_TABLE + " ADD COLUMN " + KEY_CALENDAR_ENTRY + " text";
+    
+    private static final String CREATE_TYPE_COLUMN =
+            "ALTER TABLE " + LENTOBJECTS_DATABASE_TABLE + " ADD COLUMN " + KEY_TYPE + " integer";
 
     private final Context mCtx;
 
@@ -75,8 +79,8 @@ public class OpenLendDbAdapter {
             Date now = new Date();
             String personName = "\"Who Has My Stuff?\" Test User";
 
-            createLentObject(db, "Example entry", now, personName, null, false);
-            createLentObject(db, "Press menu button to add entries", now, personName, null, false);
+            createLentObject(db, "Example entry", 0, now, personName, null, false);
+            createLentObject(db, "Press menu button to add entries", 0, now, personName, null, false);
         }
 
         public void createWithoutExampleData(SQLiteDatabase db) {
@@ -91,12 +95,17 @@ public class OpenLendDbAdapter {
                 db.execSQL(CREATE_CALENDAR_ENTRY_COLUMN);
             }
 
+            if (oldVersion < 3) {
+                db.execSQL(CREATE_TYPE_COLUMN);
+            }
+
         }
 
-        public long createLentObject(SQLiteDatabase db, String description, Date date,
+        public long createLentObject(SQLiteDatabase db, String description, int type, Date date,
                                      String personName, String personKey, boolean returned) {
             ContentValues initialValues = new ContentValues();
             initialValues.put(KEY_DESCRIPTION, description);
+            initialValues.put(KEY_TYPE, type);
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             initialValues.put(KEY_DATE, dateFormat.format(date));
             initialValues.put(KEY_PERSON, personName);
@@ -129,6 +138,7 @@ public class OpenLendDbAdapter {
     public long createLentObject(LentObject lentObject) {
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_DESCRIPTION, lentObject.description);
+        initialValues.put(KEY_TYPE, lentObject.type);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         initialValues.put(KEY_DATE, dateFormat.format(lentObject.date));
         initialValues.put(KEY_PERSON, lentObject.personName);
@@ -147,22 +157,23 @@ public class OpenLendDbAdapter {
 
 	public Cursor fetchAllObjects() {
 		return mDb.query(LENTOBJECTS_DATABASE_TABLE, new String[] {KEY_ROWID,
-				KEY_DESCRIPTION, KEY_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK, KEY_CALENDAR_ENTRY}, null, null, null, null, null);
+				KEY_DESCRIPTION, KEY_TYPE, KEY_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK, KEY_CALENDAR_ENTRY}, null, null, null, null, null);
 	}
 
     public Cursor fetchLentObjects() {
         return mDb.query(LENTOBJECTS_DATABASE_TABLE, new String[] {KEY_ROWID,
-                KEY_DESCRIPTION, KEY_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK, KEY_CALENDAR_ENTRY}, KEY_BACK + "=0", null, null, null, null);
+                KEY_DESCRIPTION, KEY_TYPE, KEY_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK, KEY_CALENDAR_ENTRY}, KEY_BACK + "=0", null, null, null, null);
     }
 
 	public Cursor fetchReturnedObjects() {
 		return mDb.query(LENTOBJECTS_DATABASE_TABLE, new String[] {KEY_ROWID,
-				KEY_DESCRIPTION, KEY_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK, KEY_CALENDAR_ENTRY}, KEY_BACK + "=1", null, null, null, null);
+				KEY_DESCRIPTION, KEY_TYPE, KEY_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK, KEY_CALENDAR_ENTRY}, KEY_BACK + "=1", null, null, null, null);
 	}
 
     public boolean updateLentObject(long rowId, LentObject lentObject) {
         ContentValues args = new ContentValues();
         args.put(KEY_DESCRIPTION, lentObject.description);
+        args.put(KEY_TYPE, lentObject.type);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         args.put(KEY_DATE, dateFormat.format(lentObject.date));
         args.put(KEY_PERSON, lentObject.personName);

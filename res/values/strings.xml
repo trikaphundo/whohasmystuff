@@ -8,12 +8,14 @@
     <string name="date">Date</string>
     <string name="returnDate">Expected return date</string>
     <string name="description">Description</string>
-    <string name="history_title">History: Returned Objects</string>
+    <string name="type">Type</string>
+    <string name="type_prompt">Please select the type of the lent item</string>
+    <string name="history_title">History: Returned Items</string>
     <string name="add_button">Add</string>
     <string name="edit_button">Save changes</string>
     <string name="delete_button">Delete</string>
-    <string name="add_title">Add New Lent Object</string>
-    <string name="edit_title">Edit Lent Object</string>
+    <string name="add_title">Add New Lent Item</string>
+    <string name="edit_title">Edit Lent Item</string>
     <string name="add_calendar_entry">Add Entry to Calendar</string>
     <string name="calendar">Calendar</string>
     <string name="calendar_prompt">Please select the calendar</string>
@@ -47,4 +49,12 @@
     <string name="database_export_success">Database saved to WhoHasMyStuff.xml</string>
     <string name="database_export_error">An error occured while writing the backup file!</string>
     <string name="database_import_error">An error occured while reading the backup file!</string>
+
+    <string-array name="type_array">
+        <item>Other</item>
+        <item>Book</item>
+        <item>Movie</item>
+        <item>CD</item>
+        <item>Money</item>
+    </string-array>
 </resources>

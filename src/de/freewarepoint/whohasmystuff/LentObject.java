@@ -7,6 +7,7 @@ import java.util.Date;
 public class LentObject {
 
     public String description;
+    public int type;
     public Date date;
     public String personName;
     public String personKey;

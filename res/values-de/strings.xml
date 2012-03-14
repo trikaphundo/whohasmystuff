@@ -8,6 +8,8 @@
     <string name="date">Datum</string>
     <string name="returnDate">Erwartetes Rückgabedatum</string>
     <string name="description">Beschreibung</string>
+    <string name="type">Typ</string>
+    <string name="type_prompt">Bitte wählen Sie den Typ der verliehenen Sache</string>
     <string name="history_title">Chronik: Zurückerhaltene Sachen</string>
     <string name="add_button">Hinzufügen</string>
     <string name="edit_button">Änderungen speichern</string>

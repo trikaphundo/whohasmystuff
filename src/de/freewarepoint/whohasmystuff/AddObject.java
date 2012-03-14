@@ -32,6 +32,7 @@ public class AddObject extends Activity {
     private Button mReturnedButton;
     private EditText mDescriptionText;
     private EditText mPersonName;
+    private Spinner mTypeSpinner;
     private Spinner mCalendarSpinner;
 
 	private String originalName;
@@ -97,6 +98,7 @@ public class AddObject extends Activity {
         setTitle(R.string.add_title);
 
         mDescriptionText = (EditText) findViewById(R.id.add_description);
+        mTypeSpinner = (Spinner) findViewById(R.id.type_spinner);
         mPersonName = (EditText) findViewById(R.id.personName);
         mAddButton = (Button) findViewById(R.id.add_button);
         mCancelButton = (Button) findViewById(R.id.cancel_button);
@@ -111,6 +113,11 @@ public class AddObject extends Activity {
 
         mDbHelper = new OpenLendDbAdapter(this);
         mDbHelper.open();
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this, R.array.type_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mTypeSpinner.setAdapter(adapter);
 
         Bundle bundle = getIntent().getExtras();
 
@@ -170,6 +177,7 @@ public class AddObject extends Activity {
                 }
 
                 bundle.putString(OpenLendDbAdapter.KEY_DESCRIPTION, mDescriptionText.getText().toString());
+                bundle.putInt(OpenLendDbAdapter.KEY_TYPE, mTypeSpinner.getSelectedItemPosition());
 
                 Calendar c = Calendar.getInstance();
                 c.set(mYear, mMonth, mDay);
@@ -262,6 +270,7 @@ public class AddObject extends Activity {
         mRowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);
 
         mDescriptionText.setText(bundle.getString(OpenLendDbAdapter.KEY_DESCRIPTION));
+        mTypeSpinner.setSelection(bundle.getInt(OpenLendDbAdapter.KEY_TYPE));
         mPersonName.setText(bundle.getString(OpenLendDbAdapter.KEY_PERSON));
         originalName = bundle.getString(OpenLendDbAdapter.KEY_PERSON);
         originalPersonKey = bundle.getString(OpenLendDbAdapter.KEY_PERSON_KEY);

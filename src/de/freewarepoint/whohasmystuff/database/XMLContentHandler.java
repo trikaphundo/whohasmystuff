@@ -46,6 +46,9 @@ public class XMLContentHandler extends DefaultHandler {
             if ("description".equals(name)) {
                 lentObject.description = attributes.getValue(i);
             }
+            else if ("type".equals(name)) {
+                lentObject.type = Integer.parseInt(attributes.getValue(i));
+            }
             else if ("date".equals(name)) {
                 lentObject.date = new Date(Long.parseLong(attributes.getValue(i)));
             }

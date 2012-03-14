@@ -77,6 +77,8 @@ public abstract class AbstractListIntent extends ListActivity {
         extras.putLong(OpenLendDbAdapter.KEY_ROWID, id);
         extras.putString(OpenLendDbAdapter.KEY_DESCRIPTION, c.getString(
                 c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_DESCRIPTION)));
+        extras.putInt(OpenLendDbAdapter.KEY_TYPE, c.getInt(
+                c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_TYPE)));
         try {
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = df.parse(c.getString(c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_DATE)));
@@ -107,7 +109,7 @@ public abstract class AbstractListIntent extends ListActivity {
         lentObjects.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
 
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-                if (columnIndex == 2) {
+                if (columnIndex == 3) {
                     Date lentDate;
                     try {
                         lentDate = df.parse(cursor.getString(columnIndex));
@@ -312,6 +314,7 @@ public abstract class AbstractListIntent extends ListActivity {
         LentObject lentObject = new LentObject();
 
         lentObject.description = bundle.getString(OpenLendDbAdapter.KEY_DESCRIPTION);
+        lentObject.type = bundle.getInt(OpenLendDbAdapter.KEY_TYPE);
         lentObject.date = new Date(bundle.getLong(OpenLendDbAdapter.KEY_DATE));
         lentObject.personName = bundle.getString(OpenLendDbAdapter.KEY_PERSON);
         lentObject.personKey = bundle.getString(OpenLendDbAdapter.KEY_PERSON_KEY);

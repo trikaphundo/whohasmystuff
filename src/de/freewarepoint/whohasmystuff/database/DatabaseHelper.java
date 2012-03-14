@@ -68,6 +68,9 @@ public class DatabaseHelper {
 
 				String description = c.getString(c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_DESCRIPTION));
 				sb.append(" description=\"").append(replace(description)).append("\"");
+                
+                int type = c.getInt(c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_TYPE));
+                sb.append(" type=\"").append(type).append("\"");
 
 				Date date = df.parse(c.getString(c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_DATE)));
 				sb.append(" date=\"").append(date.getTime()).append("\"");
