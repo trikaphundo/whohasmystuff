@@ -1,3 +1,10 @@
+WhoHasMyStuff (1.0.5)
+
+  * Added brazilian portuguese translation
+  * Added hebrew translation
+
+-- Stephan Windmüller <stovocor@gmail.com>
+
 WhoHasMyStuff (1.0.4)
 
   * Provide type selector (book, movie, money, ...) for each item
