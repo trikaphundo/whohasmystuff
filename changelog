@@ -1,3 +1,9 @@
+WhoHasMyStuff (1.0.6)
+
+  * Fixed crash on ICS devices
+
+-- Stephan Windmüller <stovocor@gmail.com>
+
 WhoHasMyStuff (1.0.5)
 
   * Added brazilian portuguese translation
