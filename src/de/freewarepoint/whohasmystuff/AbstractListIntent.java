@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.*;
@@ -20,6 +21,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 public abstract class AbstractListIntent extends ListActivity {
 
@@ -273,6 +275,11 @@ public abstract class AbstractListIntent extends ListActivity {
                 event.put("allDay", 1);
 
                 event.put("calendar_id", bundle.getString(AddObject.CALENDAR_ID));
+
+                if (Integer.parseInt(Build.VERSION.SDK) >= 14) {
+                    TimeZone timeZone = TimeZone.getDefault();
+                    event.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone.getID());
+                }
 
                 Uri eventsLocation;
 

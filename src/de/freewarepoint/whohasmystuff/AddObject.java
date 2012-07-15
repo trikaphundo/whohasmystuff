@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.provider.ContactsContract;
 import android.text.format.DateUtils;
 import android.view.View;
@@ -316,17 +318,18 @@ public class AddObject extends Activity {
     }
     
     private void initializeCalendarSpinner() {
-        Uri calendarsLocation;
 
-        if (Integer.parseInt(Build.VERSION.SDK) >= 8 ) {
-            calendarsLocation = Uri.parse("content://com.android.calendar/calendars");
+        Cursor calendars;
+        String nameColumn;
+
+        if (Integer.parseInt(Build.VERSION.SDK) >= 14) {
+            calendars = getCalendarsForICS();
+            nameColumn = CalendarContract.Calendars.CALENDAR_DISPLAY_NAME;
         }
         else {
-            calendarsLocation = Uri.parse("content://calendar/calendars");
+            calendars = getCalendarsBeforeICS();
+            nameColumn = "name";
         }
-
-        String[] columns = new String[] { "_id", "name" };
-        Cursor calendars = managedQuery(calendarsLocation, columns, "selected=1 AND name is not null", null, null);
 
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         String lastUsedCalendarId = preferences.getString(LAST_USED_CALENDAR, null);
@@ -345,13 +348,40 @@ public class AddObject extends Activity {
         }
 
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item,
-                calendars, new String[] {"name"},new int[]{android.R.id.text1});
+                calendars, new String[] {nameColumn},new int[]{android.R.id.text1});
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mCalendarSpinner.setAdapter(adapter);
 
         if (initialSpinnerPosition != null) {
             mCalendarSpinner.setSelection(initialSpinnerPosition);
         }
+    }
+
+    // Projection array. Creating indices for this array instead of doing
+    // dynamic lookups improves performance.
+    public static final String[] EVENT_PROJECTION = new String[] {
+            CalendarContract.Calendars._ID,
+            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME
+    };
+
+    private Cursor getCalendarsForICS() {
+        ContentResolver cr = getContentResolver();
+        Uri uri = CalendarContract.Calendars.CONTENT_URI;
+        return cr.query(uri, EVENT_PROJECTION, null, null, null);
+    }
+
+    private Cursor getCalendarsBeforeICS() {
+        Uri calendarsLocation;
+
+        if (Integer.parseInt(Build.VERSION.SDK) >= 8 ) {
+            calendarsLocation = Uri.parse("content://com.android.calendar/calendars");
+        }
+        else {
+            calendarsLocation = Uri.parse("content://calendar/calendars");
+        }
+
+        String[] columns = new String[] { "_id", "name" };
+        return managedQuery(calendarsLocation, columns, "selected=1 AND name is not null", null, null);
     }
 
     private void updateDisplay() {
