@@ -20,7 +20,9 @@ import de.freewarepoint.whohasmystuff.database.OpenLendDbAdapter;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 public abstract class AbstractListIntent extends ListActivity {
@@ -104,7 +106,7 @@ public abstract class AbstractListIntent extends ListActivity {
 
     protected void fillData() {
         final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        final Date now = new Date();
+        final Calendar now = new GregorianCalendar();
 
 		SimpleCursorAdapter lentObjects = getLentObjects();
 
@@ -112,9 +114,10 @@ public abstract class AbstractListIntent extends ListActivity {
 
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
                 if (columnIndex == 3) {
-                    Date lentDate;
+                    Calendar lentDate = new GregorianCalendar();
                     try {
-                        lentDate = df.parse(cursor.getString(columnIndex));
+                        long time = df.parse(cursor.getString(columnIndex)).getTime();
+                        lentDate.setTimeInMillis(time);
                     } catch (ParseException e) {
                         throw new IllegalStateException("Unable to parse date " + cursor.getString(columnIndex));
                     }
@@ -133,16 +136,17 @@ public abstract class AbstractListIntent extends ListActivity {
         setListAdapter(lentObjects);
     }
     
-    private String getTimeDifference(Date lentTime, Date now) {
-        if (now.before(lentTime)) {
+    private String getTimeDifference(Calendar lentDate, Calendar now) {
+        if (now.before(lentDate)) {
             return "0 days";
         }
 
         // Check if one or more years have passed
 
-        int differenceInYears = now.getYear() - lentTime.getYear();
-        Date lentTimeInSameYear = new Date(lentTime.getTime());
-        lentTimeInSameYear.setYear(now.getYear());
+        int differenceInYears = now.get(Calendar.YEAR) - lentDate.get(Calendar.YEAR);
+        Calendar lentTimeInSameYear = new GregorianCalendar();
+        lentTimeInSameYear.setTimeInMillis(lentDate.getTimeInMillis());
+        lentTimeInSameYear.set(Calendar.YEAR, now.get(Calendar.YEAR));
         if (now.before(lentTimeInSameYear)) {
             differenceInYears--;
         }
@@ -156,12 +160,13 @@ public abstract class AbstractListIntent extends ListActivity {
 
         // Check if one or more months have passed
 
-        int monthsOfLentDate = lentTime.getYear() * 12 + lentTime.getMonth();
-        int monthsNow = now.getYear() * 12 + now.getMonth();
+        int monthsOfLentDate = lentDate.get(Calendar.YEAR) * 12 + lentDate.get(Calendar.MONTH);
+        int monthsNow = now.get(Calendar.YEAR) * 12 + now.get(Calendar.MONTH);
         int differenceInMonths = monthsNow - monthsOfLentDate;
-        Date lentTimeInSameMonth = new Date(lentTime.getTime());
-        lentTimeInSameMonth.setYear(now.getYear());
-        lentTimeInSameMonth.setMonth(now.getMonth());
+        Calendar lentTimeInSameMonth = new GregorianCalendar();
+        lentTimeInSameMonth.setTimeInMillis(lentDate.getTimeInMillis());
+        lentTimeInSameMonth.set(Calendar.YEAR, now.get(Calendar.YEAR));
+        lentTimeInSameMonth.set(Calendar.MONTH, now.get(Calendar.MONTH));
         if (now.before(lentTimeInSameMonth)) {
             differenceInMonths--;
         }
@@ -173,7 +178,7 @@ public abstract class AbstractListIntent extends ListActivity {
             return differenceInMonths + " " + getString(R.string.month);
         }
 
-        long difference = now.getTime() - lentTime.getTime();
+        long difference = now.getTimeInMillis() - lentDate.getTimeInMillis();
         int differenceInDays = (int) (difference / DateUtils.DAY_IN_MILLIS);
         int differenceInWeeks = differenceInDays / 7;
 
