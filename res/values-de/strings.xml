@@ -36,6 +36,7 @@
     <string name="day">Tag</string>
     <string name="today">Heute</string>
     <string name="unknown">Unbekannt</string>
+    <string name="choose_person">Person wählen</string>
     <string name="expected_return">Erwartete Rückgabe von</string>
     <string name="no_calendar_selected_title">Kein Kalender ausgewählt</string>
     <string name="no_calendar_selected_message">Bitte wählen Sie einen Kalender.</string>

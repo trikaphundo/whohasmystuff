@@ -103,10 +103,6 @@ public class ListLentObjects extends AbstractListIntent {
         }
     }
 
-    protected void fillData() {
-        super.fillData();
-    }
-
     private void askForExportConfirmation() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setIcon(android.R.drawable.ic_dialog_alert);

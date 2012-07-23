@@ -276,14 +276,14 @@ public abstract class AbstractListIntent extends ListActivity {
 
                 event.put("calendar_id", bundle.getString(AddObject.CALENDAR_ID));
 
-                if (Integer.parseInt(Build.VERSION.SDK) >= 14) {
+                if (Build.VERSION.SDK_INT >= 14) {
                     TimeZone timeZone = TimeZone.getDefault();
                     event.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone.getID());
                 }
 
                 Uri eventsLocation;
 
-                if (Integer.parseInt(Build.VERSION.SDK) >= 8 ) {
+                if (Build.VERSION.SDK_INT >= 8) {
                     eventsLocation = Uri.parse("content://com.android.calendar/events");
                 }
                 else {

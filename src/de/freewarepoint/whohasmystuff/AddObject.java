@@ -68,7 +68,7 @@ public class AddObject extends Activity {
 
 	private OpenLendDbAdapter mDbHelper;
 
-    private DatePickerDialog.OnDateSetListener mDateSetListener =
+    private final DatePickerDialog.OnDateSetListener mDateSetListener =
             new DatePickerDialog.OnDateSetListener() {
 
                 public void onDateSet(DatePicker view, int year,
@@ -322,7 +322,7 @@ public class AddObject extends Activity {
         Cursor calendars;
         String nameColumn;
 
-        if (Integer.parseInt(Build.VERSION.SDK) >= 14) {
+        if (Build.VERSION.SDK_INT >= 14) {
             calendars = getCalendarsForICS();
             nameColumn = CalendarContract.Calendars.CALENDAR_DISPLAY_NAME;
         }
@@ -373,7 +373,7 @@ public class AddObject extends Activity {
     private Cursor getCalendarsBeforeICS() {
         Uri calendarsLocation;
 
-        if (Integer.parseInt(Build.VERSION.SDK) >= 8 ) {
+        if (Build.VERSION.SDK_INT >= 8) {
             calendarsLocation = Uri.parse("content://com.android.calendar/calendars");
         }
         else {
