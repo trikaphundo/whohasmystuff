@@ -1,3 +1,10 @@
+WhoHasMyStuff (1.0.7)
+
+  * Added french translation
+  * Fixed sorting order
+
+-- Stephan Windmüller <stovocor@gmail.com>
+
 WhoHasMyStuff (1.0.6)
 
   * Fixed crash on ICS devices
