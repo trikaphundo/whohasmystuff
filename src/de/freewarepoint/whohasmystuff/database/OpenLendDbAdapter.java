@@ -157,17 +157,17 @@ public class OpenLendDbAdapter {
 
 	public Cursor fetchAllObjects() {
 		return mDb.query(LENTOBJECTS_DATABASE_TABLE, new String[] {KEY_ROWID,
-				KEY_DESCRIPTION, KEY_TYPE, KEY_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK, KEY_CALENDAR_ENTRY}, null, null, null, null, null);
+				KEY_DESCRIPTION, KEY_TYPE, KEY_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK, KEY_CALENDAR_ENTRY}, null, null, null, null, KEY_DATE + " ASC");
 	}
 
     public Cursor fetchLentObjects() {
         return mDb.query(LENTOBJECTS_DATABASE_TABLE, new String[] {KEY_ROWID,
-                KEY_DESCRIPTION, KEY_TYPE, KEY_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK, KEY_CALENDAR_ENTRY}, KEY_BACK + "=0", null, null, null, null);
+                KEY_DESCRIPTION, KEY_TYPE, KEY_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK, KEY_CALENDAR_ENTRY}, KEY_BACK + "=0", null, null, null, KEY_DATE + " ASC");
     }
 
 	public Cursor fetchReturnedObjects() {
 		return mDb.query(LENTOBJECTS_DATABASE_TABLE, new String[] {KEY_ROWID,
-				KEY_DESCRIPTION, KEY_TYPE, KEY_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK, KEY_CALENDAR_ENTRY}, KEY_BACK + "=1", null, null, null, null);
+				KEY_DESCRIPTION, KEY_TYPE, KEY_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK, KEY_CALENDAR_ENTRY}, KEY_BACK + "=1", null, null, null, KEY_DATE + " ASC");
 	}
 
     public boolean updateLentObject(long rowId, LentObject lentObject) {
