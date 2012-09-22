@@ -1,5 +1,5 @@
-Who Has My Stuff?
-=================
+Android-App: Who Has My Stuff?
+==============================
 
 Did you ever search for a book, wondering who might have borrowed it from you?
 Do you often forget how much money people are owing you?
