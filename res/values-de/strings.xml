@@ -34,6 +34,7 @@
     <string name="week">Woche</string>
     <string name="days">Tage</string>
     <string name="day">Tag</string>
+    <string name="yesterday">Gestern</string>
     <string name="today">Heute</string>
     <string name="unknown">Unbekannt</string>
     <string name="choose_person">Person wählen</string>

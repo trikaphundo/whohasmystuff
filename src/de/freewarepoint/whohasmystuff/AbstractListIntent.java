@@ -178,6 +178,8 @@ public abstract class AbstractListIntent extends ListActivity {
             return differenceInMonths + " " + getString(R.string.month);
         }
 
+        // Check if one or more weeks have passed
+
         long difference = now.getTimeInMillis() - lentDate.getTimeInMillis();
         int differenceInDays = (int) (difference / DateUtils.DAY_IN_MILLIS);
         int differenceInWeeks = differenceInDays / 7;
@@ -188,14 +190,22 @@ public abstract class AbstractListIntent extends ListActivity {
         else if (differenceInWeeks > 0) {
             return differenceInWeeks + " " + getString(R.string.week);
         }
-        else if (differenceInDays > 1) {
+
+        // Check if one or more days have passed
+
+        if (differenceInDays > 1) {
             return differenceInDays + " " + getString(R.string.days);
         }
-        else if (differenceInDays > 0) {
-            return differenceInDays + " " + getString(R.string.day);
+        else if (differenceInDays == 1) {
+            return getString(R.string.yesterday);
         }
         else if (differenceInDays == 0) {
-            return getString(R.string.today);
+            if (now.get(Calendar.DAY_OF_MONTH) == lentDate.get(Calendar.DAY_OF_MONTH)) {
+                return getString(R.string.today);
+            }
+            else {
+                return getString(R.string.yesterday);
+            }
         }
         else {
             return getString(R.string.unknown);
