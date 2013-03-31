@@ -258,15 +258,16 @@ public class AddObject extends Activity {
         int actionType = bundle.getInt(ACTION_TYPE);
         if (actionType == ACTION_EDIT_LENT || actionType == ACTION_EDIT_RETURNED) {
             setTitle(R.string.edit_title);
-            mAddButton.setText(R.string.edit_button);
             mCancelButton.setVisibility(View.GONE);
         }
 
         if (actionType == ACTION_EDIT_LENT) {
             mDeleteButton.setVisibility(View.GONE);
+            mAddButton.setText(R.string.edit_button);
         }
         else if (actionType == ACTION_EDIT_RETURNED) {
             mReturnedButton.setVisibility(View.GONE);
+            mAddButton.setText(R.string.mark_as_lent_button);
         }
 
         mRowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);

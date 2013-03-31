@@ -13,6 +13,7 @@
     <string name="history_title">History: Returned Items</string>
     <string name="add_button">Add</string>
     <string name="edit_button">Save changes</string>
+    <string name="mark_as_lent_button">Lend again</string>
     <string name="delete_button">Delete</string>
     <string name="add_title">Add New Lent Item</string>
     <string name="edit_title">Edit Lent Item</string>

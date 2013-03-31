@@ -14,6 +14,11 @@ public class ShowHistory extends AbstractListIntent {
 		return AddObject.ACTION_EDIT_RETURNED;
 	}
 
+    @Override
+    protected boolean redirectToDefaultListAfterEdit() {
+        return true;
+    }
+
 	@Override
 	protected Cursor getDisplayedObjects() {
 		return mDbHelper.fetchReturnedObjects();

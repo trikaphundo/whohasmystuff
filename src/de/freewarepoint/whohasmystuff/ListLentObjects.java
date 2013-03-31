@@ -23,7 +23,12 @@ public class ListLentObjects extends AbstractListIntent {
 		return AddObject.ACTION_EDIT_LENT;
 	}
 
-	@Override
+    @Override
+    protected boolean redirectToDefaultListAfterEdit() {
+        return false;
+    }
+
+    @Override
 	protected Cursor getDisplayedObjects() {
 		return mDbHelper.fetchLentObjects();
 	}

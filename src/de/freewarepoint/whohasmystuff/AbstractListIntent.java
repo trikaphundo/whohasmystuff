@@ -29,7 +29,8 @@ public abstract class AbstractListIntent extends ListActivity {
 
     private static final int SUBMENU_EDIT = SubMenu.FIRST;
     private static final int SUBMENU_MARK_AS_RETURNED = SubMenu.FIRST + 1;
-    private static final int SUBMENU_DELETE = SubMenu.FIRST + 2;
+    private static final int SUBMENU_LEND_AGAIN = SubMenu.FIRST + 2;
+    private static final int SUBMENU_DELETE = SubMenu.FIRST + 3;
 
     public static final int ACTION_ADD = 1;
     public static final int ACTION_EDIT = 2;
@@ -103,6 +104,8 @@ public abstract class AbstractListIntent extends ListActivity {
     }
 
 	protected abstract int getEditAction();
+
+    protected abstract boolean redirectToDefaultListAfterEdit();
 
     protected void fillData() {
         final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -238,9 +241,14 @@ public abstract class AbstractListIntent extends ListActivity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
         menu.add(Menu.NONE, SUBMENU_EDIT, Menu.NONE, R.string.submenu_edit);
+
         if (isMarkAsReturnedAvailable()) {
             menu.add(Menu.NONE, SUBMENU_MARK_AS_RETURNED, Menu.NONE, R.string.submenu_mark_as_returned);
         }
+        else {
+            menu.add(Menu.NONE, SUBMENU_LEND_AGAIN, Menu.NONE, R.string.mark_as_lent_button);
+        }
+
         menu.add(Menu.NONE, SUBMENU_DELETE, Menu.NONE, R.string.submenu_delete);
     }
 
@@ -257,7 +265,7 @@ public abstract class AbstractListIntent extends ListActivity {
         }
         int id = (int) getListAdapter().getItemId(info.position);
 
-        if (item.getItemId() == SUBMENU_EDIT) {
+        if (item.getItemId() == SUBMENU_EDIT || item.getItemId() == SUBMENU_LEND_AGAIN) {
             launchEditActivity(info.position, id);
         } else if (item.getItemId() == SUBMENU_MARK_AS_RETURNED) {
             mDbHelper.markLentObjectAsReturned(id);
@@ -314,6 +322,11 @@ public abstract class AbstractListIntent extends ListActivity {
             } else if (requestCode == ACTION_EDIT) {
                 Long rowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);
                 mDbHelper.updateLentObject(rowId, lentObject);
+                mDbHelper.markReturnedObjectAsLentAgain(rowId);
+                if (redirectToDefaultListAfterEdit()) {
+                    Intent intent = new Intent(this, ListLentObjects.class);
+                    startActivity(intent);
+                }
             }
 
             fillData();

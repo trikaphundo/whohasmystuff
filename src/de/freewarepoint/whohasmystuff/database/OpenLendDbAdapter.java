@@ -188,6 +188,12 @@ public class OpenLendDbAdapter {
 		return updateLentObject(rowId, values);
 	}
 
+    public boolean markReturnedObjectAsLentAgain(long rowId) {
+        ContentValues values = new ContentValues();
+        values.put(KEY_BACK, false);
+        return updateLentObject(rowId, values);
+    }
+
 	private boolean updateLentObject(long rowId, ContentValues values) {
 		return mDb.update(LENTOBJECTS_DATABASE_TABLE, values, KEY_ROWID + "=" + rowId, null) > 0;
 	}
