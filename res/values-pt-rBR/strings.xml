@@ -35,8 +35,10 @@
   <string name="week">semana</string>
   <string name="days">dias</string>
   <string name="day">dia</string>
+  <string name="yesterday">Ontem</string>
   <string name="today">Hoje</string>
   <string name="unknown">Desconhecido</string>
+  <string name="choose_person">Escolha a pessoa</string>
   <string name="expected_return">Esperando devolução de</string>
   <string name="no_calendar_selected_title">Nenhum calendário selecionado</string>
   <string name="no_calendar_selected_message">Selecione um calendário.</string>

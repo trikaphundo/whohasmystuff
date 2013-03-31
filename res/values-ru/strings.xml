@@ -6,7 +6,7 @@
   <string name="export_button">Резервировать</string>
   <string name="import_button">Восстановить</string>
   <string name="history_button">История</string>
-  <string name="date">Вернуть до</string>
+  <string name="date">Когда</string>
   <string name="returnDate">Ожидаемая дата возврата</string>
   <string name="description">Описание</string>
   <string name="type">Категория</string>
@@ -14,6 +14,7 @@
   <string name="history_title">История: Возвращено</string>
   <string name="add_button">Готово</string>
   <string name="edit_button">Сохранить изменения</string>
+  <string name="mark_as_lent_button">Повторить ещё раз</string>
   <string name="delete_button">Удалить</string>
   <string name="add_title">Создание записи</string>
   <string name="edit_title">Редактирование записи</string>
