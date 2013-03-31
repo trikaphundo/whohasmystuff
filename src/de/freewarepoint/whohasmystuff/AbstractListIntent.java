@@ -95,7 +95,7 @@ public abstract class AbstractListIntent extends ListActivity {
         extras.putString(OpenLendDbAdapter.KEY_PERSON, c.getString(
                 c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_PERSON)));
 		extras.putString(OpenLendDbAdapter.KEY_PERSON_KEY, c.getString(
-				c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_PERSON_KEY)));
+                c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_PERSON_KEY)));
 
         Intent intent = new Intent(this, AddObject.class);
         intent.setAction(Intent.ACTION_EDIT);
@@ -281,7 +281,7 @@ public abstract class AbstractListIntent extends ListActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             Bundle bundle = data.getExtras();
-            LentObject lentObject = createLentObjectFromBundle(bundle);
+            LentObject lentObject = new LentObject(bundle);
 
             if (bundle.getString(AddObject.CALENDAR_ID) != null) {
                 ContentValues event = new ContentValues();
@@ -345,15 +345,4 @@ public abstract class AbstractListIntent extends ListActivity {
 		}
     }
 
-    private LentObject createLentObjectFromBundle(Bundle bundle) {
-        LentObject lentObject = new LentObject();
-
-        lentObject.description = bundle.getString(OpenLendDbAdapter.KEY_DESCRIPTION);
-        lentObject.type = bundle.getInt(OpenLendDbAdapter.KEY_TYPE);
-        lentObject.date = new Date(bundle.getLong(OpenLendDbAdapter.KEY_DATE));
-        lentObject.personName = bundle.getString(OpenLendDbAdapter.KEY_PERSON);
-        lentObject.personKey = bundle.getString(OpenLendDbAdapter.KEY_PERSON_KEY);
-
-        return lentObject;
-    }
 }

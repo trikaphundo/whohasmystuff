@@ -1,10 +1,24 @@
 package de.freewarepoint.whohasmystuff;
 
 import android.net.Uri;
+import android.os.Bundle;
+import de.freewarepoint.whohasmystuff.database.OpenLendDbAdapter;
 
 import java.util.Date;
 
 public class LentObject {
+
+    public LentObject() {
+        // Empty constructor
+    }
+
+    public LentObject(Bundle bundle) {
+        description = bundle.getString(OpenLendDbAdapter.KEY_DESCRIPTION);
+        type = bundle.getInt(OpenLendDbAdapter.KEY_TYPE);
+        date = new Date(bundle.getLong(OpenLendDbAdapter.KEY_DATE));
+        personName = bundle.getString(OpenLendDbAdapter.KEY_PERSON);
+        personKey = bundle.getString(OpenLendDbAdapter.KEY_PERSON_KEY);
+    }
 
     public String description;
     public int type;
