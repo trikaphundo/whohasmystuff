@@ -6,6 +6,7 @@
     <string name="import_button">Restore</string>
     <string name="history_button">History</string>
     <string name="date">Date</string>
+    <string name="lent_on_date">Lent on</string>
     <string name="returnDate">Expected return date</string>
     <string name="description">Description</string>
     <string name="type">Type</string>

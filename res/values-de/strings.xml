@@ -7,6 +7,7 @@
   <string name="import_button">Wiederherstellen</string>
   <string name="history_button">Chronik</string>
   <string name="date">Datum</string>
+  <string name="lent_on_date">Verliehen am</string>
   <string name="returnDate">Erwartetes Rückgabedatum</string>
   <string name="description">Beschreibung</string>
   <string name="type">Typ</string>

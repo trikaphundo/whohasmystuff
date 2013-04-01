@@ -7,6 +7,7 @@
   <string name="import_button">Відновити</string>
   <string name="history_button">Історія</string>
   <string name="date">Дата</string>
+  <string name="lent_on_date">Позичено на дату </string>
   <string name="returnDate">Очікувана дати повернення</string>
   <string name="description">Опис</string>
   <string name="type">Тип</string>
