@@ -1,3 +1,14 @@
+WhoHasMyStuff (1.0.10)
+
+  * Updated translations
+  * Added Hungarian translation (thanks to andriykopanytsia)
+  * Added Russian translation (thanks to Sergey Kondakov)
+  * Show correct duration if item was lent yesterday
+  * Option to reuse items from history
+  * Clarify usage of date field when adding new items
+
+-- Stephan Windmüller <stovocor@gmail.com>
+
 WhoHasMyStuff (1.0.9)
 
   * Updated translations
