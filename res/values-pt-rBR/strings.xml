@@ -7,6 +7,7 @@
   <string name="import_button">Restaurar</string>
   <string name="history_button">Histórico</string>
   <string name="date">Data</string>
+  <string name="lent_on_date">Emprestado em</string>
   <string name="returnDate">Data esperada de devolução</string>
   <string name="description">Descrição</string>
   <string name="type">Tipo</string>
@@ -14,6 +15,7 @@
   <string name="history_title">Histórico: Itens Devolvidos</string>
   <string name="add_button">Adicionar</string>
   <string name="edit_button">Salvar alterações</string>
+  <string name="mark_as_lent_button">Emprestar novamente</string>
   <string name="delete_button">Excluir</string>
   <string name="add_title">Adicionar Novo Item Emprestado</string>
   <string name="edit_title">Editar Item Emprestado</string>
