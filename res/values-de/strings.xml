@@ -56,7 +56,7 @@
   <string name="database_import_error">Ein Fehler ist während der Wiederherstellung aufgetreten!</string>
   <string name="restore_on_first_start">Sicherungsdatei gefunden. Wiederherstellen?</string>
   <string name="restore_on_first_start_yes">Ja, wiederherstellen</string>
-  <string name="restore_on_first_start_no">No, Beispieldaten erstellen</string>
+  <string name="restore_on_first_start_no">Nein, Beispieldaten erstellen</string>
   <string-array name="type_array">
     <item>Sonstiges</item>
     <item>Buch</item>
