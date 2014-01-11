@@ -51,8 +51,8 @@
     <string name="database_import_title">Database Restore</string>
     <string name="database_import_message">Restoring the database will overwrite changes since the last backup. Are you sure?</string>
     <string name="database_export_success">Database saved to WhoHasMyStuff.xml</string>
-    <string name="database_export_error">An error occured while writing the backup file!</string>
-    <string name="database_import_error">An error occured while reading the backup file!</string>
+    <string name="database_export_error">An error occcured while writing the backup file!</string>
+    <string name="database_import_error">An error occcured while reading the backup file!</string>
     <string name="restore_on_first_start">Backup file detected. Restore?</string>
     <string name="restore_on_first_start_yes">Yes, restore</string>
     <string name="restore_on_first_start_no">No, create example data</string>
