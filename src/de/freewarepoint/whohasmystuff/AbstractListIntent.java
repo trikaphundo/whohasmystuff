@@ -1,8 +1,11 @@
 package de.freewarepoint.whohasmystuff;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -15,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import de.freewarepoint.whohasmystuff.database.DatabaseHelper;
 import de.freewarepoint.whohasmystuff.database.OpenLendDbAdapter;
 
 import java.text.DateFormat;
@@ -39,6 +43,7 @@ public abstract class AbstractListIntent extends ListActivity {
 	public static final int RESULT_RETURNED = 3;
 
     public static final String LOG_TAG = "WhoHasMyStuff";
+    private static final String  FIRST_START = "FirstStart";
 
     protected OpenLendDbAdapter mDbHelper;
     private Cursor mLentObjectCursor;
@@ -53,6 +58,39 @@ public abstract class AbstractListIntent extends ListActivity {
         mDbHelper = new OpenLendDbAdapter(this);
         mDbHelper.open();
 
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        boolean firstStart = preferences.getBoolean(FIRST_START, true);
+
+        if (firstStart) {
+            if (DatabaseHelper.existsBackupFile()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(R.string.restore_on_first_start);
+
+                builder.setPositiveButton(R.string.restore_on_first_start_yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        DatabaseHelper.importDatabaseFromXML(mDbHelper);
+                        fillData();
+                    }
+                });
+
+                builder.setNegativeButton(R.string.restore_on_first_start_no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        createExampleData();
+                        fillData();
+                    }
+                });
+                builder.create().show();
+            }
+            else {
+                createExampleData();
+                fillData();
+            }
+        }
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(FIRST_START, false);
+        editor.commit();
+
         fillData();
 
         ListView listView = getListView();
@@ -66,7 +104,25 @@ public abstract class AbstractListIntent extends ListActivity {
         registerForContextMenu(listView);
     }
 
-	@Override
+    private void createExampleData() {
+        Date now = new Date();
+        String personName = "\"Who Has My Stuff?\" Test User";
+
+        LentObject firstObject = new LentObject();
+        firstObject.description = "Example entry";
+        firstObject.date = now;
+        firstObject.personName = personName;
+
+        LentObject secondObject = new LentObject();
+        secondObject.description = "Press menu button to add entries";
+        secondObject.date = now;
+        secondObject.personName = personName;
+
+        mDbHelper.createLentObject(firstObject);
+        mDbHelper.createLentObject(secondObject);
+    }
+
+    @Override
 	public void onDestroy() {
 		super.onDestroy();
 		mDbHelper.close();
