@@ -18,16 +18,18 @@ package de.freewarepoint.whohasmystuff.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import de.freewarepoint.whohasmystuff.AbstractListIntent;
 import de.freewarepoint.whohasmystuff.LentObject;
+import de.freewarepoint.whohasmystuff.ListLentObjects;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import static de.freewarepoint.whohasmystuff.AbstractListIntent.LOG_TAG;
 
@@ -68,13 +70,22 @@ public class OpenLendDbAdapter {
 
     private static class DatabaseHelper extends SQLiteOpenHelper {
 
+        final Context context;
+
         DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
+            this.context = context;
         }
 
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(LENTOBJECTS_DATABASE_CREATE);
+
+            SharedPreferences preferences =
+                    context.getSharedPreferences(ListLentObjects.class.getSimpleName(), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean(AbstractListIntent.FIRST_START, true);
+            editor.commit();
         }
 
         public void createWithoutExampleData(SQLiteDatabase db) {

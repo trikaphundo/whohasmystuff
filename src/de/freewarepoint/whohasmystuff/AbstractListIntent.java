@@ -43,7 +43,7 @@ public abstract class AbstractListIntent extends ListActivity {
 	public static final int RESULT_RETURNED = 3;
 
     public static final String LOG_TAG = "WhoHasMyStuff";
-    private static final String  FIRST_START = "FirstStart";
+    public static final String FIRST_START = "FirstStart";
 
     protected OpenLendDbAdapter mDbHelper;
     private Cursor mLentObjectCursor;
@@ -59,7 +59,7 @@ public abstract class AbstractListIntent extends ListActivity {
         mDbHelper.open();
 
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        boolean firstStart = preferences.getBoolean(FIRST_START, true);
+        boolean firstStart = preferences.getBoolean(FIRST_START, false);
 
         if (firstStart) {
             if (DatabaseHelper.existsBackupFile()) {
