@@ -54,6 +54,9 @@
   <string name="database_export_success">Резервная копия сохранена в файле WhoHasMyStuff.xml</string>
   <string name="database_export_error">Произошла ошибка при записи файла резервной копии!</string>
   <string name="database_import_error">	Произошла ошибка при чтении файла резервной копии!</string>
+  <string name="restore_on_first_start">Обнаружен файл с резервной копией данных. Восстановить данные?</string>
+  <string name="restore_on_first_start_yes">Да, восстановить</string>
+  <string name="restore_on_first_start_no">Нет, создать демонстрационные данные</string>
   <string-array name="type_array">
     <item>Другое</item>
     <item>Книга</item>
