@@ -1,3 +1,11 @@
+WhoHasMyStuff (1.0.13)
+
+  * If a backup file is present, ask if it should be restored on first start
+  * Added Dutch translation (thanks to Jan Van humbeek)
+  * Updated Russian, Ukrainian, French, and German translations
+
+-- Stephan Windmüller <stovocor@gmail.com>
+
 WhoHasMyStuff (1.0.12)
 
   * Added Spanish translation (thanks to Daniel Villarreal)
