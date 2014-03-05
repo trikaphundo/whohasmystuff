@@ -54,6 +54,9 @@
   <string name="database_export_success">Бази даних збережена на WhoHasMyStuff.xml</string>
   <string name="database_export_error">Сталася помилка під час запису файлу резервної копії!</string>
   <string name="database_import_error">Сталася помилка під час читання файлу резервної копії!</string>
+  <string name="restore_on_first_start">Виявлено резервну копію. Відновити?</string>
+  <string name="restore_on_first_start_yes">Так, відновити</string>
+  <string name="restore_on_first_start_no">Ні, створити дані взірця</string>
   <string-array name="type_array">
     <item>Інше</item>
     <item>Книга</item>
