@@ -1,3 +1,9 @@
+WhoHasMyStuff (1.0.14)
+
+  * Adding Catalan translation (thanks to jmontane)
+
+-- Stephan Windmüller <stovocor@gmail.com>
+
 WhoHasMyStuff (1.0.13)
 
   * If a backup file is present, ask if it should be restored on first start
