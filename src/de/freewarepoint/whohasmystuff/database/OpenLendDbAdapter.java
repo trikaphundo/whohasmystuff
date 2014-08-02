@@ -24,14 +24,14 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import de.freewarepoint.whohasmystuff.AbstractListIntent;
+import de.freewarepoint.whohasmystuff.MainActivity;
 import de.freewarepoint.whohasmystuff.LentObject;
 import de.freewarepoint.whohasmystuff.ListLentObjects;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import static de.freewarepoint.whohasmystuff.AbstractListIntent.LOG_TAG;
+import static de.freewarepoint.whohasmystuff.MainActivity.LOG_TAG;
 
 public class OpenLendDbAdapter {
 
@@ -84,7 +84,7 @@ public class OpenLendDbAdapter {
             SharedPreferences preferences =
                     context.getSharedPreferences(ListLentObjects.class.getSimpleName(), Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean(AbstractListIntent.FIRST_START, true);
+            editor.putBoolean(MainActivity.FIRST_START, true);
             editor.commit();
         }
 

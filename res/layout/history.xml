@@ -4,10 +4,8 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-  <ListView
-    android:id="@android:id/android:list"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    />
+    <fragment class="de.freewarepoint.whohasmystuff.ShowHistory"
+        android:id="@+id/history"
+        android:layout_width="match_parent" android:layout_height="match_parent"/>
 </LinearLayout>
 
