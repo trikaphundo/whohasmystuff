@@ -3,7 +3,6 @@ package de.freewarepoint.whohasmystuff;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +12,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.provider.ContactsContract;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.*;
@@ -22,7 +23,7 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class AddObject extends Activity {
+public class AddObject extends FragmentActivity implements DatePickerDialog.OnDateSetListener {
 
     private Long mRowId;
 
@@ -63,34 +64,7 @@ public class AddObject extends Activity {
 
     private final String LAST_USED_CALENDAR = "LastUsedCalendar";
 
-    private static final int DATE_DIALOG_ID = 0;
-    private static final int RETURN_DATE_DIALOG_ID = 1;
-
 	private OpenLendDbAdapter mDbHelper;
-
-    private final DatePickerDialog.OnDateSetListener mDateSetListener =
-            new DatePickerDialog.OnDateSetListener() {
-
-                public void onDateSet(DatePicker view, int year,
-                                      int monthOfYear, int dayOfMonth) {
-                    mYear = year;
-                    mMonth = monthOfYear;
-                    mDay = dayOfMonth;
-                    updateDisplay();
-                }
-            };
-
-    private DatePickerDialog.OnDateSetListener mReturnDateSetListener =
-            new DatePickerDialog.OnDateSetListener() {
-
-                public void onDateSet(DatePicker view, int year,
-                                      int monthOfYear, int dayOfMonth) {
-                    mReturnYear = year;
-                    mReturnMonth = monthOfYear;
-                    mReturnDay = dayOfMonth;
-                    updateDisplay();
-                }
-            };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -286,10 +260,15 @@ public class AddObject extends Activity {
 		mDbHelper.close();
 	}
 
-    private void initializeDatePicker(Date date) {
+    private void initializeDatePicker(final Date date) {
         mPickDate.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                showDialog(DATE_DIALOG_ID);
+                Calendar c = Calendar.getInstance();
+                c.set(mYear, mMonth, mDay);
+
+                FragmentManager fm = getSupportFragmentManager();
+                DatePickerFragment pickDateDialog = new DatePickerFragment(c);
+                pickDateDialog.show(fm, "fragment_pick_date");
             }
         });
 
@@ -302,10 +281,15 @@ public class AddObject extends Activity {
         updateDisplay();
     }
 
-    private void initializeReturnDatePicker(Date date) {
+    private void initializeReturnDatePicker(final Date date) {
         mPickReturnDate.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                showDialog(RETURN_DATE_DIALOG_ID);
+                Calendar c = Calendar.getInstance();
+                c.set(mReturnYear, mReturnMonth, mReturnDay);
+
+                FragmentManager fm = getSupportFragmentManager();
+                DatePickerFragment pickDateDialog = new DatePickerFragment(c);
+                pickDateDialog.show(fm, "fragment_pick_date");
             }
         });
 
@@ -397,17 +381,6 @@ public class AddObject extends Activity {
     }
 
     @Override
-    protected Dialog onCreateDialog(int id) {
-        switch (id) {
-            case DATE_DIALOG_ID:
-                return new DatePickerDialog(this, mDateSetListener, mYear, mMonth, mDay);
-            case RETURN_DATE_DIALOG_ID:
-                return new DatePickerDialog(this, mReturnDateSetListener, mReturnYear, mReturnMonth, mReturnDay);
-        }
-        return null;
-    }
-
-    @Override
 	public void onActivityResult(int reqCode, int resultCode, Intent data) {
 		super.onActivityResult(reqCode, resultCode, data);
 
@@ -427,5 +400,15 @@ public class AddObject extends Activity {
 	}
 
 
+    public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+        mYear = year;
+        mMonth = monthOfYear;
+        mDay = dayOfMonth;
 
+        mReturnYear = year;
+        mReturnMonth = monthOfYear;
+        mReturnDay = dayOfMonth;
+
+        updateDisplay();
+    }
 }
