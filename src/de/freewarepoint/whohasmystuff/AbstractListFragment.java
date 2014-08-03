@@ -81,17 +81,8 @@ public abstract  class AbstractListFragment extends ListFragment {
                     }
                 });
 
-                builder.setNegativeButton(R.string.restore_on_first_start_no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        createExampleData();
-                        fillData();
-                    }
-                });
+                builder.setNegativeButton(R.string.restore_on_first_start_no, null);
                 builder.create().show();
-            }
-            else {
-                createExampleData();
-                fillData();
             }
         }
 
@@ -114,24 +105,6 @@ public abstract  class AbstractListFragment extends ListFragment {
     }
 
     abstract boolean optionsMenuAvailable();
-
-    private void createExampleData() {
-        Date now = new Date();
-        String personName = "\"Who Has My Stuff?\" Test User";
-
-        LentObject firstObject = new LentObject();
-        firstObject.description = "Example entry";
-        firstObject.date = now;
-        firstObject.personName = personName;
-
-        LentObject secondObject = new LentObject();
-        secondObject.description = "Press menu button to add entries";
-        secondObject.date = now;
-        secondObject.personName = personName;
-
-        mDbHelper.createLentObject(firstObject);
-        mDbHelper.createLentObject(secondObject);
-    }
 
     protected abstract int getIntentTitle();
 
