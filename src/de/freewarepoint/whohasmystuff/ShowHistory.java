@@ -2,12 +2,17 @@ package de.freewarepoint.whohasmystuff;
 
 import android.database.Cursor;
 
-public class ShowHistory extends AbstractListIntent {
+public class ShowHistory extends AbstractListFragment {
 
 	@Override
 	protected int getIntentTitle() {
-		return R.string.history_title;
+        return R.string.history_title;
 	}
+
+    @Override
+    boolean optionsMenuAvailable() {
+        return false;
+    }
 
 	@Override
 	protected int getEditAction() {
