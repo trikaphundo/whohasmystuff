@@ -30,6 +30,8 @@ import de.freewarepoint.whohasmystuff.ListLentObjects;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import static de.freewarepoint.whohasmystuff.MainActivity.LOG_TAG;
 
@@ -46,6 +48,8 @@ public class OpenLendDbAdapter {
 
     private DatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
+
+    private static Map<Context, OpenLendDbAdapter> instances;
 
     /**
      * Database creation sql statement
@@ -107,7 +111,25 @@ public class OpenLendDbAdapter {
         }
     }
 
-    public OpenLendDbAdapter(Context ctx) {
+    public static synchronized OpenLendDbAdapter getInstance(Context ctx) {
+        if (instances == null) {
+            instances = new HashMap<Context, OpenLendDbAdapter>();
+        }
+
+        OpenLendDbAdapter instance;
+
+        if (!instances.containsKey(ctx)) {
+            instance = new OpenLendDbAdapter(ctx);
+            instances.put(ctx, instance);
+        }
+        else {
+            instance = instances.get(ctx);
+        }
+
+        return instance;
+    }
+
+    private OpenLendDbAdapter(Context ctx) {
         this.mCtx = ctx;
     }
 

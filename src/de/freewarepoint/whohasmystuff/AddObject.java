@@ -87,7 +87,7 @@ public class AddObject extends FragmentActivity implements DatePickerDialog.OnDa
         CheckBox mAddCalendarEntryCheckbox = (CheckBox) findViewById(R.id.add_calendar_checkbox);
         ImageButton selectPerson = (ImageButton) findViewById(R.id.choosePerson);
 
-        mDbHelper = new OpenLendDbAdapter(this);
+        mDbHelper = OpenLendDbAdapter.getInstance(this);
         mDbHelper.open();
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(

@@ -61,7 +61,7 @@ public abstract  class AbstractListFragment extends ListFragment {
         //getActivity().setContentView(R.layout.main);
         getActivity().setTitle(getIntentTitle());
 
-        mDbHelper = new OpenLendDbAdapter(getActivity());
+        mDbHelper = OpenLendDbAdapter.getInstance(getActivity());
         mDbHelper.open();
 
         SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
@@ -129,12 +129,6 @@ public abstract  class AbstractListFragment extends ListFragment {
 
         mDbHelper.createLentObject(firstObject);
         mDbHelper.createLentObject(secondObject);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mDbHelper.close();
     }
 
     protected abstract int getIntentTitle();
