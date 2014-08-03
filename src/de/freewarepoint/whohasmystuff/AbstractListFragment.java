@@ -1,8 +1,9 @@
 package de.freewarepoint.whohasmystuff;
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,12 +12,17 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.CalendarContract;
+import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.format.DateUtils;
 import android.util.Log;
-import android.view.*;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import de.freewarepoint.whohasmystuff.database.DatabaseHelper;
 import de.freewarepoint.whohasmystuff.database.OpenLendDbAdapter;
@@ -29,7 +35,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-public abstract class AbstractListIntent extends ListActivity {
+public abstract  class AbstractListFragment extends ListFragment {
 
     private static final int SUBMENU_EDIT = SubMenu.FIRST;
     private static final int SUBMENU_MARK_AS_RETURNED = SubMenu.FIRST + 1;
@@ -39,8 +45,8 @@ public abstract class AbstractListIntent extends ListActivity {
     public static final int ACTION_ADD = 1;
     public static final int ACTION_EDIT = 2;
 
-	public static final int RESULT_DELETE = 2;
-	public static final int RESULT_RETURNED = 3;
+    public static final int RESULT_DELETE = 2;
+    public static final int RESULT_RETURNED = 3;
 
     public static final String LOG_TAG = "WhoHasMyStuff";
     public static final String FIRST_START = "FirstStart";
@@ -49,21 +55,23 @@ public abstract class AbstractListIntent extends ListActivity {
     private Cursor mLentObjectCursor;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
+    public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-		setTitle(getIntentTitle());
+        getActivity().setTitle(getIntentTitle());
 
-        mDbHelper = new OpenLendDbAdapter(this);
+        mDbHelper = OpenLendDbAdapter.getInstance(getActivity());
         mDbHelper.open();
 
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        boolean firstStart = preferences.getBoolean(FIRST_START, false);
+        SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        boolean firstStart = preferences.getBoolean(FIRST_START, true);
 
-        if (firstStart) {
+        // Database may not be empty after upgrade
+        boolean emptyDatabase = mDbHelper.fetchAllObjects().getCount() == 0;
+
+        if (firstStart && emptyDatabase) {
             if (DatabaseHelper.existsBackupFile()) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(R.string.restore_on_first_start);
 
                 builder.setPositiveButton(R.string.restore_on_first_start_yes, new DialogInterface.OnClickListener() {
@@ -73,17 +81,8 @@ public abstract class AbstractListIntent extends ListActivity {
                     }
                 });
 
-                builder.setNegativeButton(R.string.restore_on_first_start_no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        createExampleData();
-                        fillData();
-                    }
-                });
+                builder.setNegativeButton(R.string.restore_on_first_start_no, null);
                 builder.create().show();
-            }
-            else {
-                createExampleData();
-                fillData();
             }
         }
 
@@ -102,33 +101,12 @@ public abstract class AbstractListIntent extends ListActivity {
         });
 
         registerForContextMenu(listView);
+        setHasOptionsMenu(optionsMenuAvailable());
     }
 
-    private void createExampleData() {
-        Date now = new Date();
-        String personName = "\"Who Has My Stuff?\" Test User";
+    abstract boolean optionsMenuAvailable();
 
-        LentObject firstObject = new LentObject();
-        firstObject.description = "Example entry";
-        firstObject.date = now;
-        firstObject.personName = personName;
-
-        LentObject secondObject = new LentObject();
-        secondObject.description = "Press menu button to add entries";
-        secondObject.date = now;
-        secondObject.personName = personName;
-
-        mDbHelper.createLentObject(firstObject);
-        mDbHelper.createLentObject(secondObject);
-    }
-
-    @Override
-	public void onDestroy() {
-		super.onDestroy();
-		mDbHelper.close();
-	}
-
-	protected abstract int getIntentTitle();
+    protected abstract int getIntentTitle();
 
     private void launchEditActivity(int position, long id) {
         Cursor c = mLentObjectCursor;
@@ -150,16 +128,16 @@ public abstract class AbstractListIntent extends ListActivity {
 
         extras.putString(OpenLendDbAdapter.KEY_PERSON, c.getString(
                 c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_PERSON)));
-		extras.putString(OpenLendDbAdapter.KEY_PERSON_KEY, c.getString(
+        extras.putString(OpenLendDbAdapter.KEY_PERSON_KEY, c.getString(
                 c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_PERSON_KEY)));
 
-        Intent intent = new Intent(this, AddObject.class);
+        Intent intent = new Intent(getActivity(), AddObject.class);
         intent.setAction(Intent.ACTION_EDIT);
         intent.putExtras(extras);
         startActivityForResult(intent, ACTION_EDIT);
     }
 
-	protected abstract int getEditAction();
+    protected abstract int getEditAction();
 
     protected abstract boolean redirectToDefaultListAfterEdit();
 
@@ -167,7 +145,7 @@ public abstract class AbstractListIntent extends ListActivity {
         final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         final Calendar now = new GregorianCalendar();
 
-		SimpleCursorAdapter lentObjects = getLentObjects();
+        SimpleCursorAdapter lentObjects = getLentObjects();
 
         lentObjects.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
 
@@ -194,7 +172,7 @@ public abstract class AbstractListIntent extends ListActivity {
 
         setListAdapter(lentObjects);
     }
-    
+
     private String getTimeDifference(Calendar lentDate, Calendar now) {
         if (now.before(lentDate)) {
             return "0 days";
@@ -271,26 +249,26 @@ public abstract class AbstractListIntent extends ListActivity {
         }
     }
 
-	private SimpleCursorAdapter getLentObjects() {
-		mLentObjectCursor = getDisplayedObjects();
-		startManagingCursor(mLentObjectCursor);
+    private SimpleCursorAdapter getLentObjects() {
+        mLentObjectCursor = getDisplayedObjects();
+        getActivity().startManagingCursor(mLentObjectCursor);
 
-		String[] from = new String[]{
-				OpenLendDbAdapter.KEY_DESCRIPTION,
-				OpenLendDbAdapter.KEY_PERSON,
-				OpenLendDbAdapter.KEY_DATE
-		};
+        String[] from = new String[]{
+                OpenLendDbAdapter.KEY_DESCRIPTION,
+                OpenLendDbAdapter.KEY_PERSON,
+                OpenLendDbAdapter.KEY_DATE
+        };
 
-		int[] to = new int[]{
-				R.id.toptext,
-				R.id.bottomtext,
-				R.id.date
-		};
+        int[] to = new int[]{
+                R.id.toptext,
+                R.id.bottomtext,
+                R.id.date
+        };
 
-		return new SimpleCursorAdapter(this, R.layout.row, mLentObjectCursor, from, to);
-	}
+        return new SimpleCursorAdapter(getActivity(), R.layout.row, mLentObjectCursor, from, to);
+    }
 
-	protected abstract Cursor getDisplayedObjects();
+    protected abstract Cursor getDisplayedObjects();
 
     protected abstract boolean isMarkAsReturnedAvailable();
 
@@ -334,8 +312,8 @@ public abstract class AbstractListIntent extends ListActivity {
         return true;
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
             Bundle bundle = data.getExtras();
             LentObject lentObject = new LentObject(bundle);
 
@@ -369,7 +347,7 @@ public abstract class AbstractListIntent extends ListActivity {
                     eventsLocation = Uri.parse("content://calendar/events");
                 }
 
-                lentObject.calendarEventURI = getContentResolver().insert(eventsLocation, event);
+                lentObject.calendarEventURI = getActivity().getContentResolver().insert(eventsLocation, event);
             }
 
             if (requestCode == ACTION_ADD) {
@@ -380,25 +358,25 @@ public abstract class AbstractListIntent extends ListActivity {
                 mDbHelper.updateLentObject(rowId, lentObject);
                 mDbHelper.markReturnedObjectAsLentAgain(rowId);
                 if (redirectToDefaultListAfterEdit()) {
-                    Intent intent = new Intent(this, ListLentObjects.class);
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
                     startActivity(intent);
                 }
             }
 
             fillData();
         }
-		else if (resultCode == RESULT_DELETE) {
-			Bundle bundle = data.getExtras();
-			Long rowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);
-			mDbHelper.deleteLentObject(rowId);
-			fillData();
-		}
-		else if (resultCode == RESULT_RETURNED) {
-			Bundle bundle = data.getExtras();
-			Long rowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);
-			mDbHelper.markLentObjectAsReturned(rowId);
-			fillData();
-		}
+        else if (resultCode == RESULT_DELETE) {
+            Bundle bundle = data.getExtras();
+            Long rowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);
+            mDbHelper.deleteLentObject(rowId);
+            fillData();
+        }
+        else if (resultCode == RESULT_RETURNED) {
+            Bundle bundle = data.getExtras();
+            Long rowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);
+            mDbHelper.markLentObjectAsReturned(rowId);
+            fillData();
+        }
     }
 
 }

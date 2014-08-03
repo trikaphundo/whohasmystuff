@@ -5,13 +5,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Environment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 import de.freewarepoint.whohasmystuff.database.DatabaseHelper;
 
-public class ListLentObjects extends AbstractListIntent {
+public class ListLentObjects extends AbstractListFragment {
 
 	@Override
 	protected int getIntentTitle() {
@@ -39,25 +41,25 @@ public class ListLentObjects extends AbstractListIntent {
     }
 
     @Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.main, menu);
-		return true;
 	}
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent i;
         switch (item.getItemId()) {
-            // We have only one menu option
             case R.id.addButton:
-                i = new Intent(this, AddObject.class);
+                i = new Intent(getActivity(), AddObject.class);
                 i.putExtra(AddObject.ACTION_TYPE, AddObject.ACTION_ADD);
                 startActivityForResult(i, ACTION_ADD);
                 break;
             case R.id.historyButton:
-                i = new Intent(this, ShowHistory.class);
-                startActivity(i);
+                Fragment newFragment = new ShowHistory();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.mainActivity, newFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
                 break;
             case R.id.exportButton:
                 if (isExternalStorageWritable()) {
@@ -78,11 +80,15 @@ public class ListLentObjects extends AbstractListIntent {
         return true;
     }
 
+    boolean optionsMenuAvailable() {
+        return true;
+    }
+
     private boolean isExternalStorageReadable() {
         String state = Environment.getExternalStorageState();
 
         if (!Environment.MEDIA_MOUNTED.equals(state) && !Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+            AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
             alertDialog.setTitle(getString(R.string.sd_card_error_title));
             alertDialog.setMessage(getString(R.string.sd_card_error_not_readable));
             alertDialog.show();
@@ -97,7 +103,7 @@ public class ListLentObjects extends AbstractListIntent {
         String state = Environment.getExternalStorageState();
 
         if (!Environment.MEDIA_MOUNTED.equals(state)) {
-            AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+            AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
             alertDialog.setTitle(getString(R.string.sd_card_error_title));
             alertDialog.setMessage(getString(R.string.sd_card_error_not_writeable));
             alertDialog.show();
@@ -109,7 +115,7 @@ public class ListLentObjects extends AbstractListIntent {
     }
 
     private void askForExportConfirmation() {
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setIcon(android.R.drawable.ic_dialog_alert);
         dialog.setTitle(getString(R.string.database_export_title));
         dialog.setMessage(getString(R.string.database_export_message));
@@ -125,7 +131,7 @@ public class ListLentObjects extends AbstractListIntent {
 
     private void exportData() {
         if (DatabaseHelper.exportDatabaseToXML(mDbHelper)) {
-            Toast.makeText(this, R.string.database_export_success, Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), R.string.database_export_success, Toast.LENGTH_LONG).show();
         }
         else {
             showExportErrorDialog();
@@ -133,7 +139,7 @@ public class ListLentObjects extends AbstractListIntent {
     }
 
     private void askForImportConfirmation() {
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setIcon(android.R.drawable.ic_dialog_alert);
         dialog.setTitle(getString(R.string.database_import_title));
         dialog.setMessage(getString(R.string.database_import_message));
@@ -161,7 +167,7 @@ public class ListLentObjects extends AbstractListIntent {
     }
 
     private void showErrorDialog(String message) {
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setIcon(android.R.drawable.ic_dialog_alert);
         dialog.setTitle(getString(R.string.database_import_title));
         dialog.setMessage(message);

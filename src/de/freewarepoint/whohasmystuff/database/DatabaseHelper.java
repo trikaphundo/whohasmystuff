@@ -15,7 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static de.freewarepoint.whohasmystuff.AbstractListIntent.LOG_TAG;
+import static de.freewarepoint.whohasmystuff.MainActivity.LOG_TAG;
 
 public class DatabaseHelper {
 

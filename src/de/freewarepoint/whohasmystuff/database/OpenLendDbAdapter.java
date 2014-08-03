@@ -24,14 +24,16 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import de.freewarepoint.whohasmystuff.AbstractListIntent;
+import de.freewarepoint.whohasmystuff.MainActivity;
 import de.freewarepoint.whohasmystuff.LentObject;
 import de.freewarepoint.whohasmystuff.ListLentObjects;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
-import static de.freewarepoint.whohasmystuff.AbstractListIntent.LOG_TAG;
+import static de.freewarepoint.whohasmystuff.MainActivity.LOG_TAG;
 
 public class OpenLendDbAdapter {
 
@@ -46,6 +48,8 @@ public class OpenLendDbAdapter {
 
     private DatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
+
+    private static Map<Context, OpenLendDbAdapter> instances;
 
     /**
      * Database creation sql statement
@@ -84,7 +88,7 @@ public class OpenLendDbAdapter {
             SharedPreferences preferences =
                     context.getSharedPreferences(ListLentObjects.class.getSimpleName(), Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean(AbstractListIntent.FIRST_START, true);
+            editor.putBoolean(MainActivity.FIRST_START, true);
             editor.commit();
         }
 
@@ -107,7 +111,25 @@ public class OpenLendDbAdapter {
         }
     }
 
-    public OpenLendDbAdapter(Context ctx) {
+    public static synchronized OpenLendDbAdapter getInstance(Context ctx) {
+        if (instances == null) {
+            instances = new HashMap<Context, OpenLendDbAdapter>();
+        }
+
+        OpenLendDbAdapter instance;
+
+        if (!instances.containsKey(ctx)) {
+            instance = new OpenLendDbAdapter(ctx);
+            instances.put(ctx, instance);
+        }
+        else {
+            instance = instances.get(ctx);
+        }
+
+        return instance;
+    }
+
+    private OpenLendDbAdapter(Context ctx) {
         this.mCtx = ctx;
     }
 
