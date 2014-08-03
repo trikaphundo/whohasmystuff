@@ -58,16 +58,18 @@ public abstract  class AbstractListFragment extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        //getActivity().setContentView(R.layout.main);
         getActivity().setTitle(getIntentTitle());
 
         mDbHelper = OpenLendDbAdapter.getInstance(getActivity());
         mDbHelper.open();
 
         SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
-        boolean firstStart = preferences.getBoolean(FIRST_START, false);
+        boolean firstStart = preferences.getBoolean(FIRST_START, true);
 
-        if (firstStart) {
+        // Database may not be empty after upgrade
+        boolean emptyDatabase = mDbHelper.fetchAllObjects().getCount() == 0;
+
+        if (firstStart && emptyDatabase) {
             if (DatabaseHelper.existsBackupFile()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(R.string.restore_on_first_start);
