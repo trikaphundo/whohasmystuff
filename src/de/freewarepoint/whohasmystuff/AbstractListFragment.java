@@ -389,7 +389,7 @@ public abstract  class AbstractListFragment extends ListFragment {
                 mDbHelper.updateLentObject(rowId, lentObject);
                 mDbHelper.markReturnedObjectAsLentAgain(rowId);
                 if (redirectToDefaultListAfterEdit()) {
-                    Intent intent = new Intent(getActivity(), ListLentObjects.class);
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
                     startActivity(intent);
                 }
             }
