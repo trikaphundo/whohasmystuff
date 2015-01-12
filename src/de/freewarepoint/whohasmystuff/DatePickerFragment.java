@@ -22,11 +22,16 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        return new DatePickerDialog(getActivity(), (AddObject)getActivity(), year, month, day);
+        return new DatePickerDialog(getActivity(), this, year, month, day);
     }
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
-        // Do something with the date chosen by the user
+        if (getTag().equals("fragment_pick_date")) {
+            ((AddObject)getActivity()).updateDate(year, month, day);
+        }
+        else if (getTag().equals("fragment_pick_return_date")) {
+            ((AddObject)getActivity()).updateReturnDate(year, month, day);
+        }
     }
 
 }

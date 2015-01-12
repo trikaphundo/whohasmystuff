@@ -23,7 +23,7 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class AddObject extends FragmentActivity implements DatePickerDialog.OnDateSetListener {
+public class AddObject extends FragmentActivity {
 
     private Long mRowId;
 
@@ -289,7 +289,7 @@ public class AddObject extends FragmentActivity implements DatePickerDialog.OnDa
 
                 FragmentManager fm = getSupportFragmentManager();
                 DatePickerFragment pickDateDialog = new DatePickerFragment(c);
-                pickDateDialog.show(fm, "fragment_pick_date");
+                pickDateDialog.show(fm, "fragment_pick_return_date");
             }
         });
 
@@ -399,12 +399,15 @@ public class AddObject extends FragmentActivity implements DatePickerDialog.OnDa
 		}
 	}
 
-
-    public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+    void updateDate(int year, int monthOfYear, int dayOfMonth) {
         mYear = year;
         mMonth = monthOfYear;
         mDay = dayOfMonth;
 
+        updateDisplay();
+    }
+
+    void updateReturnDate(int year, int monthOfYear, int dayOfMonth) {
         mReturnYear = year;
         mReturnMonth = monthOfYear;
         mReturnDay = dayOfMonth;
