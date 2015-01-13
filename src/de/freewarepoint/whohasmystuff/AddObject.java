@@ -263,11 +263,13 @@ public class AddObject extends FragmentActivity {
     private void initializeDatePicker(final Date date) {
         mPickDate.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Calendar c = Calendar.getInstance();
-                c.set(mYear, mMonth, mDay);
-
                 FragmentManager fm = getSupportFragmentManager();
-                DatePickerFragment pickDateDialog = new DatePickerFragment(c);
+                Bundle bundle = new Bundle();
+                bundle.putInt("year", mYear);
+                bundle.putInt("month", mMonth);
+                bundle.putInt("day", mDay);
+                DatePickerFragment pickDateDialog = new DatePickerFragment();
+                pickDateDialog.setArguments(bundle);
                 pickDateDialog.show(fm, "fragment_pick_date");
             }
         });
@@ -288,7 +290,12 @@ public class AddObject extends FragmentActivity {
                 c.set(mReturnYear, mReturnMonth, mReturnDay);
 
                 FragmentManager fm = getSupportFragmentManager();
-                DatePickerFragment pickDateDialog = new DatePickerFragment(c);
+                Bundle bundle = new Bundle();
+                bundle.putInt("year", mYear);
+                bundle.putInt("month", mMonth);
+                bundle.putInt("day", mDay);
+                DatePickerFragment pickDateDialog = new DatePickerFragment();
+                pickDateDialog.setArguments(bundle);
                 pickDateDialog.show(fm, "fragment_pick_return_date");
             }
         });
