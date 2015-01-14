@@ -57,7 +57,7 @@
   <string name="database_import_error">An error occurred while reading the backup file!</string>
   <string name="restore_on_first_start">Backup file detected. Restore?</string>
   <string name="restore_on_first_start_yes">Yes, restore</string>
-  <string name="restore_on_first_start_no">No, create example data</string>
+  <string name="restore_on_first_start_no">No</string>
   <string-array name="type_array">
     <item>Other</item>
     <item>Book</item>
