@@ -13,6 +13,7 @@
   <string name="type">Type</string>
   <string name="type_prompt">Please select the type of the lent item</string>
   <string name="history_title">History: Returned Items</string>
+  <string name="last_modified">Last modified on</string>
   <string name="add_button">Add</string>
   <string name="edit_button">Save changes</string>
   <string name="mark_as_lent_button">Lend again</string>

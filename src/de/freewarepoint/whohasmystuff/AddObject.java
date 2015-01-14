@@ -37,6 +37,7 @@ public class AddObject extends FragmentActivity {
     private EditText mPersonName;
     private Spinner mTypeSpinner;
     private Spinner mCalendarSpinner;
+    private TextView mModificationDate;
 
 	private String originalName;
 	private String originalPersonKey;
@@ -83,6 +84,7 @@ public class AddObject extends FragmentActivity {
         mPickDate = (Button) findViewById(R.id.pickDate);
         mPickReturnDate = (Button) findViewById(R.id.returnDate);
         mCalendarSpinner = (Spinner) findViewById(R.id.calendar_select);
+        mModificationDate = (TextView) findViewById(R.id.modification_date_text);
 
         CheckBox mAddCalendarEntryCheckbox = (CheckBox) findViewById(R.id.add_calendar_checkbox);
         ImageButton selectPerson = (ImageButton) findViewById(R.id.choosePerson);
@@ -107,6 +109,7 @@ public class AddObject extends FragmentActivity {
         } else {
             selectedDate = new Date();
 			mDeleteButton.setVisibility(View.GONE);
+            mModificationDate.setVisibility(View.GONE);
         }
 
         initializeDatePicker(selectedDate);
@@ -252,6 +255,9 @@ public class AddObject extends FragmentActivity {
         originalName = bundle.getString(OpenLendDbAdapter.KEY_PERSON);
         originalPersonKey = bundle.getString(OpenLendDbAdapter.KEY_PERSON_KEY);
         selectedDate = new Date(bundle.getLong(OpenLendDbAdapter.KEY_DATE));
+        final DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
+        Date modificationDate = new Date(bundle.getLong(OpenLendDbAdapter.KEY_MODIFICATION_DATE));
+        mModificationDate.setText(getString(R.string.last_modified) + ": " + df.format(modificationDate));
     }
 
     @Override
@@ -291,9 +297,9 @@ public class AddObject extends FragmentActivity {
 
                 FragmentManager fm = getSupportFragmentManager();
                 Bundle bundle = new Bundle();
-                bundle.putInt("year", mYear);
-                bundle.putInt("month", mMonth);
-                bundle.putInt("day", mDay);
+                bundle.putInt("year", mReturnYear);
+                bundle.putInt("month", mReturnMonth);
+                bundle.putInt("day", mReturnDay);
                 DatePickerFragment pickDateDialog = new DatePickerFragment();
                 pickDateDialog.setArguments(bundle);
                 pickDateDialog.show(fm, "fragment_pick_return_date");

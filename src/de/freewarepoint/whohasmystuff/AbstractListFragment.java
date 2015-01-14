@@ -122,6 +122,8 @@ public abstract  class AbstractListFragment extends ListFragment {
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = df.parse(c.getString(c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_DATE)));
             extras.putLong(OpenLendDbAdapter.KEY_DATE, date.getTime());
+            Date modificationDate = df.parse(c.getString(c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_MODIFICATION_DATE)));
+            extras.putLong(OpenLendDbAdapter.KEY_MODIFICATION_DATE, modificationDate.getTime());
         } catch (ParseException e) {
             throw new IllegalStateException("Illegal date in database!");
         }
@@ -256,7 +258,8 @@ public abstract  class AbstractListFragment extends ListFragment {
         String[] from = new String[]{
                 OpenLendDbAdapter.KEY_DESCRIPTION,
                 OpenLendDbAdapter.KEY_PERSON,
-                OpenLendDbAdapter.KEY_DATE
+                OpenLendDbAdapter.KEY_DATE,
+                OpenLendDbAdapter.KEY_MODIFICATION_DATE
         };
 
         int[] to = new int[]{
@@ -352,6 +355,7 @@ public abstract  class AbstractListFragment extends ListFragment {
 
             if (requestCode == ACTION_ADD) {
                 lentObject.returned = false;
+                lentObject.modificationDate = new Date();
                 mDbHelper.createLentObject(lentObject);
             } else if (requestCode == ACTION_EDIT) {
                 Long rowId = bundle.getLong(OpenLendDbAdapter.KEY_ROWID);

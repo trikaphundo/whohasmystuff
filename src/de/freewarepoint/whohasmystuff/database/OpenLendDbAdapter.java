@@ -30,6 +30,7 @@ import de.freewarepoint.whohasmystuff.ListLentObjects;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +41,7 @@ public class OpenLendDbAdapter {
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_TYPE = "type";
     public static final String KEY_DATE = "date";
+    public static final String KEY_MODIFICATION_DATE = "modification_date";
     public static final String KEY_PERSON = "person";
 	public static final String KEY_PERSON_KEY = "person_key";
     public static final String KEY_BACK = "back";
@@ -57,18 +59,24 @@ public class OpenLendDbAdapter {
     private static final String LENTOBJECTS_DATABASE_CREATE =
         "create table lentobjects (" + KEY_ROWID + " integer primary key autoincrement, "
         + KEY_DESCRIPTION + " text not null, " + KEY_TYPE + " integer, " + KEY_DATE + " date not null, "
-        + KEY_PERSON + " text not null, " + KEY_PERSON_KEY + " text, "
+        + KEY_MODIFICATION_DATE + " date not null, " + KEY_PERSON + " text not null, " + KEY_PERSON_KEY + " text, "
 		+ KEY_BACK + " integer not null, " + KEY_CALENDAR_ENTRY + " text);";
 
     private static final String DATABASE_NAME = "data";
     private static final String LENTOBJECTS_DATABASE_TABLE = "lentobjects";
-    static final int DATABASE_VERSION = 3;
+    static final int DATABASE_VERSION = 4;
 
     private static final String CREATE_CALENDAR_ENTRY_COLUMN =
             "ALTER TABLE " + LENTOBJECTS_DATABASE_TABLE + " ADD COLUMN " + KEY_CALENDAR_ENTRY + " text";
     
     private static final String CREATE_TYPE_COLUMN =
             "ALTER TABLE " + LENTOBJECTS_DATABASE_TABLE + " ADD COLUMN " + KEY_TYPE + " integer";
+
+    private static final String CREATE_MODIFICATION_DATE_COLUMN =
+            "ALTER TABLE " + LENTOBJECTS_DATABASE_TABLE + " ADD COLUMN " + KEY_MODIFICATION_DATE + " date";
+
+    private static final String COPY_DATES =
+            "UPDATE " + LENTOBJECTS_DATABASE_TABLE + " SET " + KEY_MODIFICATION_DATE + " = " + KEY_DATE;
 
     private final Context mCtx;
 
@@ -106,6 +114,11 @@ public class OpenLendDbAdapter {
 
             if (oldVersion < 3) {
                 db.execSQL(CREATE_TYPE_COLUMN);
+            }
+
+            if (oldVersion < 4) {
+                db.execSQL(CREATE_MODIFICATION_DATE_COLUMN);
+                db.execSQL(COPY_DATES);
             }
 
         }
@@ -154,6 +167,7 @@ public class OpenLendDbAdapter {
         initialValues.put(KEY_TYPE, lentObject.type);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         initialValues.put(KEY_DATE, dateFormat.format(lentObject.date));
+        initialValues.put(KEY_MODIFICATION_DATE, dateFormat.format(lentObject.modificationDate));
         initialValues.put(KEY_PERSON, lentObject.personName);
 		initialValues.put(KEY_PERSON_KEY, lentObject.personKey);
         initialValues.put(KEY_BACK, lentObject.returned);
@@ -170,17 +184,17 @@ public class OpenLendDbAdapter {
 
 	public Cursor fetchAllObjects() {
 		return mDb.query(LENTOBJECTS_DATABASE_TABLE, new String[] {KEY_ROWID,
-				KEY_DESCRIPTION, KEY_TYPE, KEY_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK, KEY_CALENDAR_ENTRY}, null, null, null, null, KEY_DATE + " ASC");
+				KEY_DESCRIPTION, KEY_TYPE, KEY_DATE, KEY_MODIFICATION_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK, KEY_CALENDAR_ENTRY}, null, null, null, null, KEY_DATE + " ASC");
 	}
 
     public Cursor fetchLentObjects() {
         return mDb.query(LENTOBJECTS_DATABASE_TABLE, new String[] {KEY_ROWID,
-                KEY_DESCRIPTION, KEY_TYPE, KEY_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK, KEY_CALENDAR_ENTRY}, KEY_BACK + "=0", null, null, null, KEY_DATE + " ASC");
+                KEY_DESCRIPTION, KEY_TYPE, KEY_DATE, KEY_MODIFICATION_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK, KEY_CALENDAR_ENTRY}, KEY_BACK + "=0", null, null, null, KEY_DATE + " ASC");
     }
 
 	public Cursor fetchReturnedObjects() {
 		return mDb.query(LENTOBJECTS_DATABASE_TABLE, new String[] {KEY_ROWID,
-				KEY_DESCRIPTION, KEY_TYPE, KEY_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK, KEY_CALENDAR_ENTRY}, KEY_BACK + "=1", null, null, null, KEY_DATE + " ASC");
+				KEY_DESCRIPTION, KEY_TYPE, KEY_DATE, KEY_MODIFICATION_DATE, KEY_PERSON, KEY_PERSON_KEY, KEY_BACK, KEY_CALENDAR_ENTRY}, KEY_BACK + "=1", null, null, null, KEY_DATE + " ASC");
 	}
 
     public boolean updateLentObject(long rowId, LentObject lentObject) {
@@ -208,6 +222,8 @@ public class OpenLendDbAdapter {
     }
 
 	private boolean updateLentObject(long rowId, ContentValues values) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        values.put(KEY_MODIFICATION_DATE, dateFormat.format(new Date()));
 		return mDb.update(LENTOBJECTS_DATABASE_TABLE, values, KEY_ROWID + "=" + rowId, null) > 0;
 	}
 }

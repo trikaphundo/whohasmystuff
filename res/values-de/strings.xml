@@ -13,6 +13,7 @@
   <string name="type">Typ</string>
   <string name="type_prompt">Bitte wählen Sie den Typ der verliehenen Sache</string>
   <string name="history_title">Chronik: Zurückerhaltene Sachen</string>
+  <string name="last_modified">Zuletzt bearbeitet am</string>
   <string name="add_button">Hinzufügen</string>
   <string name="edit_button">Änderungen speichern</string>
   <string name="mark_as_lent_button">Erneut verleihen</string>

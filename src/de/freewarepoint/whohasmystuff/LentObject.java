@@ -16,6 +16,7 @@ public class LentObject {
         description = bundle.getString(OpenLendDbAdapter.KEY_DESCRIPTION);
         type = bundle.getInt(OpenLendDbAdapter.KEY_TYPE);
         date = new Date(bundle.getLong(OpenLendDbAdapter.KEY_DATE));
+        modificationDate = new Date(bundle.getLong(OpenLendDbAdapter.KEY_MODIFICATION_DATE));
         personName = bundle.getString(OpenLendDbAdapter.KEY_PERSON);
         personKey = bundle.getString(OpenLendDbAdapter.KEY_PERSON_KEY);
     }
@@ -23,6 +24,7 @@ public class LentObject {
     public String description;
     public int type;
     public Date date;
+    public Date modificationDate;
     public String personName;
     public String personKey;
     public boolean returned;

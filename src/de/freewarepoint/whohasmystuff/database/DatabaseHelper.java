@@ -75,6 +75,10 @@ public class DatabaseHelper {
 				Date date = df.parse(c.getString(c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_DATE)));
 				sb.append(" date=\"").append(date.getTime()).append("\"");
 
+                Date modificationDate =
+                        df.parse(c.getString(c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_MODIFICATION_DATE)));
+                sb.append(" modificationDate=\"").append(modificationDate.getTime()).append("\"");
+
 				String personName = c.getString(c.getColumnIndexOrThrow(OpenLendDbAdapter.KEY_PERSON));
 				sb.append(" personName=\"").append(replace(personName)).append("\"");
 

@@ -52,6 +52,9 @@ public class XMLContentHandler extends DefaultHandler {
             else if ("date".equals(name)) {
                 lentObject.date = new Date(Long.parseLong(attributes.getValue(i)));
             }
+            else if ("modificationDate".equals(name)) {
+                lentObject.modificationDate = new Date(Long.parseLong(attributes.getValue(i)));
+            }
             else if ("personName".equals(name)) {
                 lentObject.personName = attributes.getValue(i);
             }
@@ -64,6 +67,10 @@ public class XMLContentHandler extends DefaultHandler {
             else if ("calendarEvent".equals(name)) {
                 lentObject.calendarEventURI = Uri.parse(attributes.getValue(i));
             }
+        }
+
+        if (databaseVersion < 4) {
+            lentObject.modificationDate = lentObject.date;
         }
 
         lentObjects.add(lentObject);
