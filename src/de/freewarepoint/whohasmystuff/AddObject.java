@@ -2,7 +2,6 @@ package de.freewarepoint.whohasmystuff;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,8 +19,11 @@ import android.widget.*;
 import de.freewarepoint.whohasmystuff.database.OpenLendDbAdapter;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 public class AddObject extends FragmentActivity {
 
@@ -34,7 +36,7 @@ public class AddObject extends FragmentActivity {
     private Button mDeleteButton;
     private Button mReturnedButton;
     private EditText mDescriptionText;
-    private EditText mPersonName;
+    private AutoCompleteTextView mPersonName;
     private Spinner mTypeSpinner;
     private Spinner mCalendarSpinner;
     private TextView mModificationDate;
@@ -76,7 +78,7 @@ public class AddObject extends FragmentActivity {
 
         mDescriptionText = (EditText) findViewById(R.id.add_description);
         mTypeSpinner = (Spinner) findViewById(R.id.type_spinner);
-        mPersonName = (EditText) findViewById(R.id.personName);
+        mPersonName = (AutoCompleteTextView) findViewById(R.id.personName);
         mAddButton = (Button) findViewById(R.id.add_button);
         mCancelButton = (Button) findViewById(R.id.cancel_button);
 		mDeleteButton = (Button) findViewById(R.id.delete_button);
@@ -145,6 +147,8 @@ public class AddObject extends FragmentActivity {
         });
 
         initializeCalendarSpinner();
+
+        mPersonName.setAdapter(contactNameAdapter());
 
         mAddButton.setOnClickListener(new View.OnClickListener() {
 
@@ -258,6 +262,23 @@ public class AddObject extends FragmentActivity {
         final DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
         Date modificationDate = new Date(bundle.getLong(OpenLendDbAdapter.KEY_MODIFICATION_DATE));
         mModificationDate.setText(getString(R.string.last_modified) + ": " + df.format(modificationDate));
+    }
+
+    private ArrayAdapter<String> contactNameAdapter() {
+        List<String> names = new ArrayList<String>();
+
+        Cursor contactsCursor =
+                getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+        if (contactsCursor != null) {
+            int columnIndex = contactsCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+            while (contactsCursor.moveToNext()) {
+                names.add(contactsCursor.getString(columnIndex));
+            }
+        }
+
+        Collections.sort(names);
+
+        return new ArrayAdapter<String>(getApplicationContext(), R.layout.contact_name, R.id.tv_contactName, names);
     }
 
     @Override
