@@ -1,3 +1,10 @@
+WhoHasMyStuff (1.0.22)
+
+  * Use autocomplete for contact names
+  * Updated Czech and Galician translation
+
+-- Stephan Windmüller <stovocor@gmail.com>
+
 WhoHasMyStuff (1.0.21)
 
   * Display date of last modification

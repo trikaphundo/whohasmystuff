@@ -13,6 +13,7 @@
   <string name="type">Typ</string>
   <string name="type_prompt">Vyber prosím typ zapůjčené položky</string>
   <string name="history_title">Historie: Vrácené položky</string>
+  <string name="last_modified">Naposledy upraveno</string>
   <string name="add_button">Přidat</string>
   <string name="edit_button">Uložit změny</string>
   <string name="mark_as_lent_button">Znovu zapůjčeno</string>
