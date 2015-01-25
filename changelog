@@ -1,3 +1,9 @@
+WhoHasMyStuff (1.0.23)
+
+  * Reverting autocomplete change
+
+-- Stephan Windmüller <stovocor@gmail.com>
+
 WhoHasMyStuff (1.0.22)
 
   * Use autocomplete for contact names
