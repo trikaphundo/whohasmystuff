@@ -103,16 +103,11 @@
             <LinearLayout android:orientation="horizontal"
                           android:layout_width="fill_parent"
                           android:layout_height="wrap_content">
-                <AutoCompleteTextView
-                    android:id="@+id/personName"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:singleLine="true"
-                    android:layout_weight="1"
-                    android:completionThreshold="1"
-                    android:inputType="textPersonName"
-                    android:paddingTop="14dp" />
+                <EditText android:id="@+id/personName"
+                          android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1"
+                          android:inputType="textPersonName"/>
                 <ImageButton android:id="@+id/choosePerson"
                              android:layout_width="fill_parent"
                              android:layout_height="wrap_content"
