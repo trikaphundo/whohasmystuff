@@ -35,7 +35,7 @@ public class AddObject extends FragmentActivity {
     private Button mCancelButton;
     private Button mDeleteButton;
     private Button mReturnedButton;
-    private EditText mDescriptionText;
+    private AutoCompleteTextView mDescriptionText;
     private AutoCompleteTextView mPersonName;
     private Spinner mTypeSpinner;
     private Spinner mCalendarSpinner;
@@ -76,7 +76,7 @@ public class AddObject extends FragmentActivity {
         setContentView(R.layout.add_object);
         setTitle(R.string.add_title);
 
-        mDescriptionText = (EditText) findViewById(R.id.add_description);
+        mDescriptionText = (AutoCompleteTextView) findViewById(R.id.add_description);
         mTypeSpinner = (Spinner) findViewById(R.id.type_spinner);
         mPersonName = (AutoCompleteTextView) findViewById(R.id.personName);
         mAddButton = (Button) findViewById(R.id.add_button);
@@ -148,6 +148,7 @@ public class AddObject extends FragmentActivity {
 
         initializeCalendarSpinner();
 
+        mDescriptionText.setAdapter(descriptionsFromOtherItemsAdapter());
         mPersonName.setAdapter(contactNameAdapter());
 
         mAddButton.setOnClickListener(new View.OnClickListener() {
@@ -262,6 +263,24 @@ public class AddObject extends FragmentActivity {
         final DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
         Date modificationDate = new Date(bundle.getLong(OpenLendDbAdapter.KEY_MODIFICATION_DATE));
         mModificationDate.setText(getString(R.string.last_modified) + ": " + df.format(modificationDate));
+    }
+
+    private ArrayAdapter<String> descriptionsFromOtherItemsAdapter() {
+        List<String> descriptions = new ArrayList<String>();
+
+        Cursor returnedItems = mDbHelper.fetchAllObjects();
+        int columnIndex = returnedItems.getColumnIndex(OpenLendDbAdapter.KEY_DESCRIPTION);
+        while (returnedItems.moveToNext()) {
+            final String description = returnedItems.getString(columnIndex).trim();
+            if (!descriptions.contains(description)) {
+                descriptions.add(description);
+            }
+        }
+        returnedItems.close();
+
+        Collections.sort(descriptions);
+
+        return new ArrayAdapter<String>(getApplicationContext(), R.layout.autocomplete_select, R.id.tv_autocomplete, descriptions);
     }
 
     private ArrayAdapter<String> contactNameAdapter() {

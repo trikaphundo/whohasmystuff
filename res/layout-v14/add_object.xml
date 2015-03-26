@@ -60,10 +60,16 @@
             <TextView android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:text="@string/description" />
-            <EditText android:id="@+id/add_description"
-                      android:layout_width="fill_parent"
-                      android:layout_height="wrap_content"
-                      android:inputType="text"/>
+            <AutoCompleteTextView
+                android:id="@+id/add_description"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:singleLine="true"
+                android:layout_weight="1"
+                android:completionThreshold="1"
+                android:inputType="text"
+                android:paddingTop="14dp" />
 
             <View
                     android:layout_width="fill_parent"
