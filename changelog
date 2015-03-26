@@ -1,3 +1,10 @@
+WhoHasMyStuff (1.0.24)
+
+  * Use autocomplete for contact names and descriptions
+  * Updated French translation
+
+-- Stephan Windmüller <stovocor@gmail.com>
+
 WhoHasMyStuff (1.0.23)
 
   * Reverting autocomplete change

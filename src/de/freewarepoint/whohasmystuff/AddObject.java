@@ -2,7 +2,6 @@ package de.freewarepoint.whohasmystuff;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,8 +19,11 @@ import android.widget.*;
 import de.freewarepoint.whohasmystuff.database.OpenLendDbAdapter;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 public class AddObject extends FragmentActivity {
 
@@ -33,8 +35,8 @@ public class AddObject extends FragmentActivity {
     private Button mCancelButton;
     private Button mDeleteButton;
     private Button mReturnedButton;
-    private EditText mDescriptionText;
-    private EditText mPersonName;
+    private AutoCompleteTextView mDescriptionText;
+    private AutoCompleteTextView mPersonName;
     private Spinner mTypeSpinner;
     private Spinner mCalendarSpinner;
     private TextView mModificationDate;
@@ -74,9 +76,9 @@ public class AddObject extends FragmentActivity {
         setContentView(R.layout.add_object);
         setTitle(R.string.add_title);
 
-        mDescriptionText = (EditText) findViewById(R.id.add_description);
+        mDescriptionText = (AutoCompleteTextView) findViewById(R.id.add_description);
         mTypeSpinner = (Spinner) findViewById(R.id.type_spinner);
-        mPersonName = (EditText) findViewById(R.id.personName);
+        mPersonName = (AutoCompleteTextView) findViewById(R.id.personName);
         mAddButton = (Button) findViewById(R.id.add_button);
         mCancelButton = (Button) findViewById(R.id.cancel_button);
 		mDeleteButton = (Button) findViewById(R.id.delete_button);
@@ -145,6 +147,9 @@ public class AddObject extends FragmentActivity {
         });
 
         initializeCalendarSpinner();
+
+        mDescriptionText.setAdapter(descriptionsFromOtherItemsAdapter());
+        mPersonName.setAdapter(contactNameAdapter());
 
         mAddButton.setOnClickListener(new View.OnClickListener() {
 
@@ -258,6 +263,57 @@ public class AddObject extends FragmentActivity {
         final DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
         Date modificationDate = new Date(bundle.getLong(OpenLendDbAdapter.KEY_MODIFICATION_DATE));
         mModificationDate.setText(getString(R.string.last_modified) + ": " + df.format(modificationDate));
+    }
+
+    private ArrayAdapter<String> descriptionsFromOtherItemsAdapter() {
+        List<String> descriptions = new ArrayList<String>();
+
+        Cursor returnedItems = mDbHelper.fetchAllObjects();
+        int columnIndex = returnedItems.getColumnIndex(OpenLendDbAdapter.KEY_DESCRIPTION);
+        while (returnedItems.moveToNext()) {
+            final String description = returnedItems.getString(columnIndex).trim();
+            if (!descriptions.contains(description)) {
+                descriptions.add(description);
+            }
+        }
+        returnedItems.close();
+
+        Collections.sort(descriptions);
+
+        return new ArrayAdapter<String>(getApplicationContext(), R.layout.autocomplete_select, R.id.tv_autocomplete, descriptions);
+    }
+
+    private ArrayAdapter<String> contactNameAdapter() {
+        List<String> names = new ArrayList<String>();
+
+        // Add names from address book
+        Cursor contactsCursor =
+                getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+        if (contactsCursor != null) {
+            int columnIndex = contactsCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+            while (contactsCursor.moveToNext()) {
+                final String name = contactsCursor.getString(columnIndex);
+                if (name != null && !names.contains(name.trim())) {
+                    names.add(name.trim());
+                }
+            }
+            contactsCursor.close();
+        }
+
+        // Add names from history and current items
+        Cursor allItems = mDbHelper.fetchAllObjects();
+        int columnIndex = allItems.getColumnIndex(OpenLendDbAdapter.KEY_PERSON);
+        while (allItems.moveToNext()) {
+            final String name = allItems.getString(columnIndex).trim();
+            if (!names.contains(name)) {
+                names.add(name);
+            }
+        }
+        allItems.close();
+
+        Collections.sort(names);
+
+        return new ArrayAdapter<String>(getApplicationContext(), R.layout.autocomplete_select, R.id.tv_autocomplete, names);
     }
 
     @Override

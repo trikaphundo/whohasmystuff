@@ -13,6 +13,7 @@
   <string name="type">Type</string>
   <string name="type_prompt">Veuillez sélectionner le type de l\'élément prêté</string>
   <string name="history_title">Historique : Objets rendus</string>
+  <string name="last_modified">Dernière modification le</string>
   <string name="add_button">Ajouter</string>
   <string name="edit_button">Enregistrer les modifications</string>
   <string name="mark_as_lent_button">Prêter à nouveau</string>
