@@ -1,3 +1,11 @@
+WhoHasMyStuff (1.0.25)
+
+  * Added Arabic translation (thanks to "Mumtaz76")
+  * Removed support for older (and insecure) Android versions
+  * Reduced app size by more than 85%
+
+-- Stephan Windmüller <stovocor@gmail.com>
+
 WhoHasMyStuff (1.0.24)
 
   * Use autocomplete for contact names and descriptions
