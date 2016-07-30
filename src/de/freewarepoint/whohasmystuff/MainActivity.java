@@ -1,9 +1,9 @@
 package de.freewarepoint.whohasmystuff;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
     public static final String LOG_TAG = "WhoHasMyStuff";
     public static final String FIRST_START = "FirstStart";
@@ -22,7 +22,7 @@ public class MainActivity extends ActionBarActivity {
 
             firstFragment.setArguments(getIntent().getExtras());
 
-            getSupportFragmentManager().beginTransaction()
+            getFragmentManager().beginTransaction()
                     .add(R.id.mainActivity, firstFragment).commit();
         }
     }

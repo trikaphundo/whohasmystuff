@@ -2,17 +2,15 @@ package de.freewarepoint.whohasmystuff;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.provider.ContactsContract;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.*;
@@ -25,7 +23,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class AddObject extends FragmentActivity {
+public class AddObject extends Activity {
 
     private Long mRowId;
 
@@ -325,7 +323,7 @@ public class AddObject extends FragmentActivity {
     private void initializeDatePicker(final Date date) {
         mPickDate.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                FragmentManager fm = getSupportFragmentManager();
+                FragmentManager fm = getFragmentManager();
                 Bundle bundle = new Bundle();
                 bundle.putInt("year", mYear);
                 bundle.putInt("month", mMonth);
@@ -351,7 +349,7 @@ public class AddObject extends FragmentActivity {
                 Calendar c = Calendar.getInstance();
                 c.set(mReturnYear, mReturnMonth, mReturnDay);
 
-                FragmentManager fm = getSupportFragmentManager();
+                FragmentManager fm = getFragmentManager();
                 Bundle bundle = new Bundle();
                 bundle.putInt("year", mReturnYear);
                 bundle.putInt("month", mReturnMonth);
@@ -373,17 +371,8 @@ public class AddObject extends FragmentActivity {
     
     private void initializeCalendarSpinner() {
 
-        Cursor calendars;
-        String nameColumn;
-
-        if (Build.VERSION.SDK_INT >= 14) {
-            calendars = getCalendarsForICS();
-            nameColumn = CalendarContract.Calendars.CALENDAR_DISPLAY_NAME;
-        }
-        else {
-            calendars = getCalendarsBeforeICS();
-            nameColumn = "name";
-        }
+        final Cursor calendars = getCalendarsForICS();
+        final String nameColumn = CalendarContract.Calendars.CALENDAR_DISPLAY_NAME;
 
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         String lastUsedCalendarId = preferences.getString(LAST_USED_CALENDAR, null);
@@ -422,20 +411,6 @@ public class AddObject extends FragmentActivity {
         ContentResolver cr = getContentResolver();
         Uri uri = CalendarContract.Calendars.CONTENT_URI;
         return cr.query(uri, EVENT_PROJECTION, null, null, null);
-    }
-
-    private Cursor getCalendarsBeforeICS() {
-        Uri calendarsLocation;
-
-        if (Build.VERSION.SDK_INT >= 8) {
-            calendarsLocation = Uri.parse("content://com.android.calendar/calendars");
-        }
-        else {
-            calendarsLocation = Uri.parse("content://calendar/calendars");
-        }
-
-        String[] columns = new String[] { "_id", "name" };
-        return managedQuery(calendarsLocation, columns, "selected=1 AND name is not null", null, null);
     }
 
     private void updateDisplay() {
