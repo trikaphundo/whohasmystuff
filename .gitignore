@@ -1,3 +1,6 @@
 gen
 out
 proguard_logs
+.gradle
+build
+local.properties
