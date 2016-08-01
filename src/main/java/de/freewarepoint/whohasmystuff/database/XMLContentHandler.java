@@ -20,7 +20,7 @@ public class XMLContentHandler extends DefaultHandler {
         super.startElement(uri, localName, qName, attributes);
 
         if ("DatabaseBackup".equals(localName)) {
-            lentObjects = new LinkedList<LentObject>();
+            lentObjects = new LinkedList<>();
             parseDatabaseBackupAttributes(attributes);
         }
         else if ("LentObject".equals(localName)) {

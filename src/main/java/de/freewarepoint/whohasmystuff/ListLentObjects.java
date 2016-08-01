@@ -3,7 +3,6 @@ package de.freewarepoint.whohasmystuff;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Environment;
@@ -119,12 +118,7 @@ public class ListLentObjects extends AbstractListFragment {
         dialog.setIcon(android.R.drawable.ic_dialog_alert);
         dialog.setTitle(getString(R.string.database_export_title));
         dialog.setMessage(getString(R.string.database_export_message));
-        dialog.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                exportData();
-            }
-        }
-        );
+        dialog.setPositiveButton(android.R.string.yes, (dialog1, whichButton) -> exportData());
         dialog.setNegativeButton(android.R.string.no, null);
         dialog.show();
     }
@@ -143,17 +137,14 @@ public class ListLentObjects extends AbstractListFragment {
         dialog.setIcon(android.R.drawable.ic_dialog_alert);
         dialog.setTitle(getString(R.string.database_import_title));
         dialog.setMessage(getString(R.string.database_import_message));
-        dialog.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                if (DatabaseHelper.importDatabaseFromXML(mDbHelper)) {
-                    fillData();
-                }
-                else {
-                    showImportErrorDialog();
-                }
+        dialog.setPositiveButton(android.R.string.yes, (dialog1, whichButton) -> {
+            if (DatabaseHelper.importDatabaseFromXML(mDbHelper)) {
+                fillData();
             }
-        }
-        );
+            else {
+                showImportErrorDialog();
+            }
+        });
         dialog.setNegativeButton(android.R.string.no, null);
         dialog.show();
     }

@@ -116,31 +116,27 @@ public class AddObject extends Activity {
         Date returnDate = new Date(selectedDate.getTime() + 14 * DateUtils.DAY_IN_MILLIS);
         initializeReturnDatePicker(returnDate);
 
-        selectPerson.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-                startActivityForResult(intent, ACTION_SELECT_PERSON);
-            }
+        selectPerson.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+            startActivityForResult(intent, ACTION_SELECT_PERSON);
         });
 
-        mAddCalendarEntryCheckbox.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                addCalendarEntry = ((CheckBox) v).isChecked();
-                if (addCalendarEntry) {
-                    mCalendarSpinner.setVisibility(View.VISIBLE);
-                    mPickReturnDate.setVisibility(View.VISIBLE);
-                    findViewById(R.id.select_calendar_separator).setVisibility(View.VISIBLE);
-                    findViewById(R.id.select_calendar_text).setVisibility(View.VISIBLE);
-                    findViewById(R.id.return_date_separator).setVisibility(View.VISIBLE);
-                    findViewById(R.id.return_date_text).setVisibility(View.VISIBLE);
-                } else {
-                    mCalendarSpinner.setVisibility(View.GONE);
-                    mPickReturnDate.setVisibility(View.GONE);
-                    findViewById(R.id.select_calendar_separator).setVisibility(View.GONE);
-                    findViewById(R.id.select_calendar_text).setVisibility(View.GONE);
-                    findViewById(R.id.return_date_separator).setVisibility(View.GONE);
-                    findViewById(R.id.return_date_text).setVisibility(View.GONE);
-                }
+        mAddCalendarEntryCheckbox.setOnClickListener(v -> {
+            addCalendarEntry = ((CheckBox) v).isChecked();
+            if (addCalendarEntry) {
+                mCalendarSpinner.setVisibility(View.VISIBLE);
+                mPickReturnDate.setVisibility(View.VISIBLE);
+                findViewById(R.id.select_calendar_separator).setVisibility(View.VISIBLE);
+                findViewById(R.id.select_calendar_text).setVisibility(View.VISIBLE);
+                findViewById(R.id.return_date_separator).setVisibility(View.VISIBLE);
+                findViewById(R.id.return_date_text).setVisibility(View.VISIBLE);
+            } else {
+                mCalendarSpinner.setVisibility(View.GONE);
+                mPickReturnDate.setVisibility(View.GONE);
+                findViewById(R.id.select_calendar_separator).setVisibility(View.GONE);
+                findViewById(R.id.select_calendar_text).setVisibility(View.GONE);
+                findViewById(R.id.return_date_separator).setVisibility(View.GONE);
+                findViewById(R.id.return_date_text).setVisibility(View.GONE);
             }
         });
 
@@ -149,80 +145,71 @@ public class AddObject extends Activity {
         mDescriptionText.setAdapter(descriptionsFromOtherItemsAdapter());
         mPersonName.setAdapter(contactNameAdapter());
 
-        mAddButton.setOnClickListener(new View.OnClickListener() {
+        mAddButton.setOnClickListener(view -> {
+            Bundle bundle1 = new Bundle();
 
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-
-                if (mRowId != null) {
-                    bundle.putLong(OpenLendDbAdapter.KEY_ROWID, mRowId);
-                }
-
-                bundle.putString(OpenLendDbAdapter.KEY_DESCRIPTION, mDescriptionText.getText().toString());
-                bundle.putInt(OpenLendDbAdapter.KEY_TYPE, mTypeSpinner.getSelectedItemPosition());
-
-                Calendar c = Calendar.getInstance();
-                c.set(mYear, mMonth, mDay);
-                bundle.putLong(OpenLendDbAdapter.KEY_DATE, c.getTime().getTime());
-
-                bundle.putString(OpenLendDbAdapter.KEY_PERSON, mPersonName.getText().toString());
-
-				if (mPersonName.getText().toString().equals(originalName) && selectedPersonKey == null) {
-					bundle.putString(OpenLendDbAdapter.KEY_PERSON_KEY, originalPersonKey);
-				}
-				else {
-					bundle.putString(OpenLendDbAdapter.KEY_PERSON_KEY, selectedPersonKey);
-				}
-
-                if (addCalendarEntry) {
-                    Cursor selectedItem = (Cursor) mCalendarSpinner.getSelectedItem();
-                    if (selectedItem == null) {
-                        showNoSelectedCalendarError();
-                        return;
-                    }
-                    String selectedCalendarId = selectedItem.getString(selectedItem.getColumnIndex("_id"));
-
-                    SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString(LAST_USED_CALENDAR, selectedCalendarId);
-                    editor.commit();
-
-                    bundle.putString(CALENDAR_ID, selectedCalendarId);
-                    c.set(mReturnYear, mReturnMonth, mReturnDay);
-                    bundle.putLong(RETURN_DATE, c.getTime().getTime());
-                }
-
-                Intent mIntent = new Intent();
-                mIntent.putExtras(bundle);
-                setResult(RESULT_OK, mIntent);
-                finish();
+            if (mRowId != null) {
+                bundle1.putLong(OpenLendDbAdapter.KEY_ROWID, mRowId);
             }
+
+            bundle1.putString(OpenLendDbAdapter.KEY_DESCRIPTION, mDescriptionText.getText().toString());
+            bundle1.putInt(OpenLendDbAdapter.KEY_TYPE, mTypeSpinner.getSelectedItemPosition());
+
+            Calendar c = Calendar.getInstance();
+            c.set(mYear, mMonth, mDay);
+            bundle1.putLong(OpenLendDbAdapter.KEY_DATE, c.getTime().getTime());
+
+            bundle1.putString(OpenLendDbAdapter.KEY_PERSON, mPersonName.getText().toString());
+
+            if (mPersonName.getText().toString().equals(originalName) && selectedPersonKey == null) {
+                bundle1.putString(OpenLendDbAdapter.KEY_PERSON_KEY, originalPersonKey);
+            }
+            else {
+                bundle1.putString(OpenLendDbAdapter.KEY_PERSON_KEY, selectedPersonKey);
+            }
+
+            if (addCalendarEntry) {
+                Cursor selectedItem = (Cursor) mCalendarSpinner.getSelectedItem();
+                if (selectedItem == null) {
+                    showNoSelectedCalendarError();
+                    return;
+                }
+                String selectedCalendarId = selectedItem.getString(selectedItem.getColumnIndex("_id"));
+
+                SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString(LAST_USED_CALENDAR, selectedCalendarId);
+                editor.commit();
+
+                bundle1.putString(CALENDAR_ID, selectedCalendarId);
+                c.set(mReturnYear, mReturnMonth, mReturnDay);
+                bundle1.putLong(RETURN_DATE, c.getTime().getTime());
+            }
+
+            Intent mIntent = new Intent();
+            mIntent.putExtras(bundle1);
+            setResult(RESULT_OK, mIntent);
+            finish();
         });
 
-		mCancelButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				setResult(RESULT_CANCELED);
-				finish();
-			}
-		});
-
-        mDeleteButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                Intent mIntent = new Intent();
-                mIntent.putExtra(OpenLendDbAdapter.KEY_ROWID, mRowId);
-                setResult(ListLentObjects.RESULT_DELETE, mIntent);
-                finish();
-            }
+		mCancelButton.setOnClickListener(view -> {
+            setResult(RESULT_CANCELED);
+            finish();
         });
 
-		mReturnedButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				Intent mIntent = new Intent();
-				mIntent.putExtra(OpenLendDbAdapter.KEY_ROWID, mRowId);
-				setResult(ListLentObjects.RESULT_RETURNED, mIntent);
-				finish();
-			}
-		});
+        mDeleteButton.setOnClickListener(view -> {
+            Intent mIntent = new Intent();
+            mIntent.putExtra(OpenLendDbAdapter.KEY_ROWID, mRowId);
+            setResult(ListLentObjects.RESULT_DELETE, mIntent);
+            finish();
+        });
+
+		mReturnedButton.setOnClickListener(view -> {
+            Intent mIntent = new Intent();
+            mIntent.putExtra(OpenLendDbAdapter.KEY_ROWID, mRowId);
+            setResult(ListLentObjects.RESULT_RETURNED, mIntent);
+            finish();
+        });
     }
 
     private void showNoSelectedCalendarError() {
@@ -264,7 +251,7 @@ public class AddObject extends Activity {
     }
 
     private ArrayAdapter<String> descriptionsFromOtherItemsAdapter() {
-        List<String> descriptions = new ArrayList<String>();
+        List<String> descriptions = new ArrayList<>();
 
         Cursor returnedItems = mDbHelper.fetchAllObjects();
         int columnIndex = returnedItems.getColumnIndex(OpenLendDbAdapter.KEY_DESCRIPTION);
@@ -278,11 +265,11 @@ public class AddObject extends Activity {
 
         Collections.sort(descriptions);
 
-        return new ArrayAdapter<String>(getApplicationContext(), R.layout.autocomplete_select, R.id.tv_autocomplete, descriptions);
+        return new ArrayAdapter<>(getApplicationContext(), R.layout.autocomplete_select, R.id.tv_autocomplete, descriptions);
     }
 
     private ArrayAdapter<String> contactNameAdapter() {
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
 
         // Add names from address book
         Cursor contactsCursor =
@@ -311,7 +298,7 @@ public class AddObject extends Activity {
 
         Collections.sort(names);
 
-        return new ArrayAdapter<String>(getApplicationContext(), R.layout.autocomplete_select, R.id.tv_autocomplete, names);
+        return new ArrayAdapter<>(getApplicationContext(), R.layout.autocomplete_select, R.id.tv_autocomplete, names);
     }
 
     @Override
@@ -321,17 +308,15 @@ public class AddObject extends Activity {
 	}
 
     private void initializeDatePicker(final Date date) {
-        mPickDate.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                FragmentManager fm = getFragmentManager();
-                Bundle bundle = new Bundle();
-                bundle.putInt("year", mYear);
-                bundle.putInt("month", mMonth);
-                bundle.putInt("day", mDay);
-                DatePickerFragment pickDateDialog = new DatePickerFragment();
-                pickDateDialog.setArguments(bundle);
-                pickDateDialog.show(fm, "fragment_pick_date");
-            }
+        mPickDate.setOnClickListener(v -> {
+            FragmentManager fm = getFragmentManager();
+            Bundle bundle = new Bundle();
+            bundle.putInt("year", mYear);
+            bundle.putInt("month", mMonth);
+            bundle.putInt("day", mDay);
+            DatePickerFragment pickDateDialog = new DatePickerFragment();
+            pickDateDialog.setArguments(bundle);
+            pickDateDialog.show(fm, "fragment_pick_date");
         });
 
         Calendar c = Calendar.getInstance();
@@ -344,20 +329,18 @@ public class AddObject extends Activity {
     }
 
     private void initializeReturnDatePicker(final Date date) {
-        mPickReturnDate.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Calendar c = Calendar.getInstance();
-                c.set(mReturnYear, mReturnMonth, mReturnDay);
+        mPickReturnDate.setOnClickListener(v -> {
+            Calendar c = Calendar.getInstance();
+            c.set(mReturnYear, mReturnMonth, mReturnDay);
 
-                FragmentManager fm = getFragmentManager();
-                Bundle bundle = new Bundle();
-                bundle.putInt("year", mReturnYear);
-                bundle.putInt("month", mReturnMonth);
-                bundle.putInt("day", mReturnDay);
-                DatePickerFragment pickDateDialog = new DatePickerFragment();
-                pickDateDialog.setArguments(bundle);
-                pickDateDialog.show(fm, "fragment_pick_return_date");
-            }
+            FragmentManager fm = getFragmentManager();
+            Bundle bundle = new Bundle();
+            bundle.putInt("year", mReturnYear);
+            bundle.putInt("month", mReturnMonth);
+            bundle.putInt("day", mReturnDay);
+            DatePickerFragment pickDateDialog = new DatePickerFragment();
+            pickDateDialog.setArguments(bundle);
+            pickDateDialog.show(fm, "fragment_pick_return_date");
         });
 
         Calendar c = Calendar.getInstance();

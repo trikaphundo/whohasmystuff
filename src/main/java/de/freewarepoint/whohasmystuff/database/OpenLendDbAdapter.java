@@ -126,7 +126,7 @@ public class OpenLendDbAdapter {
 
     public static synchronized OpenLendDbAdapter getInstance(Context ctx) {
         if (instances == null) {
-            instances = new HashMap<Context, OpenLendDbAdapter>();
+            instances = new HashMap<>();
         }
 
         OpenLendDbAdapter instance;

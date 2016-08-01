@@ -94,11 +94,7 @@ public abstract  class AbstractListFragment extends ListFragment {
 
         ListView listView = getListView();
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                launchEditActivity(position, id);
-            }
-        });
+        listView.setOnItemClickListener((adapterView, view, position, id) -> launchEditActivity(position, id));
 
         registerForContextMenu(listView);
         setHasOptionsMenu(optionsMenuAvailable());
@@ -149,27 +145,23 @@ public abstract  class AbstractListFragment extends ListFragment {
 
         SimpleCursorAdapter lentObjects = getLentObjects();
 
-        lentObjects.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
-
-            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-                if (columnIndex == 3) {
-                    Calendar lentDate = new GregorianCalendar();
-                    try {
-                        long time = df.parse(cursor.getString(columnIndex)).getTime();
-                        lentDate.setTimeInMillis(time);
-                    } catch (ParseException e) {
-                        throw new IllegalStateException("Unable to parse date " + cursor.getString(columnIndex));
-                    }
-
-                    TextView dateView = (TextView) view.findViewById(R.id.date);
-                    dateView.setText(getTimeDifference(lentDate, now));
-
-                    return true;
+        lentObjects.setViewBinder((view, cursor, columnIndex) -> {
+            if (columnIndex == 3) {
+                Calendar lentDate = new GregorianCalendar();
+                try {
+                    long time = df.parse(cursor.getString(columnIndex)).getTime();
+                    lentDate.setTimeInMillis(time);
+                } catch (ParseException e) {
+                    throw new IllegalStateException("Unable to parse date " + cursor.getString(columnIndex));
                 }
 
-                return false;
+                TextView dateView = (TextView) view.findViewById(R.id.date);
+                dateView.setText(getTimeDifference(lentDate, now));
+
+                return true;
             }
 
+            return false;
         });
 
         setListAdapter(lentObjects);
