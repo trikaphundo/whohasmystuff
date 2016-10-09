@@ -1,10 +1,13 @@
 package de.freewarepoint.whohasmystuff;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.format.DateUtils;
@@ -57,6 +60,7 @@ public class AddObject extends Activity {
     static final int ACTION_EDIT_LENT = 1;
 	static final int ACTION_EDIT_RETURNED = 2;
     static final int ACTION_SELECT_PERSON = 3;
+    static final int REQUEST_READ_CONTACTS = 1024;
 
 	private OpenLendDbAdapter mDbHelper;
 
@@ -109,6 +113,13 @@ public class AddObject extends Activity {
         initializeReturnDatePicker(returnDate);
 
         selectPerson.setOnClickListener(view -> {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_READ_CONTACTS);
+                    return;
+                }
+            }
+
             Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
             startActivityForResult(intent, ACTION_SELECT_PERSON);
         });
@@ -232,6 +243,13 @@ public class AddObject extends Activity {
     }
 
     private ArrayAdapter<String> contactNameAdapter() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                // We do not have permission to read contacts, do not provide autocomplete yet
+                return new ArrayAdapter<>(getApplicationContext(), R.layout.autocomplete_select, R.id.tv_autocomplete, Collections.emptyList());
+            }
+        }
+
         List<String> names = new ArrayList<>();
 
         // Add names from address book

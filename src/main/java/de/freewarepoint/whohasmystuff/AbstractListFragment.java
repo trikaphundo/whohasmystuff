@@ -1,13 +1,15 @@
 package de.freewarepoint.whohasmystuff;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
@@ -67,15 +69,21 @@ public abstract  class AbstractListFragment extends ListFragment {
         boolean emptyDatabase = mDbHelper.fetchAllObjects().getCount() == 0;
 
         if (firstStart && emptyDatabase) {
-            if (DatabaseHelper.existsBackupFile()) {
+            boolean storageAccessAvailable = true;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (getActivity().checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                    storageAccessAvailable = false;
+                }
+            }
+
+            if (storageAccessAvailable && DatabaseHelper.existsBackupFile()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(R.string.restore_on_first_start);
 
-                builder.setPositiveButton(R.string.restore_on_first_start_yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        DatabaseHelper.importDatabaseFromXML(mDbHelper);
-                        fillData();
-                    }
+                builder.setPositiveButton(R.string.restore_on_first_start_yes, (dialog, id) -> {
+                    DatabaseHelper.importDatabaseFromXML(mDbHelper);
+                    fillData();
                 });
 
                 builder.setNegativeButton(R.string.restore_on_first_start_no, null);

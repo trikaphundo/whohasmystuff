@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,7 +13,14 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import de.freewarepoint.whohasmystuff.database.DatabaseHelper;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+
 public class ListLentObjects extends AbstractListFragment {
+
+    private static final int REQUEST_EXPORT_PERMISSION = 1024;
+    private static final int REQUEST_IMPORT_PERMISSION = 1025;
 
 	@Override
 	protected int getIntentTitle() {
@@ -61,22 +69,62 @@ public class ListLentObjects extends AbstractListFragment {
                 transaction.commit();
                 break;
             case R.id.exportButton:
-                if (isExternalStorageWritable()) {
-                    if (DatabaseHelper.existsBackupFile()) {
-                        askForExportConfirmation();
-                    }
-                    else {
-                        exportData();
-                    }
-                }
+                exportAfterPermissionsCheck();
                 break;
             case R.id.importButton:
-                if (isExternalStorageReadable()) {
-                    askForImportConfirmation();
-                }
+                importAfterPermissionsCheck();
                 break;
         }
         return true;
+    }
+
+    private void exportAfterPermissionsCheck() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (getActivity().checkSelfPermission(WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
+                requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_EXPORT_PERMISSION);
+                return;
+            }
+        }
+
+        if (isExternalStorageWritable()) {
+            if (DatabaseHelper.existsBackupFile()) {
+                askForExportConfirmation();
+            }
+            else {
+                exportData();
+            }
+        }
+    }
+
+    private void importAfterPermissionsCheck() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (getActivity().checkSelfPermission(READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
+                requestPermissions(new String[]{READ_EXTERNAL_STORAGE}, REQUEST_IMPORT_PERMISSION);
+                return;
+            }
+        }
+
+        if (isExternalStorageReadable()) {
+            askForImportConfirmation();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        final boolean success = grantResults.length > 0 && grantResults[0] == PERMISSION_GRANTED;
+
+        switch (requestCode) {
+            case REQUEST_EXPORT_PERMISSION:
+                if (success) {
+                    exportAfterPermissionsCheck();
+                }
+                break;
+            case REQUEST_IMPORT_PERMISSION:
+                if (success) {
+                    importAfterPermissionsCheck();
+                }
+                break;
+        }
     }
 
     boolean optionsMenuAvailable() {
