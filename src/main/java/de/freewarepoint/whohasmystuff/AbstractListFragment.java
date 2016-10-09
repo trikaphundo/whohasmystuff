@@ -3,16 +3,14 @@ package de.freewarepoint.whohasmystuff;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListFragment;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.CalendarContract;
+import android.provider.CalendarContract.Events;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -33,7 +31,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 public abstract  class AbstractListFragment extends ListFragment {
 
@@ -312,37 +309,19 @@ public abstract  class AbstractListFragment extends ListFragment {
             Bundle bundle = data.getExtras();
             LentObject lentObject = new LentObject(bundle);
 
-            if (bundle.getString(AddObject.CALENDAR_ID) != null) {
-                ContentValues event = new ContentValues();
+            if (bundle.getBoolean(AddObject.ADD_CALENDAR_ENTRY)) {
+                final long startTime = bundle.getLong(AddObject.RETURN_DATE);
+                final String title = String.format(getString(R.string.expected_return), lentObject.description);
+                final String description = String.format(
+                        getString(R.string.calendar_description), lentObject.description.trim(), lentObject.personName.trim());
 
-                event.put("title", getString(R.string.expected_return) + " " + lentObject.description);
-                event.put("description", "Expecting the return of " + lentObject.description +
-                        " from " + lentObject.personName);
-
-                long startTime = bundle.getLong(AddObject.RETURN_DATE);
-                long endTime = startTime + 1;
-
-                event.put("dtstart", startTime);
-                event.put("dtend", endTime);
-                event.put("allDay", 1);
-
-                event.put("calendar_id", bundle.getString(AddObject.CALENDAR_ID));
-
-                if (Build.VERSION.SDK_INT >= 14) {
-                    TimeZone timeZone = TimeZone.getDefault();
-                    event.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone.getID());
-                }
-
-                Uri eventsLocation;
-
-                if (Build.VERSION.SDK_INT >= 8) {
-                    eventsLocation = Uri.parse("content://com.android.calendar/events");
-                }
-                else {
-                    eventsLocation = Uri.parse("content://calendar/events");
-                }
-
-                lentObject.calendarEventURI = getActivity().getContentResolver().insert(eventsLocation, event);
+                Intent intent = new Intent(Intent.ACTION_EDIT)
+                        .setType("vnd.android.cursor.item/event")
+                        .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startTime)
+                        .putExtra(Events.ALL_DAY, true)
+                        .putExtra(Events.TITLE, title)
+                        .putExtra(Events.DESCRIPTION, description);
+                startActivity(intent);
             }
 
             if (requestCode == ACTION_ADD) {

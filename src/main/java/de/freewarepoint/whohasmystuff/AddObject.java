@@ -1,15 +1,11 @@
 package de.freewarepoint.whohasmystuff;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.FragmentManager;
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.provider.ContactsContract;
 import android.text.format.DateUtils;
 import android.view.View;
@@ -36,7 +32,6 @@ public class AddObject extends Activity {
     private AutoCompleteTextView mDescriptionText;
     private AutoCompleteTextView mPersonName;
     private Spinner mTypeSpinner;
-    private Spinner mCalendarSpinner;
     private TextView mModificationDate;
 
 	private String originalName;
@@ -55,15 +50,13 @@ public class AddObject extends Activity {
 
     private boolean addCalendarEntry;
 
-    static final String CALENDAR_ID = "calendar_id";
+    static final String ADD_CALENDAR_ENTRY = "add_calendar_entry";
     static final String ACTION_TYPE = "action_type";
     static final String RETURN_DATE = "return_date";
     static final int ACTION_ADD = 0;
     static final int ACTION_EDIT_LENT = 1;
 	static final int ACTION_EDIT_RETURNED = 2;
     static final int ACTION_SELECT_PERSON = 3;
-
-    private final String LAST_USED_CALENDAR = "LastUsedCalendar";
 
 	private OpenLendDbAdapter mDbHelper;
 
@@ -83,7 +76,6 @@ public class AddObject extends Activity {
 		mReturnedButton = (Button) findViewById(R.id.returned_button);
         mPickDate = (Button) findViewById(R.id.pickDate);
         mPickReturnDate = (Button) findViewById(R.id.returnDate);
-        mCalendarSpinner = (Spinner) findViewById(R.id.calendar_select);
         mModificationDate = (TextView) findViewById(R.id.modification_date_text);
 
         CheckBox mAddCalendarEntryCheckbox = (CheckBox) findViewById(R.id.add_calendar_checkbox);
@@ -124,70 +116,50 @@ public class AddObject extends Activity {
         mAddCalendarEntryCheckbox.setOnClickListener(v -> {
             addCalendarEntry = ((CheckBox) v).isChecked();
             if (addCalendarEntry) {
-                mCalendarSpinner.setVisibility(View.VISIBLE);
                 mPickReturnDate.setVisibility(View.VISIBLE);
-                findViewById(R.id.select_calendar_separator).setVisibility(View.VISIBLE);
-                findViewById(R.id.select_calendar_text).setVisibility(View.VISIBLE);
-                findViewById(R.id.return_date_separator).setVisibility(View.VISIBLE);
                 findViewById(R.id.return_date_text).setVisibility(View.VISIBLE);
             } else {
-                mCalendarSpinner.setVisibility(View.GONE);
                 mPickReturnDate.setVisibility(View.GONE);
-                findViewById(R.id.select_calendar_separator).setVisibility(View.GONE);
-                findViewById(R.id.select_calendar_text).setVisibility(View.GONE);
-                findViewById(R.id.return_date_separator).setVisibility(View.GONE);
                 findViewById(R.id.return_date_text).setVisibility(View.GONE);
             }
         });
-
-        initializeCalendarSpinner();
 
         mDescriptionText.setAdapter(descriptionsFromOtherItemsAdapter());
         mPersonName.setAdapter(contactNameAdapter());
 
         mAddButton.setOnClickListener(view -> {
-            Bundle bundle1 = new Bundle();
+            Bundle addItemBundle = new Bundle();
 
             if (mRowId != null) {
-                bundle1.putLong(OpenLendDbAdapter.KEY_ROWID, mRowId);
+                addItemBundle.putLong(OpenLendDbAdapter.KEY_ROWID, mRowId);
             }
 
-            bundle1.putString(OpenLendDbAdapter.KEY_DESCRIPTION, mDescriptionText.getText().toString());
-            bundle1.putInt(OpenLendDbAdapter.KEY_TYPE, mTypeSpinner.getSelectedItemPosition());
+            addItemBundle.putString(OpenLendDbAdapter.KEY_DESCRIPTION, mDescriptionText.getText().toString());
+            addItemBundle.putInt(OpenLendDbAdapter.KEY_TYPE, mTypeSpinner.getSelectedItemPosition());
 
             Calendar c = Calendar.getInstance();
             c.set(mYear, mMonth, mDay);
-            bundle1.putLong(OpenLendDbAdapter.KEY_DATE, c.getTime().getTime());
+            addItemBundle.putLong(OpenLendDbAdapter.KEY_DATE, c.getTime().getTime());
 
-            bundle1.putString(OpenLendDbAdapter.KEY_PERSON, mPersonName.getText().toString());
+            addItemBundle.putString(OpenLendDbAdapter.KEY_PERSON, mPersonName.getText().toString());
 
             if (mPersonName.getText().toString().equals(originalName) && selectedPersonKey == null) {
-                bundle1.putString(OpenLendDbAdapter.KEY_PERSON_KEY, originalPersonKey);
+                addItemBundle.putString(OpenLendDbAdapter.KEY_PERSON_KEY, originalPersonKey);
             }
             else {
-                bundle1.putString(OpenLendDbAdapter.KEY_PERSON_KEY, selectedPersonKey);
+                addItemBundle.putString(OpenLendDbAdapter.KEY_PERSON_KEY, selectedPersonKey);
             }
 
             if (addCalendarEntry) {
-                Cursor selectedItem = (Cursor) mCalendarSpinner.getSelectedItem();
-                if (selectedItem == null) {
-                    showNoSelectedCalendarError();
-                    return;
-                }
-                String selectedCalendarId = selectedItem.getString(selectedItem.getColumnIndex("_id"));
-
-                SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString(LAST_USED_CALENDAR, selectedCalendarId);
-                editor.commit();
-
-                bundle1.putString(CALENDAR_ID, selectedCalendarId);
+                addItemBundle.putBoolean(ADD_CALENDAR_ENTRY, true);
                 c.set(mReturnYear, mReturnMonth, mReturnDay);
-                bundle1.putLong(RETURN_DATE, c.getTime().getTime());
+                addItemBundle.putLong(RETURN_DATE, c.getTime().getTime());
+            } else {
+                addItemBundle.putBoolean(ADD_CALENDAR_ENTRY, false);
             }
 
             Intent mIntent = new Intent();
-            mIntent.putExtras(bundle1);
+            mIntent.putExtras(addItemBundle);
             setResult(RESULT_OK, mIntent);
             finish();
         });
@@ -210,15 +182,6 @@ public class AddObject extends Activity {
             setResult(ListLentObjects.RESULT_RETURNED, mIntent);
             finish();
         });
-    }
-
-    private void showNoSelectedCalendarError() {
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setIcon(android.R.drawable.ic_dialog_alert);
-        dialog.setTitle(getString(R.string.no_calendar_selected_title));
-        dialog.setMessage(getString(R.string.no_calendar_selected_message));
-        dialog.setPositiveButton("OK", null);
-        dialog.show();
     }
 
     private void initalizeValuesFromBundle(Bundle bundle) {
@@ -350,50 +313,6 @@ public class AddObject extends Activity {
         mReturnDay = c.get(Calendar.DAY_OF_MONTH);
 
         updateDisplay();
-    }
-    
-    private void initializeCalendarSpinner() {
-
-        final Cursor calendars = getCalendarsForICS();
-        final String nameColumn = CalendarContract.Calendars.CALENDAR_DISPLAY_NAME;
-
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        String lastUsedCalendarId = preferences.getString(LAST_USED_CALENDAR, null);
-
-        Integer initialSpinnerPosition = null;
-
-        if (lastUsedCalendarId != null) {
-            calendars.moveToFirst();
-            int currentPosition = 0;
-            do {
-                if (lastUsedCalendarId.equals(calendars.getString(calendars.getColumnIndex("_id")))) {
-                    initialSpinnerPosition = currentPosition;
-                }
-                ++currentPosition;
-            } while (calendars.moveToNext());
-        }
-
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item,
-                calendars, new String[] {nameColumn},new int[]{android.R.id.text1});
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mCalendarSpinner.setAdapter(adapter);
-
-        if (initialSpinnerPosition != null) {
-            mCalendarSpinner.setSelection(initialSpinnerPosition);
-        }
-    }
-
-    // Projection array. Creating indices for this array instead of doing
-    // dynamic lookups improves performance.
-    public static final String[] EVENT_PROJECTION = new String[] {
-            CalendarContract.Calendars._ID,
-            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME
-    };
-
-    private Cursor getCalendarsForICS() {
-        ContentResolver cr = getContentResolver();
-        Uri uri = CalendarContract.Calendars.CONTENT_URI;
-        return cr.query(uri, EVENT_PROJECTION, null, null, null);
     }
 
     private void updateDisplay() {

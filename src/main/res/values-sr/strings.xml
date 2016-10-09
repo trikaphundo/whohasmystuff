@@ -20,8 +20,6 @@
   <string name="add_title">Додавање нове посуђене ствари</string>
   <string name="edit_title">Уређивање посуђене ствари</string>
   <string name="add_calendar_entry">Додај унос у календар</string>
-  <string name="calendar">Календар</string>
-  <string name="calendar_prompt">Изаберите календар</string>
   <string name="ok_button">У реду</string>
   <string name="returned_button">Враћено је</string>
   <string name="cancel_button">Одустани</string>
@@ -41,9 +39,7 @@
   <string name="today">Данас</string>
   <string name="unknown">Непознато</string>
   <string name="choose_person">Изаберите особу</string>
-  <string name="expected_return">Очекивано враћање</string>
-  <string name="no_calendar_selected_title">Календар није изабран</string>
-  <string name="no_calendar_selected_message">Изаберите календар.</string>
+  <string name="expected_return">Очекивано враћање %1$s</string>
   <string name="sd_card_error_title">Не могу да приступим СД картици</string>
   <string name="sd_card_error_not_readable">СД картица није читљива!</string>
   <string name="sd_card_error_not_writeable">СД картица није уписива!</string>

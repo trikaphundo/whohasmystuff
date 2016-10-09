@@ -21,8 +21,6 @@
   <string name="add_title">Přidat novou položku k zapůjčení</string>
   <string name="edit_title">Upravit položku k zapůjčení</string>
   <string name="add_calendar_entry">Přidat zápis do kalendáře</string>
-  <string name="calendar">Kalendář</string>
-  <string name="calendar_prompt">Prosím vyberte kalendář</string>
   <string name="ok_button">Ok</string>
   <string name="returned_button">Označit jako vrácené</string>
   <string name="cancel_button">Zrušit</string>
@@ -42,9 +40,7 @@
   <string name="today">Dnes</string>
   <string name="unknown">Neznámý</string>
   <string name="choose_person">Vybrat osobu</string>
-  <string name="expected_return">Očekáváno vrácení</string>
-  <string name="no_calendar_selected_title">Nevybrán žádný kalendář</string>
-  <string name="no_calendar_selected_message">Prosím vyberte kalendář.</string>
+  <string name="expected_return">Očekáváno vrácení %1$s</string>
   <string name="sd_card_error_title">Nelze přistupovat na SD kartu</string>
   <string name="sd_card_error_not_readable">Nelze číst z SD karty!</string>
   <string name="sd_card_error_not_writeable">Nelze zapisovat na SD kartu!</string>

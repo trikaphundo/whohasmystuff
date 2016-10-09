@@ -20,8 +20,6 @@
   <string name="add_title">Adicionar Novo Item Emprestado</string>
   <string name="edit_title">Editar Item Emprestado</string>
   <string name="add_calendar_entry">Adicionar entrada no calendário</string>
-  <string name="calendar">Calendário</string>
-  <string name="calendar_prompt">Selecione o calendário</string>
   <string name="ok_button">OK</string>
   <string name="returned_button">Marcar como Devolvido</string>
   <string name="cancel_button">Cancelar</string>
@@ -41,9 +39,7 @@
   <string name="today">Hoje</string>
   <string name="unknown">Desconhecido</string>
   <string name="choose_person">Escolha a pessoa</string>
-  <string name="expected_return">Esperando devolução de</string>
-  <string name="no_calendar_selected_title">Nenhum calendário selecionado</string>
-  <string name="no_calendar_selected_message">Selecione um calendário.</string>
+  <string name="expected_return">Esperando devolução de %1$s</string>
   <string name="sd_card_error_title">Impossível acessar o Cartão SD</string>
   <string name="sd_card_error_not_readable">Não é possível ler o Cartão SD!</string>
   <string name="sd_card_error_not_writeable">Não é possível gravar no Cartão SD!</string>

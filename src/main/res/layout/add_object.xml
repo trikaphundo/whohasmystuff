@@ -127,39 +127,10 @@
                              android:contentDescription="@string/choose_person"/>
             </LinearLayout>
 
-            <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="1px"
-                    android:background="?android:attr/listDivider"
-                    android:id="@+id/select_calendar_separator"/>
-
             <CheckBox android:id="@+id/add_calendar_checkbox"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:text="@string/add_calendar_entry" />
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dip"
-                    android:text="@string/calendar"
-                    android:id="@+id/select_calendar_text"
-                    android:visibility="gone"
-                    />
-            <Spinner
-                    android:id="@+id/calendar_select"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:prompt="@string/calendar_prompt"
-                    android:visibility="gone"
-                    />
-
-            <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="1px"
-                    android:background="?android:attr/listDivider"
-                    android:id="@+id/return_date_separator"
-                    android:visibility="gone"/>
 
             <TextView android:layout_width="wrap_content"
                       android:layout_height="wrap_content"

@@ -20,8 +20,6 @@
   <string name="add_title">Додати новий позичений елемент</string>
   <string name="edit_title">Редагувати позичений елемент</string>
   <string name="add_calendar_entry">Додати елемент до календаря</string>
-  <string name="calendar">Календар</string>
-  <string name="calendar_prompt">Будь ласка виберіть у календарі</string>
   <string name="ok_button">Гаразд</string>
   <string name="returned_button">Позначити як повернене</string>
   <string name="cancel_button">Скасувати</string>
@@ -41,9 +39,7 @@
   <string name="today">Сьогодні</string>
   <string name="unknown">Невідомо</string>
   <string name="choose_person">Вибрати особу</string>
-  <string name="expected_return">Очікується повернення</string>
-  <string name="no_calendar_selected_title">Нема вибраного календаря</string>
-  <string name="no_calendar_selected_message">Будь ласка виберіть календар.</string>
+  <string name="expected_return">Очікується повернення %1$s</string>
   <string name="sd_card_error_title">Немає доступу до SD карти</string>
   <string name="sd_card_error_not_readable">Карта SD не читається!</string>
   <string name="sd_card_error_not_writeable">Не можливо записати на карту SD!</string>

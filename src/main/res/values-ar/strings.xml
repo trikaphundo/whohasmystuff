@@ -16,8 +16,6 @@
   <string name="edit_button">حفظ التغييرات</string>
   <string name="delete_button">حذف</string>
   <string name="add_calendar_entry">إضافة إدخال إلى التقويم</string>
-  <string name="calendar">التقويم</string>
-  <string name="calendar_prompt">من فضلك قم باختيار التقويم</string>
   <string name="ok_button">موافق</string>
   <string name="returned_button">تم تحديده على أنه مرتجع</string>
   <string name="cancel_button">إلغاء</string>
@@ -37,9 +35,7 @@
   <string name="today">اليوم</string>
   <string name="unknown">غير معروف</string>
   <string name="choose_person">اختر شخصًا</string>
-  <string name="expected_return">توقّع عودة</string>
-  <string name="no_calendar_selected_title">لم يتم اختيار التقويم</string>
-  <string name="no_calendar_selected_message">من فضلك قم باختيار التقويم.</string>
+  <string name="expected_return">توقّع عودة %1$s</string>
   <string name="database_export_title">قاعدة بيانات النسخ الاحتياطي</string>
   <string name="database_export_message">ملف النسخ الاحتياطي موجود بالفعل. هل تريد الكتابة فوقه؟</string>
   <string name="database_import_title">استعادة قاعدة البيانات</string>

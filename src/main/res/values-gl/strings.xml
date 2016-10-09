@@ -21,8 +21,6 @@
   <string name="add_title">Engadir un novo artigo para emprestar</string>
   <string name="edit_title">Editar artigo emprestado</string>
   <string name="add_calendar_entry">Engadir entrada no calendario</string>
-  <string name="calendar">Calendario</string>
-  <string name="calendar_prompt">Por favor, selecciona o calendario</string>
   <string name="ok_button">Aceptar</string>
   <string name="returned_button">Marcar como devolto</string>
   <string name="cancel_button">Cancelar</string>
@@ -42,9 +40,7 @@
   <string name="today">Hoxe</string>
   <string name="unknown">Descoñecido</string>
   <string name="choose_person">Elixir a persoa</string>
-  <string name="expected_return">Prevista a devolución de</string>
-  <string name="no_calendar_selected_title">Ningún calendario seleccionado</string>
-  <string name="no_calendar_selected_message">Selecciona, por favor, un calendario.</string>
+  <string name="expected_return">Prevista a devolución de %1$s</string>
   <string name="sd_card_error_title">Non é posible acceder á tarxeta SD</string>
   <string name="sd_card_error_not_readable">Tarxeta SD non lexible!</string>
   <string name="sd_card_error_not_writeable">Tarxeta SD non editable!</string>

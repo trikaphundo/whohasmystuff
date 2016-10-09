@@ -18,8 +18,6 @@
   <string name="add_title">הוסף פריט מושאל חדש</string>
   <string name="edit_title">ערוך פריט מושאל</string>
   <string name="add_calendar_entry">הוספת ערך לוח שנה</string>
-  <string name="calendar">לוח שנה</string>
-  <string name="calendar_prompt">נא בחר את לוח השנה</string>
   <string name="ok_button">אישור</string>
   <string name="returned_button">סמן כפריט שהוחזר</string>
   <string name="cancel_button">ביטול</string>
@@ -37,9 +35,7 @@
   <string name="day">יום</string>
   <string name="today">היום</string>
   <string name="unknown">לא ידוע</string>
-  <string name="expected_return">חזרה צפויה של</string>
-  <string name="no_calendar_selected_title">לא נבחר לוח שנה</string>
-  <string name="no_calendar_selected_message">נא בחר לוח שנה.</string>
+  <string name="expected_return"> %1$sחזרה צפויה של</string>
   <string name="sd_card_error_title">לא ניתן לגשת לכרטיס הזיכרון</string>
   <string name="sd_card_error_not_readable">כרטיס הזיכרון אינו ניתן לקריאה!</string>
   <string name="sd_card_error_not_writeable">כרטיס הזיכרון אינו ניתן לכתיבה!</string>

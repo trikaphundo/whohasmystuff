@@ -19,8 +19,6 @@
   <string name="add_title">新規貸出アイテムを追加</string>
   <string name="edit_title">貸出アイテムを編集</string>
   <string name="add_calendar_entry">カレンダーにエントリーを追加</string>
-  <string name="calendar">カレンダー</string>
-  <string name="calendar_prompt">カレンダーを選択してください</string>
   <string name="returned_button">返却済としてマーク</string>
   <string name="cancel_button">キャンセル</string>
   <string name="submenu_edit">編集</string>
@@ -39,9 +37,7 @@
   <string name="today">明日</string>
   <string name="unknown">不明</string>
   <string name="choose_person">人を選択</string>
-  <string name="expected_return">返却予定</string>
-  <string name="no_calendar_selected_title">カレンダーが選択されていません</string>
-  <string name="no_calendar_selected_message">カレンダーを選択してください.</string>
+  <string name="expected_return">返却予定 %1$s</string>
   <string name="sd_card_error_title">SD カードにアクセスできません</string>
   <string name="sd_card_error_not_readable">SD カードから読み込みできません!</string>
   <string name="sd_card_error_not_writeable">SD カードに書き込みできません!</string>

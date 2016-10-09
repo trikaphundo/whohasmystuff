@@ -20,8 +20,6 @@
   <string name="add_title">Создание записи</string>
   <string name="edit_title">Редактирование записи</string>
   <string name="add_calendar_entry">Добавить событие в календарь</string>
-  <string name="calendar">Календарь</string>
-  <string name="calendar_prompt">Пожалуйста, выберите календарь</string>
   <string name="ok_button">OK</string>
   <string name="returned_button">Отметить как возвращенное</string>
   <string name="cancel_button">Отменить</string>
@@ -41,9 +39,7 @@
   <string name="today">Сегодня</string>
   <string name="unknown">Неизвестно</string>
   <string name="choose_person">Выберите человека</string>
-  <string name="expected_return">Ожидаемый возарат</string>
-  <string name="no_calendar_selected_title">Календарь не выбран</string>
-  <string name="no_calendar_selected_message">Пожалуйста, выберите календарь.</string>
+  <string name="expected_return">Ожидаемый возарат %1$s</string>
   <string name="sd_card_error_title">Нет доступа к SD-карте</string>
   <string name="sd_card_error_not_readable">SD-карта не читается!</string>
   <string name="sd_card_error_not_writeable">SD-карта не записывается!</string>

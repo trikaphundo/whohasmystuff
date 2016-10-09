@@ -20,8 +20,6 @@
   <string name="add_title">Agregar elemento de préstamo</string>
   <string name="edit_title">Editar elemento de préstamo</string>
   <string name="add_calendar_entry">Agregar entrada al calendario</string>
-  <string name="calendar">Calendario</string>
-  <string name="calendar_prompt">Por favor, seleccione el calendario</string>
   <string name="ok_button">Aceptar</string>
   <string name="returned_button">Marcar como devuelto</string>
   <string name="cancel_button">Cancelar</string>
@@ -41,9 +39,7 @@
   <string name="today">Hoy</string>
   <string name="unknown">Desconocido</string>
   <string name="choose_person">Elegir persona</string>
-  <string name="expected_return">Retorno esperado de</string>
-  <string name="no_calendar_selected_title">No hay calendario seleccionado</string>
-  <string name="no_calendar_selected_message">Por favor, seleccione un calendario.</string>
+  <string name="expected_return">Retorno esperado de %1$s</string>
   <string name="sd_card_error_title">Incapaz de acceder a la tarjeta SD</string>
   <string name="sd_card_error_not_readable">¡Tarjeta SD no es legible!</string>
   <string name="sd_card_error_not_writeable">¡Tarjeta SD no es escribible!</string>

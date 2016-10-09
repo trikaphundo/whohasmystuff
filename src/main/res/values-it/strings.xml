@@ -20,8 +20,6 @@
   <string name="add_title">Aggiungi nuovo oggetto in prestito</string>
   <string name="edit_title">Modifica oggetto in prestito</string>
   <string name="add_calendar_entry">Aggiungi voce al calendario</string>
-  <string name="calendar">Calendario</string>
-  <string name="calendar_prompt">Per favore seleziona il calendario</string>
   <string name="ok_button">OK</string>
   <string name="returned_button">Segna come ritornato</string>
   <string name="cancel_button">Annulla</string>
@@ -41,9 +39,7 @@
   <string name="today">Oggi</string>
   <string name="unknown">Sconosciuto</string>
   <string name="choose_person">Scegli persona</string>
-  <string name="expected_return">Ci si aspetta che ritorni il</string>
-  <string name="no_calendar_selected_title">Nessun calendario selezionato</string>
-  <string name="no_calendar_selected_message">Per favore seleziona un calendario.</string>
+  <string name="expected_return">Ci si aspetta che ritorni il %1$s</string>
   <string name="sd_card_error_title">Impossibile avere accesso alla memoria SD card</string>
   <string name="sd_card_error_not_readable">La SD card non è leggibile!</string>
   <string name="sd_card_error_not_writeable">La SD card non è scrivibile!</string>
