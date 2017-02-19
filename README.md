@@ -22,4 +22,3 @@ Justification for used permissions
 
 * Read address book: Associate objects with contacts
 * Write to SD card: Backup/Restore
-* Read/Write calendar: Add events for expected returns
