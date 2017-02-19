@@ -195,6 +195,19 @@ public class AddObject extends Activity {
         });
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_READ_CONTACTS: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                    startActivityForResult(intent, ACTION_SELECT_PERSON);
+                }
+            }
+        }
+
+    }
+
     private void initalizeValuesFromBundle(Bundle bundle) {
         int actionType = bundle.getInt(ACTION_TYPE);
         if (actionType == ACTION_EDIT_LENT || actionType == ACTION_EDIT_RETURNED) {
