@@ -5,8 +5,13 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'com.android.tools.build:gradle:2.2.3'
     }
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
 }
 
 apply plugin: 'com.android.application'
