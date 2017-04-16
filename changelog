@@ -1,3 +1,10 @@
+WhoHasMyStuff (1.0.27)
+
+  * Added Norwegian translation (thanks to Allan Nordhøy)
+  * Added Turkish app name (thanks to Cansu Usta)
+
+-- Stephan Windmüller <stovocor@gmail.com>
+
 WhoHasMyStuff (1.0.26)
 
   * Use calendar app for creating events, remove permissions
