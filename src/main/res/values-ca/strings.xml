@@ -13,6 +13,7 @@
   <string name="type">Tipus</string>
   <string name="type_prompt">Seleccioneu el tipus d\'element prestat</string>
   <string name="history_title">Historial: elements retornats</string>
+  <string name="last_modified">Última modificació</string>
   <string name="add_button">Afegeix</string>
   <string name="edit_button">Desa els canvis</string>
   <string name="mark_as_lent_button">Presta-ho altra vegada</string>
