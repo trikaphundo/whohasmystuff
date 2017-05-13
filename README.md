@@ -22,3 +22,9 @@ Justification for used permissions
 
 * Read address book: Associate objects with contacts
 * Write to SD card: Backup/Restore
+
+Translation
+-----------
+
+If you want to help me translating this application into your language,
+please visit https://crowdin.net/project/who-has-my-stuff/invite
