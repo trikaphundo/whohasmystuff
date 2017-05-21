@@ -3,6 +3,7 @@ package de.freewarepoint.whohasmystuff;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.app.ListFragment;
 import android.content.Context;
 import android.content.Intent;
@@ -34,7 +35,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-public abstract  class AbstractListFragment extends ListFragment {
+public abstract  class AbstractListFragment extends ListFragment implements AlertDialogFragment.AlertDialogFragmentListener{
 
     private static final int SUBMENU_EDIT = SubMenu.FIRST;
     private static final int SUBMENU_MARK_AS_RETURNED = SubMenu.FIRST + 1;
@@ -50,13 +51,16 @@ public abstract  class AbstractListFragment extends ListFragment {
     public static final String LOG_TAG = "WhoHasMyStuff";
     public static final String FIRST_START = "FirstStart";
 
+    /**Tag that identifies the DialogFragment that may be shown on the very first execution ever.*/
+    private static final String TAG_DIALOG_FIRST_TIME = "dialog_first_time";
+
     protected OpenLendDbAdapter mDbHelper;
     private Cursor mLentObjectCursor;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
+        super.onActivityCreated(savedInstanceState);
         getActivity().setTitle(getIntentTitle());
 
         mDbHelper = OpenLendDbAdapter.getInstance(getActivity());
@@ -78,16 +82,16 @@ public abstract  class AbstractListFragment extends ListFragment {
             }
 
             if (storageAccessAvailable && DatabaseHelper.existsBackupFile()) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage(R.string.restore_on_first_start);
+                AlertDialogFragment dialog;
 
-                builder.setPositiveButton(R.string.restore_on_first_start_yes, (dialog, id) -> {
-                    DatabaseHelper.importDatabaseFromXML(mDbHelper);
-                    fillData();
-                });
-
-                builder.setNegativeButton(R.string.restore_on_first_start_no, null);
-                builder.create().show();
+                dialog = AlertDialogFragment.newObject(null,
+                        getResources().getString(R.string.restore_on_first_start),
+                        getResources().getString(R.string.restore_on_first_start_yes),
+                        getResources().getString(R.string.restore_on_first_start_no),
+                        null,
+                        0);
+                dialog.setAlertDialogFragmentListener(this);
+                dialog.show(getFragmentManager(), TAG_DIALOG_FIRST_TIME);
             }
         }
 
@@ -362,4 +366,25 @@ public abstract  class AbstractListFragment extends ListFragment {
         }
     }
 
+    @Override
+    public void onPositiveAction(DialogFragment dialog){
+        String tag = dialog.getTag();
+
+        if(tag == null){
+            return;
+        }
+        switch(tag){
+            case TAG_DIALOG_FIRST_TIME:
+                Log.d(LOG_TAG, "first time dialog +");
+                DatabaseHelper.importDatabaseFromXML(mDbHelper);
+                fillData();
+                break;
+        }
+    }
+
+    @Override
+    public void onNegativeAction(DialogFragment dialog){}
+
+    @Override
+    public void onNeutralAction(DialogFragment dialog){}
 }
