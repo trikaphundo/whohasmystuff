@@ -51,8 +51,6 @@ public class AddObject extends Activity {
 
     private Date selectedDate;
 
-    private boolean addCalendarEntry;
-
     static final String ADD_CALENDAR_ENTRY = "add_calendar_entry";
     static final String ACTION_TYPE = "action_type";
     static final String RETURN_DATE = "return_date";
@@ -61,6 +59,8 @@ public class AddObject extends Activity {
 	static final int ACTION_EDIT_RETURNED = 2;
     static final int ACTION_SELECT_PERSON = 3;
     static final int REQUEST_READ_CONTACTS = 1024;
+
+    private boolean addCalendarEntry;
 
 	private OpenLendDbAdapter mDbHelper;
 
@@ -124,9 +124,11 @@ public class AddObject extends Activity {
             startActivityForResult(intent, ACTION_SELECT_PERSON);
         });
 
-        mAddCalendarEntryCheckbox.setOnClickListener(v -> {
-            addCalendarEntry = ((CheckBox) v).isChecked();
-            if (addCalendarEntry) {
+        //android will restore later the state of this checkbox. Which produces a call to
+        // the method CompoundButton#setChecked(boolean), which implicitly notifies its observer (listener)
+        mAddCalendarEntryCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            addCalendarEntry = isChecked;
+            if (isChecked) {
                 mPickReturnDate.setVisibility(View.VISIBLE);
                 findViewById(R.id.return_date_text).setVisibility(View.VISIBLE);
             } else {
