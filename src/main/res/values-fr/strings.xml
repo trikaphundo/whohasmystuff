@@ -41,6 +41,7 @@
   <string name="unknown">Inconnu</string>
   <string name="choose_person">Choisissez la personne</string>
   <string name="expected_return">Retour attendu de %1$s</string>
+  <string name="calendar_description">%2$s doit rendre %1$s</string>
   <string name="sd_card_error_title">Impossible d\'accéder à la carte SD</string>
   <string name="sd_card_error_not_readable">La carte SD n\'est pas lisible !</string>
   <string name="sd_card_error_not_writeable">La carte SD n\'est pas accessible en écriture !</string>
