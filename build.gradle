@@ -25,8 +25,8 @@ android {
         applicationId 'de.freewarepoint.whohasmystuff'
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 29
-        versionName "1.0.28"
+        versionCode 30
+        versionName "1.0.29"
 
         jackOptions {
             enabled true
