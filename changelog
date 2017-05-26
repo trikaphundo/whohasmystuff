@@ -1,7 +1,15 @@
+WhoHasMyStuff (1.0.29)
+
+  * Trying to fix VerifyError by disabling deprecated Jack compiler
+
+-- Stephan Windmüller <stovocor@gmail.com>
+
 WhoHasMyStuff (1.0.28)
 
   * Fixed display issues after display orientation change (thanks to Daniel Fernández)
   * Updated Catalan, French, Spanish, and Turkish translations
+
+-- Stephan Windmüller <stovocor@gmail.com>
 
 WhoHasMyStuff (1.0.27)
 
