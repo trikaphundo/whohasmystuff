@@ -112,88 +112,105 @@ public class AddObject extends Activity {
         Date returnDate = new Date(selectedDate.getTime() + 14 * DateUtils.DAY_IN_MILLIS);
         initializeReturnDatePicker(returnDate);
 
-        selectPerson.setOnClickListener(view -> {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-                    requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                    return;
+        selectPerson.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (AddObject.this.checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                        AddObject.this.requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_READ_CONTACTS);
+                        return;
+                    }
                 }
-            }
 
-            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-            startActivityForResult(intent, ACTION_SELECT_PERSON);
+                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                AddObject.this.startActivityForResult(intent, ACTION_SELECT_PERSON);
+            }
         });
 
         //android will restore later the state of this checkbox. Which produces a call to
         // the method CompoundButton#setChecked(boolean), which implicitly notifies its observer (listener)
-        mAddCalendarEntryCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            addCalendarEntry = isChecked;
-            if (isChecked) {
-                mPickReturnDate.setVisibility(View.VISIBLE);
-                findViewById(R.id.return_date_text).setVisibility(View.VISIBLE);
-            } else {
-                mPickReturnDate.setVisibility(View.GONE);
-                findViewById(R.id.return_date_text).setVisibility(View.GONE);
+        mAddCalendarEntryCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                addCalendarEntry = isChecked;
+                if (isChecked) {
+                    mPickReturnDate.setVisibility(View.VISIBLE);
+                    AddObject.this.findViewById(R.id.return_date_text).setVisibility(View.VISIBLE);
+                } else {
+                    mPickReturnDate.setVisibility(View.GONE);
+                    AddObject.this.findViewById(R.id.return_date_text).setVisibility(View.GONE);
+                }
             }
         });
 
         mDescriptionText.setAdapter(descriptionsFromOtherItemsAdapter());
         mPersonName.setAdapter(contactNameAdapter());
 
-        mAddButton.setOnClickListener(view -> {
-            Bundle addItemBundle = new Bundle();
+        mAddButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle addItemBundle = new Bundle();
 
-            if (mRowId != null) {
-                addItemBundle.putLong(OpenLendDbAdapter.KEY_ROWID, mRowId);
+                if (mRowId != null) {
+                    addItemBundle.putLong(OpenLendDbAdapter.KEY_ROWID, mRowId);
+                }
+
+                addItemBundle.putString(OpenLendDbAdapter.KEY_DESCRIPTION, mDescriptionText.getText().toString());
+                addItemBundle.putInt(OpenLendDbAdapter.KEY_TYPE, mTypeSpinner.getSelectedItemPosition());
+
+                Calendar c = Calendar.getInstance();
+                c.set(mYear, mMonth, mDay);
+                addItemBundle.putLong(OpenLendDbAdapter.KEY_DATE, c.getTime().getTime());
+
+                addItemBundle.putString(OpenLendDbAdapter.KEY_PERSON, mPersonName.getText().toString());
+
+                if (mPersonName.getText().toString().equals(originalName) && selectedPersonKey == null) {
+                    addItemBundle.putString(OpenLendDbAdapter.KEY_PERSON_KEY, originalPersonKey);
+                } else {
+                    addItemBundle.putString(OpenLendDbAdapter.KEY_PERSON_KEY, selectedPersonKey);
+                }
+
+                if (addCalendarEntry) {
+                    addItemBundle.putBoolean(ADD_CALENDAR_ENTRY, true);
+                    c.set(mReturnYear, mReturnMonth, mReturnDay);
+                    addItemBundle.putLong(RETURN_DATE, c.getTime().getTime());
+                } else {
+                    addItemBundle.putBoolean(ADD_CALENDAR_ENTRY, false);
+                }
+
+                Intent mIntent = new Intent();
+                mIntent.putExtras(addItemBundle);
+                AddObject.this.setResult(RESULT_OK, mIntent);
+                AddObject.this.finish();
             }
-
-            addItemBundle.putString(OpenLendDbAdapter.KEY_DESCRIPTION, mDescriptionText.getText().toString());
-            addItemBundle.putInt(OpenLendDbAdapter.KEY_TYPE, mTypeSpinner.getSelectedItemPosition());
-
-            Calendar c = Calendar.getInstance();
-            c.set(mYear, mMonth, mDay);
-            addItemBundle.putLong(OpenLendDbAdapter.KEY_DATE, c.getTime().getTime());
-
-            addItemBundle.putString(OpenLendDbAdapter.KEY_PERSON, mPersonName.getText().toString());
-
-            if (mPersonName.getText().toString().equals(originalName) && selectedPersonKey == null) {
-                addItemBundle.putString(OpenLendDbAdapter.KEY_PERSON_KEY, originalPersonKey);
-            }
-            else {
-                addItemBundle.putString(OpenLendDbAdapter.KEY_PERSON_KEY, selectedPersonKey);
-            }
-
-            if (addCalendarEntry) {
-                addItemBundle.putBoolean(ADD_CALENDAR_ENTRY, true);
-                c.set(mReturnYear, mReturnMonth, mReturnDay);
-                addItemBundle.putLong(RETURN_DATE, c.getTime().getTime());
-            } else {
-                addItemBundle.putBoolean(ADD_CALENDAR_ENTRY, false);
-            }
-
-            Intent mIntent = new Intent();
-            mIntent.putExtras(addItemBundle);
-            setResult(RESULT_OK, mIntent);
-            finish();
         });
 
-		mCancelButton.setOnClickListener(view -> {
-            setResult(RESULT_CANCELED);
-            finish();
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddObject.this.setResult(RESULT_CANCELED);
+                AddObject.this.finish();
+            }
         });
 
-        mDeleteButton.setOnClickListener(view -> {
-            Intent mIntent = new Intent();
-            mIntent.putExtra(OpenLendDbAdapter.KEY_ROWID, mRowId);
-            setResult(ListLentObjects.RESULT_DELETE, mIntent);
-            finish();
+        mDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mIntent = new Intent();
+                mIntent.putExtra(OpenLendDbAdapter.KEY_ROWID, mRowId);
+                AddObject.this.setResult(ListLentObjects.RESULT_DELETE, mIntent);
+                AddObject.this.finish();
+            }
         });
 
-		mReturnedButton.setOnClickListener(view -> {
-            Intent mIntent = new Intent();
-            mIntent.putExtra(OpenLendDbAdapter.KEY_ROWID, mRowId);
-            setResult(ListLentObjects.RESULT_RETURNED, mIntent);
-            finish();
+        mReturnedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mIntent = new Intent();
+                mIntent.putExtra(OpenLendDbAdapter.KEY_ROWID, mRowId);
+                AddObject.this.setResult(ListLentObjects.RESULT_RETURNED, mIntent);
+                AddObject.this.finish();
+            }
         });
     }
 
@@ -261,7 +278,7 @@ public class AddObject extends Activity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
                 // We do not have permission to read contacts, do not provide autocomplete yet
-                return new ArrayAdapter<>(getApplicationContext(), R.layout.autocomplete_select, R.id.tv_autocomplete, Collections.emptyList());
+                return new ArrayAdapter<>(getApplicationContext(), R.layout.autocomplete_select, R.id.tv_autocomplete, Collections.<String>emptyList());
             }
         }
 
@@ -304,15 +321,18 @@ public class AddObject extends Activity {
 	}
 
     private void initializeDatePicker(final Date date) {
-        mPickDate.setOnClickListener(v -> {
-            FragmentManager fm = getFragmentManager();
-            Bundle bundle = new Bundle();
-            bundle.putInt("year", mYear);
-            bundle.putInt("month", mMonth);
-            bundle.putInt("day", mDay);
-            DatePickerFragment pickDateDialog = new DatePickerFragment();
-            pickDateDialog.setArguments(bundle);
-            pickDateDialog.show(fm, "fragment_pick_date");
+        mPickDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fm = AddObject.this.getFragmentManager();
+                Bundle bundle = new Bundle();
+                bundle.putInt("year", mYear);
+                bundle.putInt("month", mMonth);
+                bundle.putInt("day", mDay);
+                DatePickerFragment pickDateDialog = new DatePickerFragment();
+                pickDateDialog.setArguments(bundle);
+                pickDateDialog.show(fm, "fragment_pick_date");
+            }
         });
 
         Calendar c = Calendar.getInstance();
@@ -325,18 +345,21 @@ public class AddObject extends Activity {
     }
 
     private void initializeReturnDatePicker(final Date date) {
-        mPickReturnDate.setOnClickListener(v -> {
-            Calendar c = Calendar.getInstance();
-            c.set(mReturnYear, mReturnMonth, mReturnDay);
+        mPickReturnDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar c = Calendar.getInstance();
+                c.set(mReturnYear, mReturnMonth, mReturnDay);
 
-            FragmentManager fm = getFragmentManager();
-            Bundle bundle = new Bundle();
-            bundle.putInt("year", mReturnYear);
-            bundle.putInt("month", mReturnMonth);
-            bundle.putInt("day", mReturnDay);
-            DatePickerFragment pickDateDialog = new DatePickerFragment();
-            pickDateDialog.setArguments(bundle);
-            pickDateDialog.show(fm, "fragment_pick_return_date");
+                FragmentManager fm = AddObject.this.getFragmentManager();
+                Bundle bundle = new Bundle();
+                bundle.putInt("year", mReturnYear);
+                bundle.putInt("month", mReturnMonth);
+                bundle.putInt("day", mReturnDay);
+                DatePickerFragment pickDateDialog = new DatePickerFragment();
+                pickDateDialog.setArguments(bundle);
+                pickDateDialog.show(fm, "fragment_pick_return_date");
+            }
         });
 
         Calendar c = Calendar.getInstance();

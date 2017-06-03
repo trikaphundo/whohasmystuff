@@ -1,6 +1,7 @@
 WhoHasMyStuff (1.0.32)
 
   * Fixed calculation of durations of less than 48 hours
+  * Reverted back to Java 7
 
 -- Stephan Windmüller <stovocor@gmail.com>
 

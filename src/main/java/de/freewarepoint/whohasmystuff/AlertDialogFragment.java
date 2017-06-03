@@ -254,9 +254,11 @@ public class AlertDialogFragment extends DialogFragment {
 
         //create the listener for the dialog buttons,
         // just a man in the middle to call the listener methods
-        onClickListener = (dialog, which) -> {
-                if(mListener != null){
-                    switch(which){
+        onClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (mListener != null) {
+                    switch (which) {
                         case DialogInterface.BUTTON_POSITIVE:
                             mListener.onPositiveAction(AlertDialogFragment.this);
                             break;
@@ -268,6 +270,7 @@ public class AlertDialogFragment extends DialogFragment {
                             break;
                     }
                 }
+            }
         };
 
 
