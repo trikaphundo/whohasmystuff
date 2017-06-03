@@ -1,3 +1,9 @@
+WhoHasMyStuff (1.0.32)
+
+  * Fixed calculation of durations of less than 48 hours
+
+-- Stephan Windmüller <stovocor@gmail.com>
+
 WhoHasMyStuff (1.0.31)
 
   * Updated Spanish translation

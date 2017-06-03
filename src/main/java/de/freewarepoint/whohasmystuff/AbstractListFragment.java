@@ -151,6 +151,7 @@ public abstract  class AbstractListFragment extends ListFragment implements Aler
     protected void fillData() {
         final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         final Calendar now = new GregorianCalendar();
+        final DurationCalculator durationCalculator = new DurationCalculator(getResources());
 
         SimpleCursorAdapter lentObjects = getLentObjects();
 
@@ -165,7 +166,7 @@ public abstract  class AbstractListFragment extends ListFragment implements Aler
                 }
 
                 TextView dateView = (TextView) view.findViewById(R.id.date);
-                dateView.setText(getTimeDifference(lentDate, now));
+                dateView.setText(durationCalculator.getTimeDifference(lentDate, now));
 
                 return true;
             }
@@ -174,82 +175,6 @@ public abstract  class AbstractListFragment extends ListFragment implements Aler
         });
 
         setListAdapter(lentObjects);
-    }
-
-    private String getTimeDifference(Calendar lentDate, Calendar now) {
-        if (now.before(lentDate)) {
-            return "0 days";
-        }
-
-        // Check if one or more years have passed
-
-        int differenceInYears = now.get(Calendar.YEAR) - lentDate.get(Calendar.YEAR);
-        Calendar lentTimeInSameYear = new GregorianCalendar();
-        lentTimeInSameYear.setTimeInMillis(lentDate.getTimeInMillis());
-        lentTimeInSameYear.set(Calendar.YEAR, now.get(Calendar.YEAR));
-        if (now.before(lentTimeInSameYear)) {
-            differenceInYears--;
-        }
-
-        if (differenceInYears > 1) {
-            return differenceInYears + " " + getString(R.string.years);
-        }
-        else if (differenceInYears > 0) {
-            return differenceInYears + " " + getString(R.string.year);
-        }
-
-        // Check if one or more months have passed
-
-        int monthsOfLentDate = lentDate.get(Calendar.YEAR) * 12 + lentDate.get(Calendar.MONTH);
-        int monthsNow = now.get(Calendar.YEAR) * 12 + now.get(Calendar.MONTH);
-        int differenceInMonths = monthsNow - monthsOfLentDate;
-        Calendar lentTimeInSameMonth = new GregorianCalendar();
-        lentTimeInSameMonth.setTimeInMillis(lentDate.getTimeInMillis());
-        lentTimeInSameMonth.set(Calendar.YEAR, now.get(Calendar.YEAR));
-        lentTimeInSameMonth.set(Calendar.MONTH, now.get(Calendar.MONTH));
-        if (now.before(lentTimeInSameMonth)) {
-            differenceInMonths--;
-        }
-
-        if (differenceInMonths > 1) {
-            return differenceInMonths + " " + getString(R.string.months);
-        }
-        else if (differenceInMonths > 0) {
-            return differenceInMonths + " " + getString(R.string.month);
-        }
-
-        // Check if one or more weeks have passed
-
-        long difference = now.getTimeInMillis() - lentDate.getTimeInMillis();
-        int differenceInDays = (int) (difference / DateUtils.DAY_IN_MILLIS);
-        int differenceInWeeks = differenceInDays / 7;
-
-        if (differenceInWeeks > 1) {
-            return differenceInWeeks + " " + getString(R.string.weeks);
-        }
-        else if (differenceInWeeks > 0) {
-            return differenceInWeeks + " " + getString(R.string.week);
-        }
-
-        // Check if one or more days have passed
-
-        if (differenceInDays > 1) {
-            return differenceInDays + " " + getString(R.string.days);
-        }
-        else if (differenceInDays == 1) {
-            return getString(R.string.yesterday);
-        }
-        else if (differenceInDays == 0) {
-            if (now.get(Calendar.DAY_OF_MONTH) == lentDate.get(Calendar.DAY_OF_MONTH)) {
-                return getString(R.string.today);
-            }
-            else {
-                return getString(R.string.yesterday);
-            }
-        }
-        else {
-            return getString(R.string.unknown);
-        }
     }
 
     private SimpleCursorAdapter getLentObjects() {

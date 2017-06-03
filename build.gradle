@@ -19,7 +19,7 @@ apply plugin: 'com.android.application'
 android {
 
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "25.0.3"
 
     defaultConfig {
         applicationId 'de.freewarepoint.whohasmystuff'
@@ -29,24 +29,24 @@ android {
         versionName "1.0.31"
     }
 
-    if(project.hasProperty("RELEASE_STORE_FILE")) {
-       signingConfigs {
-	   release {
-	       storeFile file(RELEASE_STORE_FILE)
-	       storePassword RELEASE_STORE_PASSWORD
-	       keyAlias RELEASE_KEY_ALIAS
-	       keyPassword RELEASE_KEY_PASSWORD
-	   }
-       }
+    if (project.hasProperty("RELEASE_STORE_FILE")) {
+        signingConfigs {
+            release {
+                storeFile file(RELEASE_STORE_FILE)
+                storePassword RELEASE_STORE_PASSWORD
+                keyAlias RELEASE_KEY_ALIAS
+                keyPassword RELEASE_KEY_PASSWORD
+            }
+        }
     }
 
     buildTypes {
-       release {
-	  minifyEnabled false
-	  if(project.hasProperty("RELEASE_STORE_FILE")) {
-	     signingConfig signingConfigs.release
-	  }
-       }
+        release {
+            minifyEnabled false
+            if (project.hasProperty("RELEASE_STORE_FILE")) {
+                signingConfig signingConfigs.release
+            }
+        }
     }
 
     compileOptions {
@@ -56,5 +56,10 @@ android {
 
     lintOptions {
         abortOnError false
+    }
+
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+        testCompile group: 'org.mockito', name: 'mockito-core', version: '2.8.9'
     }
 }
