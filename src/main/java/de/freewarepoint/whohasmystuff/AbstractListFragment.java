@@ -3,6 +3,7 @@ package de.freewarepoint.whohasmystuff;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.app.ListFragment;
 import android.content.Context;
 import android.content.Intent;
@@ -34,7 +35,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-public abstract  class AbstractListFragment extends ListFragment {
+public abstract  class AbstractListFragment extends ListFragment implements AlertDialogFragment.AlertDialogFragmentListener{
 
     private static final int SUBMENU_EDIT = SubMenu.FIRST;
     private static final int SUBMENU_MARK_AS_RETURNED = SubMenu.FIRST + 1;
@@ -50,13 +51,16 @@ public abstract  class AbstractListFragment extends ListFragment {
     public static final String LOG_TAG = "WhoHasMyStuff";
     public static final String FIRST_START = "FirstStart";
 
+    /**Tag that identifies the DialogFragment that may be shown on the very first execution ever.*/
+    private static final String TAG_DIALOG_FIRST_TIME = "dialog_first_time";
+
     protected OpenLendDbAdapter mDbHelper;
     private Cursor mLentObjectCursor;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
+        super.onActivityCreated(savedInstanceState);
         getActivity().setTitle(getIntentTitle());
 
         mDbHelper = OpenLendDbAdapter.getInstance(getActivity());
@@ -78,16 +82,16 @@ public abstract  class AbstractListFragment extends ListFragment {
             }
 
             if (storageAccessAvailable && DatabaseHelper.existsBackupFile()) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage(R.string.restore_on_first_start);
+                AlertDialogFragment dialog;
 
-                builder.setPositiveButton(R.string.restore_on_first_start_yes, (dialog, id) -> {
-                    DatabaseHelper.importDatabaseFromXML(mDbHelper);
-                    fillData();
-                });
-
-                builder.setNegativeButton(R.string.restore_on_first_start_no, null);
-                builder.create().show();
+                dialog = AlertDialogFragment.newObject(null,
+                        getResources().getString(R.string.restore_on_first_start),
+                        getResources().getString(R.string.restore_on_first_start_yes),
+                        getResources().getString(R.string.restore_on_first_start_no),
+                        null,
+                        0);
+                dialog.setAlertDialogFragmentListener(this);
+                dialog.show(getFragmentManager(), TAG_DIALOG_FIRST_TIME);
             }
         }
 
@@ -99,7 +103,12 @@ public abstract  class AbstractListFragment extends ListFragment {
 
         ListView listView = getListView();
 
-        listView.setOnItemClickListener((adapterView, view, position, id) -> launchEditActivity(position, id));
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                AbstractListFragment.this.launchEditActivity(position, id);
+            }
+        });
 
         registerForContextMenu(listView);
         setHasOptionsMenu(optionsMenuAvailable());
@@ -147,105 +156,33 @@ public abstract  class AbstractListFragment extends ListFragment {
     protected void fillData() {
         final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         final Calendar now = new GregorianCalendar();
+        final DurationCalculator durationCalculator = new DurationCalculator(getResources());
 
         SimpleCursorAdapter lentObjects = getLentObjects();
 
-        lentObjects.setViewBinder((view, cursor, columnIndex) -> {
-            if (columnIndex == 3) {
-                Calendar lentDate = new GregorianCalendar();
-                try {
-                    long time = df.parse(cursor.getString(columnIndex)).getTime();
-                    lentDate.setTimeInMillis(time);
-                } catch (ParseException e) {
-                    throw new IllegalStateException("Unable to parse date " + cursor.getString(columnIndex));
+        lentObjects.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+            @Override
+            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                if (columnIndex == 3) {
+                    Calendar lentDate = new GregorianCalendar();
+                    try {
+                        long time = df.parse(cursor.getString(columnIndex)).getTime();
+                        lentDate.setTimeInMillis(time);
+                    } catch (ParseException e) {
+                        throw new IllegalStateException("Unable to parse date " + cursor.getString(columnIndex));
+                    }
+
+                    TextView dateView = (TextView) view.findViewById(R.id.date);
+                    dateView.setText(durationCalculator.getTimeDifference(lentDate, now));
+
+                    return true;
                 }
 
-                TextView dateView = (TextView) view.findViewById(R.id.date);
-                dateView.setText(getTimeDifference(lentDate, now));
-
-                return true;
+                return false;
             }
-
-            return false;
         });
 
         setListAdapter(lentObjects);
-    }
-
-    private String getTimeDifference(Calendar lentDate, Calendar now) {
-        if (now.before(lentDate)) {
-            return "0 days";
-        }
-
-        // Check if one or more years have passed
-
-        int differenceInYears = now.get(Calendar.YEAR) - lentDate.get(Calendar.YEAR);
-        Calendar lentTimeInSameYear = new GregorianCalendar();
-        lentTimeInSameYear.setTimeInMillis(lentDate.getTimeInMillis());
-        lentTimeInSameYear.set(Calendar.YEAR, now.get(Calendar.YEAR));
-        if (now.before(lentTimeInSameYear)) {
-            differenceInYears--;
-        }
-
-        if (differenceInYears > 1) {
-            return differenceInYears + " " + getString(R.string.years);
-        }
-        else if (differenceInYears > 0) {
-            return differenceInYears + " " + getString(R.string.year);
-        }
-
-        // Check if one or more months have passed
-
-        int monthsOfLentDate = lentDate.get(Calendar.YEAR) * 12 + lentDate.get(Calendar.MONTH);
-        int monthsNow = now.get(Calendar.YEAR) * 12 + now.get(Calendar.MONTH);
-        int differenceInMonths = monthsNow - monthsOfLentDate;
-        Calendar lentTimeInSameMonth = new GregorianCalendar();
-        lentTimeInSameMonth.setTimeInMillis(lentDate.getTimeInMillis());
-        lentTimeInSameMonth.set(Calendar.YEAR, now.get(Calendar.YEAR));
-        lentTimeInSameMonth.set(Calendar.MONTH, now.get(Calendar.MONTH));
-        if (now.before(lentTimeInSameMonth)) {
-            differenceInMonths--;
-        }
-
-        if (differenceInMonths > 1) {
-            return differenceInMonths + " " + getString(R.string.months);
-        }
-        else if (differenceInMonths > 0) {
-            return differenceInMonths + " " + getString(R.string.month);
-        }
-
-        // Check if one or more weeks have passed
-
-        long difference = now.getTimeInMillis() - lentDate.getTimeInMillis();
-        int differenceInDays = (int) (difference / DateUtils.DAY_IN_MILLIS);
-        int differenceInWeeks = differenceInDays / 7;
-
-        if (differenceInWeeks > 1) {
-            return differenceInWeeks + " " + getString(R.string.weeks);
-        }
-        else if (differenceInWeeks > 0) {
-            return differenceInWeeks + " " + getString(R.string.week);
-        }
-
-        // Check if one or more days have passed
-
-        if (differenceInDays > 1) {
-            return differenceInDays + " " + getString(R.string.days);
-        }
-        else if (differenceInDays == 1) {
-            return getString(R.string.yesterday);
-        }
-        else if (differenceInDays == 0) {
-            if (now.get(Calendar.DAY_OF_MONTH) == lentDate.get(Calendar.DAY_OF_MONTH)) {
-                return getString(R.string.today);
-            }
-            else {
-                return getString(R.string.yesterday);
-            }
-        }
-        else {
-            return getString(R.string.unknown);
-        }
     }
 
     private SimpleCursorAdapter getLentObjects() {
@@ -362,4 +299,25 @@ public abstract  class AbstractListFragment extends ListFragment {
         }
     }
 
+    @Override
+    public void onPositiveAction(DialogFragment dialog){
+        String tag = dialog.getTag();
+
+        if(tag == null){
+            return;
+        }
+        switch(tag){
+            case TAG_DIALOG_FIRST_TIME:
+                Log.d(LOG_TAG, "first time dialog +");
+                DatabaseHelper.importDatabaseFromXML(mDbHelper);
+                fillData();
+                break;
+        }
+    }
+
+    @Override
+    public void onNegativeAction(DialogFragment dialog){}
+
+    @Override
+    public void onNeutralAction(DialogFragment dialog){}
 }

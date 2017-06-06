@@ -1,3 +1,35 @@
+WhoHasMyStuff (1.0.32)
+
+  * Fixed calculation of durations of less than 48 hours
+  * Reverted back to Java 7
+
+-- Stephan Windmüller <stovocor@gmail.com>
+
+WhoHasMyStuff (1.0.31)
+
+  * Updated Spanish translation
+
+-- Stephan Windmüller <stovocor@gmail.com>
+
+WhoHasMyStuff (1.0.30)
+
+  * Trying to fix VerifyError by disabling ProGuard
+
+-- Stephan Windmüller <stovocor@gmail.com>
+
+WhoHasMyStuff (1.0.29)
+
+  * Trying to fix VerifyError by disabling deprecated Jack compiler
+
+-- Stephan Windmüller <stovocor@gmail.com>
+
+WhoHasMyStuff (1.0.28)
+
+  * Fixed display issues after display orientation change (thanks to Daniel Fernández)
+  * Updated Catalan, French, Spanish, and Turkish translations
+
+-- Stephan Windmüller <stovocor@gmail.com>
+
 WhoHasMyStuff (1.0.27)
 
   * Added Norwegian Bokmål translation (thanks to Allan Nordhøy)

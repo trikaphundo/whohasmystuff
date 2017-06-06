@@ -1,11 +1,12 @@
 package de.freewarepoint.whohasmystuff;
 
-import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,15 +18,19 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
-public class ListLentObjects extends AbstractListFragment {
+public class ListLentObjects extends AbstractListFragment implements AlertDialogFragment.AlertDialogFragmentListener{
 
     private static final int REQUEST_EXPORT_PERMISSION = 1024;
     private static final int REQUEST_IMPORT_PERMISSION = 1025;
+    /**Tag used to identify the DialogFragment for export confirmation.*/
+    private static final String TAG_DIALOG_EXPORT = "export_confirmation_dialog";
+    /**Tag used to identify the DialogFragment for import confirmation.*/
+    private static final String TAG_DIALOG_IMPORT = "import_confirmation_dialog";
+
+
 
 	@Override
-	protected int getIntentTitle() {
-		return R.string.app_name;
-	}
+	protected int getIntentTitle() { return R.string.app_name; }
 
 	@Override
 	protected int getEditAction() {
@@ -77,6 +82,37 @@ public class ListLentObjects extends AbstractListFragment {
         }
         return true;
     }
+
+    @Override
+    public void onPositiveAction(DialogFragment dialog){
+        super.onPositiveAction(dialog);
+
+
+        String tag = dialog.getTag();
+
+        if(tag == null){
+            return;
+        }
+        switch(tag){
+            case TAG_DIALOG_EXPORT:
+                exportData();
+                break;
+            case TAG_DIALOG_IMPORT:
+                if (DatabaseHelper.importDatabaseFromXML(mDbHelper)) {
+                    fillData();
+                }
+                else {
+                    showImportErrorDialog();
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onNegativeAction(DialogFragment dialog){}
+
+    @Override
+    public void onNeutralAction(DialogFragment dialog){}
 
     private void exportAfterPermissionsCheck() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -135,10 +171,17 @@ public class ListLentObjects extends AbstractListFragment {
         String state = Environment.getExternalStorageState();
 
         if (!Environment.MEDIA_MOUNTED.equals(state) && !Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
-            alertDialog.setTitle(getString(R.string.sd_card_error_title));
-            alertDialog.setMessage(getString(R.string.sd_card_error_not_readable));
-            alertDialog.show();
+            AlertDialogFragment dialog;
+
+            dialog = AlertDialogFragment.newObject(getResources().getString(R.string.sd_card_error_title),
+                    getResources().getString(R.string.sd_card_error_not_readable),
+                    getResources().getString(android.R.string.ok),
+                    null,
+                    null,
+                    0);
+            dialog.setAlertDialogFragmentListener(this);
+            dialog.show(getFragmentManager(), null);
+
             return false;
         }
         else {
@@ -150,10 +193,19 @@ public class ListLentObjects extends AbstractListFragment {
         String state = Environment.getExternalStorageState();
 
         if (!Environment.MEDIA_MOUNTED.equals(state)) {
-            AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
-            alertDialog.setTitle(getString(R.string.sd_card_error_title));
-            alertDialog.setMessage(getString(R.string.sd_card_error_not_writeable));
-            alertDialog.show();
+            AlertDialogFragment dialog;
+            Bundle args;
+
+            args = new Bundle(3);
+            args.putString(AlertDialogFragment.DIALOG_TITLE, getResources().getString(R.string.sd_card_error_title));
+            args.putString(AlertDialogFragment.DIALOG_MESSAGE, getResources().getString(R.string.sd_card_error_not_writeable));
+            args.putString(AlertDialogFragment.DIALOG_POSITIVE_TEXT, getResources().getString(android.R.string.ok));
+
+            dialog = new AlertDialogFragment();
+            dialog.setArguments(args);
+            dialog.setAlertDialogFragmentListener(this);
+            dialog.show(getFragmentManager(), null);
+
             return false;
         }
         else {
@@ -162,13 +214,16 @@ public class ListLentObjects extends AbstractListFragment {
     }
 
     private void askForExportConfirmation() {
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-        dialog.setIcon(android.R.drawable.ic_dialog_alert);
-        dialog.setTitle(getString(R.string.database_export_title));
-        dialog.setMessage(getString(R.string.database_export_message));
-        dialog.setPositiveButton(android.R.string.yes, (dialog1, whichButton) -> exportData());
-        dialog.setNegativeButton(android.R.string.no, null);
-        dialog.show();
+        AlertDialogFragment dialog;
+
+        dialog = AlertDialogFragment.newObject(getResources().getString(R.string.database_export_title),
+                getResources().getString(R.string.database_export_message),
+                getResources().getString(android.R.string.yes),
+                getResources().getString(android.R.string.no),
+                null,
+                android.R.drawable.ic_dialog_alert);
+        dialog.setAlertDialogFragmentListener(this);
+        dialog.show(getFragmentManager(), TAG_DIALOG_EXPORT);
     }
 
     private void exportData() {
@@ -181,20 +236,16 @@ public class ListLentObjects extends AbstractListFragment {
     }
 
     private void askForImportConfirmation() {
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-        dialog.setIcon(android.R.drawable.ic_dialog_alert);
-        dialog.setTitle(getString(R.string.database_import_title));
-        dialog.setMessage(getString(R.string.database_import_message));
-        dialog.setPositiveButton(android.R.string.yes, (dialog1, whichButton) -> {
-            if (DatabaseHelper.importDatabaseFromXML(mDbHelper)) {
-                fillData();
-            }
-            else {
-                showImportErrorDialog();
-            }
-        });
-        dialog.setNegativeButton(android.R.string.no, null);
-        dialog.show();
+        AlertDialogFragment dialog;
+
+        dialog = AlertDialogFragment.newObject(getResources().getString(R.string.database_import_title),
+                getResources().getString(R.string.database_import_message),
+                getResources().getString(android.R.string.yes),
+                getResources().getString(android.R.string.no),
+                null,
+                android.R.drawable.ic_dialog_alert);
+        dialog.setAlertDialogFragmentListener(this);
+        dialog.show(getFragmentManager(), TAG_DIALOG_IMPORT);
     }
 
     private void showImportErrorDialog() {
@@ -205,14 +256,25 @@ public class ListLentObjects extends AbstractListFragment {
         showErrorDialog(getString(R.string.database_export_error));
     }
 
+    /**
+     * Shows an AlertDialog with the given message
+     * @param message
+     */
     private void showErrorDialog(String message) {
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-        dialog.setIcon(android.R.drawable.ic_dialog_alert);
-        dialog.setTitle(getString(R.string.database_import_title));
-        dialog.setMessage(message);
-        dialog.setPositiveButton(android.R.string.yes, null);
-        dialog.show();
+        AlertDialogFragment dialog;
+        Bundle args;
+
+
+        //set dialog args
+        args = new Bundle(4);
+        args.putString(AlertDialogFragment.DIALOG_TITLE, getResources().getString(R.string.database_import_title));
+        args.putString(AlertDialogFragment.DIALOG_MESSAGE, message);
+        args.putString(AlertDialogFragment.DIALOG_POSITIVE_TEXT, getResources().getString(android.R.string.yes));
+        args.putInt(AlertDialogFragment.DIALOG_ICON, android.R.drawable.ic_dialog_alert);
+
+        dialog = new AlertDialogFragment();
+        dialog.setArguments(args);
+        dialog.setAlertDialogFragmentListener(this);
+        dialog.show(getFragmentManager(), null);
     }
-
-
 }
